@@ -2,119 +2,194 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Controle da Adega - Modo Jogo</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #f4f4f9;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             color: #333;
         }
         .container {
+            width: 100%;
             max-width: 500px;
             margin: 0 auto;
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        h1, h2 {
+        h1 {
             text-align: center;
             color: #d32f2f;
-            margin-top: 0;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            font-size: 22px;
         }
+        
+        /* Sistema de Abas */
+        .abas {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        .aba-btn {
+            flex: 1;
+            padding: 12px;
+            background: #e0e0e0;
+            color: #555;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .aba-btn.ativa {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .conteudo-aba {
+            display: none;
+        }
+        .conteudo-aba.ativa {
+            display: block;
+        }
+
         .preco-tag {
             text-align: center;
             font-weight: bold;
-            font-size: 1.2em;
+            font-size: 1.1em;
             background: #ffe082;
             padding: 10px;
             border-radius: 5px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .form-grupo {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 15px;
         }
         input[type="text"] {
             flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
+            padding: 12px;
+            border: 2px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
+            -webkit-appearance: none;
         }
+        input[type="text"]:focus {
+            border-color: #2e7d32;
+            outline: none;
+        }
+        
+        /* Botões */
         button {
-            padding: 10px 15px;
-            background-color: #2e7d32;
+            padding: 12px;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
         }
-        button:hover {
-            background-color: #1b5e20;
+        .btn-sucesso { background-color: #2e7d32; }
+        .btn-pagar { 
+            background-color: #2e7d32; 
+            font-size: 12px; 
+            padding: 6px 10px;
+            border-radius: 4px;
+            width: 100%;
+            margin-top: 8px;
         }
-        .lista-clientes {
-            margin-top: 20px;
-        }
+
+        /* Cartões de Clientes */
+        .lista-clientes { margin-top: 10px; }
         .cliente-card {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .card-topo {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            background: #fafafa;
-            margin-bottom: 8px;
-            border-radius: 5px;
+            gap: 10px;
         }
-        .info {
-            flex: 1;
-        }
+        .info { flex: 1; min-width: 0; }
         .nome {
             font-weight: bold;
             font-size: 1.1em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .detalhes {
-            font-size: 0.9em;
-            color: #666;
+            font-size: 0.95em;
+            color: #555;
+            margin-top: 4px;
         }
-        .acoes {
-            display: flex;
-            gap: 5px;
-        }
-        .btn-add {
-            background-color: #0288d1;
-        }
-        .btn-add:hover {
-            background-color: #01579b;
-        }
-        .btn-sub {
-            background-color: #f57c00;
-        }
-        .btn-sub:hover {
-            background-color: #e65100;
-        }
-        .btn-remover {
-            background-color: #c62828;
-            padding: 5px 10px;
-            font-size: 12px;
-        }
-        .btn-remover:hover {
-            background-color: #8e24aa;
-        }
-        .total-geral {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 3px double #ccc;
+        .acoes { display: flex; gap: 6px; flex-shrink: 0; }
+        
+        .btn-sub { background-color: #f57c00; width: 42px; height: 42px; font-size: 18px; }
+        .btn-add { background-color: #0288d1; width: 42px; height: 42px; font-size: 18px; }
+        .btn-remover { background-color: #c62828; width: 36px; height: 42px; font-size: 14px; }
+
+        /* Estilos do Dashboard */
+        .dash-card {
+            background: #fff;
+            border: 2px solid #2e7d32;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
             text-align: center;
-            font-size: 1.2em;
-            font-weight: bold;
         }
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .mini-card {
+            background: #f1f8e9;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #c5e1a5;
+        }
+        .mini-card.devedores {
+            background: #ffebee;
+            border-color: #ffcdd2;
+        }
+        .mini-card h3 { margin: 0; font-size: 13px; color: #555; text-transform: uppercase; }
+        .mini-card p { margin: 5px 0 0 0; font-size: 18px; font-weight: bold; }
+
+        .tabela-historico {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .tabela-historico th, .tabela-historico td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .tabela-historico th { background: #eee; }
+        .status-pago { color: #2e7d32; font-weight: bold; }
+
         .btn-zerar {
             display: block;
             width: 100%;
@@ -127,29 +202,86 @@
 
 <div class="container">
     <h1>Adega do Amigo 🍻</h1>
-    <div class="preco-tag">Brahma Chopp: R$ 3,50</div>
-
-    <div class="form-grupo">
-        <input type="text" id="nomeCliente" placeholder="Nome de quem chegou..." autocomplete="off">
-        <button onclick="adicionarCliente()">Adicionar</button>
+    
+    <!-- Abas de Navegação -->
+    <div class="abas">
+        <button class="aba-btn ativa" onclick="mudarAba('balcao')">🛒 Balcão (Jogo)</button>
+        <button class="aba-btn" onclick="mudarAba('dashboard')">📊 Dashboard</button>
     </div>
 
-    <div class="lista-clientes" id="listaClientes"></div>
+    <!-- ABA 1: BALCÃO -->
+    <div id="aba-balcao" class="conteudo-aba ativa">
+        <div class="preco-tag">Brahma Chopp: R$ 3,50</div>
 
-    <div class="total-geral" id="totalGeral">
-        Total de Cervejas: 0 | Total R$ 0,00
+        <div class="form-grupo">
+            <input type="text" id="nomeCliente" placeholder="Nome de quem chegou..." autocomplete="off">
+            <button class="btn-sucesso" onclick="adicionarCliente()">Adicionar</button>
+        </div>
+
+        <div class="lista-clientes" id="listaClientes"></div>
     </div>
 
-    <button class="btn-zerar" onclick="zerarTudo()">Limpar Tudo para o Próximo Jogo</button>
+    <!-- ABA 2: DASHBOARD -->
+    <div id="aba-dashboard" class="conteudo-aba">
+        <div class="dash-card">
+            <h2 style="margin:0 0 5px 0; color:#2e7d32; font-size: 18px;">Faturamento Total do Dia</h2>
+            <div id="faturamentoTotal" style="font-size: 28px; font-weight: bold; color: #1b5e20;">R$ 0,00</div>
+        </div>
+
+        <div class="dash-grid">
+            <div class="mini-card">
+                <h3>Cervejas Vendidas</h3>
+                <p id="dashCervejas">0 un.</p>
+            </div>
+            <div class="mini-card devedores">
+                <h3>Ainda a Receber</h3>
+                <p id="dashDevedores" style="color: #c62828;">R$ 0,00</p>
+            </div>
+        </div>
+
+        <h2 style="font-size: 16px; margin: 15px 0 5px 0; border-bottom: 2px solid #ccc; padding-bottom: 5px;">Histórico de Pagamentos</h2>
+        <table class="tabela-historico">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Qtd</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="historicoVendas">
+                <!-- Injetado por JS -->
+            </tbody>
+        </table>
+
+        <button class="btn-zerar" onclick="zerarTudo()">Zerar Caixa / Próximo Jogo</button>
+    </div>
 </div>
 
 <script>
     const PRECO_CERVEJA = 3.50;
+    
+    // Dados ativos (quem tá bebendo agora) e histórico (quem já pagou hoje)
     let clientes = JSON.parse(localStorage.getItem('adega_clientes')) || [];
+    let historico = JSON.parse(localStorage.getItem('adega_historico')) || [];
 
     function salvarDados() {
         localStorage.setItem('adega_clientes', JSON.stringify(clientes));
+        localStorage.setItem('adega_historico', JSON.stringify(historico));
         renderizar();
+    }
+
+    function mudarAba(aba) {
+        document.querySelectorAll('.aba-btn').forEach(btn => btn.classList.remove('ativa'));
+        document.querySelectorAll('.conteudo-aba').forEach(c => c.classList.remove('ativa'));
+
+        if(aba === 'balcao') {
+            document.querySelectorAll('.aba-btn')[0].classList.add('ativa');
+            document.getElementById('aba-balcao').classList.add('ativa');
+        } else {
+            document.querySelectorAll('.aba-btn')[1].classList.add('ativa');
+            document.getElementById('aba-dashboard').classList.add('ativa');
+        }
     }
 
     function adicionarCliente() {
@@ -161,64 +293,123 @@
             return;
         }
 
-        clientes.push({ nome: nome, quantidade: 0 });
+        clientes.push({ nome: nome, quantity: 0 });
         input.value = "";
         salvarDados();
     }
 
     function alterarQtd(index, valor) {
-        clientes[index].quantidade += valor;
-        if (clientes[index].quantidade < 0) clientes[index].quantidade = 0;
-        salvarDados();
+        const cliente = clientes[index];
+        let mensagem = valor === 1 ? `Confirmar +1 para ${cliente.nome}?` : `Confirmar -1 para ${cliente.nome}?`;
+
+        if (valor === -1 && cliente.quantity === 0) return;
+
+        if (confirm(mensagem)) {
+            cliente.quantity += valor;
+            salvarDados();
+        }
+    }
+
+    function finalizarPagamento(index) {
+        const cliente = clientes[index];
+        if (cliente.quantity === 0) {
+            alert("Essa pessoa não consumiu nenhuma cerveja ainda!");
+            return;
+        }
+
+        const totalDevido = cliente.quantity * PRECO_CERVEJA;
+        
+        if (confirm(`Confirmar que ${cliente.nome} PAGOU o valor de R$ ${totalDevido.toFixed(2).replace('.', ',')}?`)) {
+            // Adiciona ao histórico do dia
+            historico.push({
+                nome: cliente.nome,
+                quantity: cliente.quantity,
+                total: totalDevido,
+                status: 'Pago'
+            });
+
+            // Remove da lista de ativos
+            clientes.splice(index, 1);
+            salvarDados();
+            alert("Pagamento processado com sucesso! Dados enviados ao Dashboard.");
+        }
     }
 
     function removerCliente(index) {
-        if (confirm(`Remover ${clientes[index].nome} da lista?`)) {
+        if (confirm(`Remover ${clientes[index].nome} sem salvar faturamento? (Uso em caso de erro)`)) {
             clientes.splice(index, 1);
             salvarDados();
         }
     }
 
     function zerarTudo() {
-        if (confirm("Tem certeza que quer zerar a lista para o próximo jogo? Isso vai apagar tudo!")) {
+        if (confirm("ATENÇÃO: Deseja zerar o Dashboard e as comanda ativas para começar um novo dia? Isso apagará todo o histórico recente!")) {
             clientes = [];
+            historico = [];
             salvarDados();
         }
     }
 
     function renderizar() {
+        // --- RENDERIZAR ABA BALCÃO ---
         const listaHtml = document.getElementById('listaClientes');
         listaHtml.innerHTML = "";
 
-        let totalCervejas = 0;
+        let totalDevedoresGeral = 0;
+        let cervejasAtivas = 0;
 
         clientes.forEach((cliente, index) => {
-            const totalCliente = cliente.quantidade * PRECO_CERVEJA;
-            totalCervejas += cliente.quantidade;
+            const totalCliente = cliente.quantity * PRECO_CERVEJA;
+            totalDevedoresGeral += totalCliente;
+            cervejasAtivas += cliente.quantity;
 
             listaHtml.innerHTML += `
                 <div class="cliente-card">
-                    <div class="info">
-                        <div class="nome">${cliente.nome}</div>
-                        <div class="detalhes">${cliente.quantidade} un. = <strong>R$ ${totalCliente.toFixed(2).replace('.', ',')}</strong></div>
+                    <div class="card-topo">
+                        <div class="info">
+                            <div class="nome">${cliente.nome}</div>
+                            <div class="detalhes">${cliente.quantity} un. = <strong>R$ ${totalCliente.toFixed(2).replace('.', ',')}</strong></div>
+                        </div>
+                        <div class="acoes">
+                            <button class="btn-sub" onclick="alterarQtd(${index}, -1)">-1</button>
+                            <button class="btn-add" onclick="alterarQtd(${index}, 1)">+1</button>
+                            <button class="btn-remover" onclick="removerCliente(${index})">X</button>
+                        </div>
                     </div>
-                    <div class="acoes">
-                        <button class="btn-sub" onclick="alterarQtd(${index}, -1)">-1</button>
-                        <button class="btn-add" onclick="alterarQtd(${index}, 1)">+1</button>
-                        <button class="btn-remover" onclick="removerCliente(${index})">X</button>
-                    </div>
+                    <button class="btn-pagar" onclick="finalizarPagamento(${index})">💰 FINALIZAR E PAGAR</button>
                 </div>
             `;
         });
 
-        const valorTotalGeral = totalCervejas * PRECO_CERVEJA;
-        document.getElementById('totalGeral').innerHTML = `
-            Total de Cervejas: ${totalCervejas} <br>
-            Faturamento Total: R$ ${valorTotalGeral.toFixed(2).replace('.', ',')}
-        `;
+        // --- RENDERIZAR ABA DASHBOARD ---
+        let cervejasPagas = 0;
+        let faturamentoPago = 0;
+        const historicoHtml = document.getElementById('historicoVendas');
+        historicoHtml.innerHTML = "";
+
+        historico.forEach(item => {
+            cervejasPagas += item.quantity;
+            faturamentoPago += item.total;
+            historicoHtml.innerHTML += `
+                <tr>
+                    <td><strong>${item.nome}</strong></td>
+                    <td>${item.quantity} un.</td>
+                    <td>R$ ${item.total.toFixed(2).replace('.', ',')}</td>
+                    <td class="status-pago">${item.status}</td>
+                </tr>
+            `;
+        });
+
+        // Atualiza indicadores do Dashboard
+        const faturamentoTotalDia = faturamentoPago + totalDevedoresGeral;
+        const totalCervejasDia = cervejasPagas + cervejasAtivas;
+
+        document.getElementById('faturamentoTotal').innerText = `R$ ${faturamentoTotalDia.toFixed(2).replace('.', ',')}`;
+        document.getElementById('dashCervejas').innerText = `${totalCervejasDia} un.`;
+        document.getElementById('dashDevedores').innerText = `R$ ${totalDevedoresGeral.toFixed(2).replace('.', ',')}`;
     }
 
-    // Inicializa a tela com os dados salvos
+    // Inicialização
     renderizar();
 </script>
 
