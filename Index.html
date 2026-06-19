@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle da Adega - Modo Jogo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #d32f2f;
+            margin-top: 0;
+        }
+        .preco-tag {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            background: #ffe082;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .form-grupo {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #1b5e20;
+        }
+        .lista-clientes {
+            margin-top: 20px;
+        }
+        .cliente-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            background: #fafafa;
+            margin-bottom: 8px;
+            border-radius: 5px;
+        }
+        .info {
+            flex: 1;
+        }
+        .nome {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .detalhes {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .acoes {
+            display: flex;
+            gap: 5px;
+        }
+        .btn-add {
+            background-color: #0288d1;
+        }
+        .btn-add:hover {
+            background-color: #01579b;
+        }
+        .btn-sub {
+            background-color: #f57c00;
+        }
+        .btn-sub:hover {
+            background-color: #e65100;
+        }
+        .btn-remover {
+            background-color: #c62828;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .btn-remover:hover {
+            background-color: #8e24aa;
+        }
+        .total-geral {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 3px double #ccc;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .btn-zerar {
+            display: block;
+            width: 100%;
+            background-color: #37474f;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Adega do Amigo 🍻</h1>
+    <div class="preco-tag">Brahma Chopp: R$ 3,50</div>
+
+    <div class="form-grupo">
+        <input type="text" id="nomeCliente" placeholder="Nome de quem chegou..." autocomplete="off">
+        <button onclick="adicionarCliente()">Adicionar</button>
+    </div>
+
+    <div class="lista-clientes" id="listaClientes"></div>
+
+    <div class="total-geral" id="totalGeral">
+        Total de Cervejas: 0 | Total R$ 0,00
+    </div>
+
+    <button class="btn-zerar" onclick="zerarTudo()">Limpar Tudo para o Próximo Jogo</button>
+</div>
+
+<script>
+    const PRECO_CERVEJA = 3.50;
+    let clientes = JSON.parse(localStorage.getItem('adega_clientes')) || [];
+
+    function salvarDados() {
+        localStorage.setItem('adega_clientes', JSON.stringify(clientes));
+        renderizar();
+    }
+
+    function adicionarCliente() {
+        const input = document.getElementById('nomeCliente');
+        const nome = input.value.trim();
+        
+        if (nome === "") {
+            alert("Digite o nome da pessoa!");
+            return;
+        }
+
+        clientes.push({ nome: nome, quantidade: 0 });
+        input.value = "";
+        salvarDados();
+    }
+
+    function alterarQtd(index, valor) {
+        clientes[index].quantidade += valor;
+        if (clientes[index].quantidade < 0) clientes[index].quantidade = 0;
+        salvarDados();
+    }
+
+    function removerCliente(index) {
+        if (confirm(`Remover ${clientes[index].nome} da lista?`)) {
+            clientes.splice(index, 1);
+            salvarDados();
+        }
+    }
+
+    function zerarTudo() {
+        if (confirm("Tem certeza que quer zerar a lista para o próximo jogo? Isso vai apagar tudo!")) {
+            clientes = [];
+            salvarDados();
+        }
+    }
+
+    function renderizar() {
+        const listaHtml = document.getElementById('listaClientes');
+        listaHtml.innerHTML = "";
+
+        let totalCervejas = 0;
+
+        clientes.forEach((cliente, index) => {
+            const totalCliente = cliente.quantidade * PRECO_CERVEJA;
+            totalCervejas += cliente.quantidade;
+
+            listaHtml.innerHTML += `
+                <div class="cliente-card">
+                    <div class="info">
+                        <div class="nome">${cliente.nome}</div>
+                        <div class="detalhes">${cliente.quantidade} un. = <strong>R$ ${totalCliente.toFixed(2).replace('.', ',')}</strong></div>
+                    </div>
+                    <div class="acoes">
+                        <button class="btn-sub" onclick="alterarQtd(${index}, -1)">-1</button>
+                        <button class="btn-add" onclick="alterarQtd(${index}, 1)">+1</button>
+                        <button class="btn-remover" onclick="removerCliente(${index})">X</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        const valorTotalGeral = totalCervejas * PRECO_CERVEJA;
+        document.getElementById('totalGeral').innerHTML = `
+            Total de Cervejas: ${totalCervejas} <br>
+            Faturamento Total: R$ ${valorTotalGeral.toFixed(2).replace('.', ',')}
+        `;
+    }
+
+    // Inicializa a tela com os dados salvos
+    renderizar();
+</script>
+
+</body>
+</html>
