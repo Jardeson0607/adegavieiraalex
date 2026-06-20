@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Adega Vieira</title>
     
-    <!-- Nome do Aplicativo no iPhone -->
+    <!-- Configurações Apple/iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Adega Vieira">
     
-    <!-- FOTO DO ÍCONE PARA IPHONE (Substitua o link abaixo pela sua imagem) -->
-    <link rel="apple-touch-icon" href="Screenshot_2026-06-19-20-58-25-116_com.instagram.android-edit.jpg">
-    <!-- CONFIGURAÇÃO DO NOME E DA FOTO PARA ANDROID (Substitua o link abaixo em "src" também) -->
-    <link rel="manifest" href='data:application/manifest+json,{"name":"Adega Vieira","short_name":"Adega Vieira","start_url":".","display":"standalone","background_color":"#121214","theme_color":"#ffb300","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/761/761767.png","sizes":"512x512","type":"image/png"}]}' />
+    <!-- Ícones e Manifesto com a imagem embutida para forçar o PWA no Android e iOS -->
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Jardeson0607/adegavieiraalex/principal/Screenshot_2026-06-19-20-58-25-116_com.instagram.android-edit.jpg">
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Adega Vieira","short_name":"Adega Vieira","start_url":".","display":"standalone","background_color":"#121214","theme_color":"#ffb300","icons":[{"src":"https://raw.githubusercontent.com/Jardeson0607/adegavieiraalex/principal/Screenshot_2026-06-19-20-58-25-116_com.instagram.android-edit.jpg","sizes":"512x512","type":"image/png"}]}' />
 
     <style>
         :root {
@@ -52,10 +51,25 @@
             border: 1px solid #2d2d34;
         }
 
+        /* Topo com o Logo e Nome Alinhados */
+        .topo-app {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0 20px 0;
+        }
+        .logo-foto {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            border: 2px solid var(--cor-primaria);
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(255, 179, 0, 0.2);
+        }
         h1 {
-            text-align: center;
             color: var(--cor-primaria);
-            margin: 5px 0 15px 0;
+            margin: 0;
             font-size: 24px;
             letter-spacing: 0.5px;
         }
@@ -71,6 +85,7 @@
             font-weight: bold;
             border: none;
             cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 179, 0, 0.3);
         }
         
         .abas {
@@ -289,9 +304,12 @@
 <body>
 
 <div class="container">
-    <button class="btn-instalar-app" onclick="instrucaoInstalar()">📲 ADICIONAR ADEGA VIEIRA À TELA INICIAL</button>
+    <button class="btn-instalar-app" onclick="instrucaoInstalar()">📲 INSTALAR APLICATIVO OFICIAL</button>
 
-    <h1>Adega Vieira 🍻</h1>
+    <div class="topo-app">
+        <img class="logo-foto" src="https://raw.githubusercontent.com/Jardeson0607/adegavieiraalex/principal/Screenshot_2026-06-19-20-58-25-116_com.instagram.android-edit.jpg" alt="Logo">
+        <h1>Adega Vieira</h1>
+    </div>
     
     <div class="abas">
         <button class="aba-btn ativa" onclick="mudarAba('balcao')">🛒 Balcão (Jogo)</button>
@@ -358,7 +376,7 @@
     let historico = JSON.parse(localStorage.getItem('adega_historico_v3')) || [];
 
     function instrucaoInstalar() {
-        alert("Para salvar o app na tela inicial:\n\nNo Android (Chrome): Clique nos 3 pontinhos no canto superior e escolha 'Adicionar à tela inicial'.\n\nNo iPhone (Safari): Clique no botão de compartilhar (quadradinho com seta pra cima) e escolha 'Adicionar à Tela de Início'.");
+        alert("Para salvar como App na sua tela inicial com a imagem:\n\n1. Delete o atalho antigo com a letra 'V' cinza da sua tela.\n2. Abra o link novo no Chrome ou Safari.\n3. No Chrome: Toque nos 3 pontinhos do canto superior e escolha 'Adicionar à tela inicial'.\n4. No Safari: Toque no botão de compartilhar e escolha 'Adicionar à Tela de Início'.");
     }
 
     function salvarDados() {
@@ -380,7 +398,6 @@
         }
     }
 
-    // Código restante mantido igual para segurança de funcionamento...
     function adicionarCliente() {
         const input = document.getElementById('nomeCliente');
         const nome = input.value.trim();
@@ -473,7 +490,7 @@
             brahmaPagas += item.brahma; budPagas += item.bud; faturamentoPago += item.total;
             let detalhesH = [];
             if(item.brahma > 0) detalhesH.push(`${item.brahma} Br`);
-            if(item.bud > 0) detachable = detalhesH.push(`${item.bud} Bd`);
+            if(item.bud > 0) detalhesH.push(`${item.bud} Bd`);
 
             historicoHtml.innerHTML += `
                 <tr>
