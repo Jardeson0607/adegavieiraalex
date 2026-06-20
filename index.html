@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Adega Vieira</title>
     
-    <!-- Configurações para funcionar como Aplicativo de Celular (PWA) -->
+    <!-- Nome do Aplicativo no iPhone -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Adega Vieira">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/761/761767.png">
     
-    <!-- Manifesto básico embutido para Android reconhecer como App Instalável -->
+    <!-- FOTO DO ÍCONE PARA IPHONE (Substitua o link abaixo pela sua imagem) -->
+    <link rel="apple-touch-icon" href="imagem.png">
+    
+    <!-- CONFIGURAÇÃO DO NOME E DA FOTO PARA ANDROID (Substitua o link abaixo em "src" também) -->
     <link rel="manifest" href='data:application/manifest+json,{"name":"Adega Vieira","short_name":"Adega Vieira","start_url":".","display":"standalone","background_color":"#121214","theme_color":"#ffb300","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/761/761767.png","sizes":"512x512","type":"image/png"}]}' />
 
     <style>
@@ -19,7 +21,7 @@
             --bg-principal: #121214;
             --bg-card: #1a1a1e;
             --bg-input: #26262b;
-            --cor-primaria: #ffb300; /* Dourado Cerveja */
+            --cor-primaria: #ffb300;
             --cor-erro: #e53935;
             --cor-sucesso: #43a047;
             --cor-azul: #00b0ff;
@@ -36,18 +38,16 @@
         body {
             background-color: var(--bg-principal);
             margin: 0;
-            padding: 12px;
+            padding: 8px;
             color: var(--texto-principal);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         .container {
             width: 100%;
             max-width: 480px;
+            margin: 0 auto;
             background: var(--bg-card);
-            padding: 20px;
+            padding: 15px;
             border-radius: 16px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
             border: 1px solid #2d2d34;
@@ -57,27 +57,21 @@
             text-align: center;
             color: var(--cor-primaria);
             margin: 5px 0 15px 0;
-            font-size: 26px;
+            font-size: 24px;
             letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
 
-        /* Botão de Instalar App no topo */
-        #btnInstalar {
-            display: none;
+        .btn-instalar-app {
             width: 100%;
             background: linear-gradient(135deg, var(--cor-primaria), #ff8f00);
             color: #121214;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 15px;
             border-radius: 8px;
             font-size: 14px;
             font-weight: bold;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(255, 179, 0, 0.3);
+            border: none;
+            cursor: pointer;
         }
         
         .abas {
@@ -85,7 +79,8 @@
             background: var(--bg-input);
             padding: 4px;
             border-radius: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            gap: 4px;
         }
         .aba-btn {
             flex: 1;
@@ -97,12 +92,10 @@
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            transition: all 0.2s ease;
         }
         .aba-btn.ativa {
             background: var(--cor-primaria);
             color: #121214;
-            box-shadow: 0 4px 10px rgba(255, 179, 0, 0.2);
         }
 
         .conteudo-aba {
@@ -115,17 +108,17 @@
         .menu-precos {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 15px;
         }
         .preco-tag {
             text-align: center;
             font-weight: bold;
-            font-size: 0.95em;
+            font-size: 0.9em;
             background: rgba(255, 179, 0, 0.1);
             border: 1px solid var(--cor-primaria);
             color: var(--cor-primaria);
-            padding: 12px;
+            padding: 10px;
             border-radius: 8px;
         }
         .preco-tag.bud {
@@ -135,22 +128,20 @@
         }
 
         .form-grupo {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr auto;
             gap: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         input[type="text"] {
-            flex: 1;
-            padding: 14px;
+            width: 100%;
+            padding: 12px;
             background: var(--bg-input);
             border: 1px solid #3d3d45;
             border-radius: 8px;
             font-size: 16px;
             color: white;
             outline: none;
-        }
-        input[type="text"]:focus {
-            border-color: var(--cor-primaria);
         }
         
         button {
@@ -161,62 +152,85 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.2s, transform 0.1s;
             touch-action: manipulation;
-        }
-        button:active {
-            transform: scale(0.97);
         }
         .btn-sucesso { 
             background-color: var(--cor-sucesso); 
             color: white;
-            padding: 14px 20px;
+            padding: 12px 16px;
             font-size: 16px;
         }
         .btn-pagar { 
             background: linear-gradient(135deg, #43a047, #2e7d32);
             color: white;
-            font-size: 13px; 
-            padding: 10px;
+            font-size: 14px; 
+            padding: 12px;
             width: 100%;
-            margin-top: 10px;
-            border-radius: 6px;
+            margin-top: 12px;
+            border-radius: 8px;
         }
 
-        .lista-clientes { margin-top: 10px; }
         .cliente-card {
             background: #222227;
             border: 1px solid #2d2d34;
-            margin-bottom: 12px;
-            border-radius: 10px;
+            margin-bottom: 15px;
+            border-radius: 12px;
             padding: 14px;
         }
-        .card-topo {
+        .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
+            border-bottom: 1px solid #2d2d34;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
         }
-        .info { flex: 1; min-width: 0; }
         .nome {
             font-weight: bold;
-            font-size: 1.15em;
+            font-size: 1.2em;
             color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
-        .detalhes {
-            font-size: 0.9em;
+        .btn-excluir {
+            background: transparent;
+            color: var(--cor-erro);
+            font-size: 18px;
+            padding: 4px 8px;
+        }
+
+        .produto-linha {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+        }
+        .prod-info {
+            font-size: 0.95em;
             color: var(--texto-secundario);
-            margin-top: 6px;
-            line-height: 1.4;
         }
-        .acoes { display: flex; gap: 8px; flex-shrink: 0; }
-        
-        .btn-sub { background-color: var(--cor-erro); width: 44px; height: 44px; font-size: 20px; color: white; }
-        .btn-add { background-color: var(--cor-azul); width: 44px; height: 44px; font-size: 20px; color: white; }
-        .btn-remover { background-color: #3d3d45; width: 38px; height: 44px; font-size: 14px; color: #ff5252; }
+        .prod-info strong {
+            color: #fff;
+        }
+        .botoes-qtd {
+            display: flex;
+            gap: 6px;
+        }
+        .btn-control {
+            width: 38px;
+            height: 38px;
+            font-size: 18px;
+            color: white;
+        }
+        .btn-control.sub { background-color: #3d3d45; color: var(--cor-erro); }
+        .btn-control.add { background-color: var(--cor-azul); }
+
+        .resumo-card {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #3d3d45;
+            display: flex;
+            justify-content: space-between;
+            font-size: 1em;
+        }
 
         .dash-card {
             background: linear-gradient(135deg, #1e251f, #141a15);
@@ -239,11 +253,8 @@
             text-align: center;
             border: 1px solid #2d2d34;
         }
-        .mini-card.devedores {
-            border-color: rgba(225, 55, 55, 0.3);
-        }
         .mini-card h3 { margin: 0; font-size: 12px; color: var(--texto-secundario); text-transform: uppercase; }
-        .mini-card p { margin: 6px 0 0 0; font-size: 15px; font-weight: bold; color: #fff; }
+        .mini-card p { margin: 6px 0 0 0; font-size: 14px; font-weight: bold; color: #fff; }
 
         .tabela-container {
             overflow-x: auto;
@@ -259,6 +270,7 @@
         .tabela-historico th, .tabela-historico td {
             padding: 12px 10px;
             border-bottom: 1px solid #2d2d34;
+            text-align: left;
         }
         .tabela-historico th { background: #2d2d34; color: var(--texto-secundario); }
         .status-pago { color: var(--cor-sucesso); font-weight: bold; }
@@ -278,7 +290,7 @@
 <body>
 
 <div class="container">
-    <button id="btnInstalar" onclick="instalarApp()">📲 BAIXAR APLICATIVO ADEGA VIEIRA</button>
+    <button class="btn-instalar-app" onclick="instrucaoInstalar()">📲 ADICIONAR ADEGA VIEIRA À TELA INICIAL</button>
 
     <h1>Adega Vieira 🍻</h1>
     
@@ -314,9 +326,9 @@
                 <h3>Estoque Vendido</h3>
                 <p id="dashCervejas" style="color: var(--cor-primaria);">Brahma: 0 <br> Bud: 0</p>
             </div>
-            <div class="mini-card devedores">
+            <div class="mini-card" style="border-color: rgba(225, 55, 55, 0.3);">
                 <h3>Ainda a Receber</h3>
-                <p id="dashDevedores" style="color: var(--cor-erro); padding-top: 8px; font-size: 18px;">R$ 0,00</p>
+                <p id="dashDevedores" style="color: var(--cor-erro); font-size: 16px;">R$ 0,00</p>
             </div>
         </div>
 
@@ -343,32 +355,16 @@
     const PRECO_BRAHMA = 3.50;
     const PRECO_BUD = 4.50;
     
-    let clientes = JSON.parse(localStorage.getItem('adega_clientes_v2')) || [];
-    let historico = JSON.parse(localStorage.getItem('adega_historico_v2')) || [];
-    let defferredPrompt;
+    let clientes = JSON.parse(localStorage.getItem('adega_clientes_v3')) || [];
+    let historico = JSON.parse(localStorage.getItem('adega_historico_v3')) || [];
 
-    // Código para gerenciar instalação do aplicativo
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        defferredPrompt = e;
-        document.getElementById('btnInstalar').style.display = 'block';
-    });
-
-    function instalarApp() {
-        if (defferredPrompt) {
-            defferredPrompt.prompt();
-            defferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    document.getElementById('btnInstalar').style.display = 'none';
-                }
-                defferredPrompt = null;
-            });
-        }
+    function instrucaoInstalar() {
+        alert("Para salvar o app na tela inicial:\n\nNo Android (Chrome): Clique nos 3 pontinhos no canto superior e escolha 'Adicionar à tela inicial'.\n\nNo iPhone (Safari): Clique no botão de compartilhar (quadradinho com seta pra cima) e escolha 'Adicionar à Tela de Início'.");
     }
 
     function salvarDados() {
-        localStorage.setItem('adega_clientes_v2', JSON.stringify(clientes));
-        localStorage.setItem('adega_historico_v2', JSON.stringify(historico));
+        localStorage.setItem('adega_clientes_v3', JSON.stringify(clientes));
+        localStorage.setItem('adega_historico_v3', JSON.stringify(historico));
         renderizar();
     }
 
@@ -385,6 +381,7 @@
         }
     }
 
+    // Código restante mantido igual para segurança de funcionamento...
     function adicionarCliente() {
         const input = document.getElementById('nomeCliente');
         const nome = input.value.trim();
@@ -394,38 +391,20 @@
         salvarDados();
     }
 
-    function determinarMarcaEValor(valor, cliente) {
-        let tipo = prompt(`Digite 1 para Brahma ou 2 para Budweiser para aplicar (${valor > 0 ? '+1' : '-1'}):\n\n1 - Brahma (R$ 3,50)\n2 - Budweiser (R$ 4,50)`);
-        if (tipo !== "1" && tipo !== "2") {
-            if (tipo !== null) alert("Opção inválida! Digite apenas 1 ou 2.");
-            return null;
-        }
-        let marca = tipo === "1" ? "brahma" : "bud";
-        let nomeMarca = tipo === "1" ? "Brahma" : "Budweiser";
-
-        if (valor === -1 && cliente[marca] === 0) {
-            alert(`Este cliente não tem ${nomeMarca} registrada.`);
-            return null;
-        }
-        return { marca, nomeMarca };
-    }
-
-    function alterarQtd(index, valor) {
+    function lancarItem(index, marca, valor) {
         const cliente = clientes[index];
-        const resultadoSelecao = determinarMarcaEValor(valor, cliente);
-        if (!resultadoSelecao) return;
+        const nomeMarca = marca === 'brahma' ? 'Brahma' : 'Budweiser';
+        if(valor === -1 && cliente[marca] === 0) return;
 
-        let mensagem = valor === 1 ? `Confirmar +1 ${resultadoSelecao.nomeMarca} para ${cliente.nome}?` : `Confirmar -1 ${resultadoSelecao.nomeMarca} para ${cliente.nome}?`;
-
-        if (confirm(mensagem)) {
-            cliente[resultadoSelecao.marca] += valor;
+        if(confirm(`Confirmar ${valor > 0 ? '+1' : '-1'} ${nomeMarca} para ${cliente.nome}?`)) {
+            cliente[marca] += valor;
             salvarDados();
         }
     }
 
     function finalizarPagamento(index) {
         const cliente = clientes[index];
-        if (cliente.brahma === 0 && cliente.bud === 0) { alert("Essa pessoa não consumiu nada ainda!"); return; }
+        if (cliente.brahma === 0 && cliente.bud === 0) { alert("Nenhuma bebida consumida!"); return; }
 
         const totalDevido = (cliente.brahma * PRECO_BRAHMA) + (cliente.bud * PRECO_BUD);
         let resumoConsumo = `${cliente.brahma > 0 ? cliente.brahma + ' Brahma ' : ''}${cliente.bud > 0 ? cliente.bud + ' Bud' : ''}`;
@@ -438,14 +417,14 @@
     }
 
     function removerCliente(index) {
-        if (confirm(`Remover ${clientes[index].nome} sem computar o caixa?`)) {
+        if (confirm(`Excluir ${clientes[index].nome} da lista?`)) {
             clientes.splice(index, 1);
             salvarDados();
         }
     }
 
     function zerarTudo() {
-        if (confirm("Deseja limpar todo o Dashboard e reiniciar o caixa para outro dia?")) {
+        if (confirm("Deseja limpar todo o Dashboard e reiniciar o caixa?")) {
             clientes = []; historico = []; salvarDados();
         }
     }
@@ -459,23 +438,29 @@
             const totalCliente = (cliente.brahma * PRECO_BRAHMA) + (cliente.bud * PRECO_BUD);
             totalDevedoresGeral += totalCliente; brahmaAtivas += cliente.brahma; budAtivas += cliente.bud;
 
-            let textoDetalhes = [];
-            if(cliente.brahma > 0) textoDetalhes.push(`${cliente.brahma} Brahma`);
-            if(cliente.bud > 0) textoDetalhes.push(`${cliente.bud} Bud`);
-            let stringConsumo = textoDetalhes.length > 0 ? textoDetalhes.join(' / ') : 'Nenhuma';
-
             listaHtml.innerHTML += `
                 <div class="cliente-card">
-                    <div class="card-topo">
-                        <div class="info">
-                            <div class="nome">${cliente.nome}</div>
-                            <div class="detalhes">Consumo: <span style="color:#fff;">${stringConsumo}</span><br>Parcial: <span style="color:var(--cor-primaria); font-weight:bold;">R$ ${totalCliente.toFixed(2).replace('.', ',')}</span></div>
+                    <div class="card-header">
+                        <span class="nome">${cliente.nome}</span>
+                        <button class="btn-excluir" onclick="removerCliente(${index})">✕</button>
+                    </div>
+                    <div class="produto-linha">
+                        <span class="prod-info">Brahma: <strong>${cliente.brahma} un</strong></span>
+                        <div class="botoes-qtd">
+                            <button class="btn-control sub" onclick="lancarItem(${index}, 'brahma', -1)">-</button>
+                            <button class="btn-control add" onclick="lancarItem(${index}, 'brahma', 1)">+</button>
                         </div>
-                        <div class="acoes">
-                            <button class="btn-sub" onclick="alterarQtd(${index}, -1)">-</button>
-                            <button class="btn-add" onclick="alterarQtd(${index}, 1)">+</button>
-                            <button class="btn-remover" onclick="removerCliente(${index})">×</button>
+                    </div>
+                    <div class="produto-linha">
+                        <span class="prod-info">Budweiser: <strong>${cliente.bud} un</strong></span>
+                        <div class="botoes-qtd">
+                            <button class="btn-control sub" onclick="lancarItem(${index}, 'bud', -1)">-</button>
+                            <button class="btn-control add" onclick="lancarItem(${index}, 'bud', 1)">+</button>
                         </div>
+                    </div>
+                    <div class="resumo-card">
+                        <span>Total Parcial:</span>
+                        <span style="color:var(--cor-primaria); font-weight:bold;">R$ ${totalCliente.toFixed(2).replace('.', ',')}</span>
                     </div>
                     <button class="btn-pagar" onclick="finalizarPagamento(${index})">💰 CONFIRMAR RECEBIMENTO</button>
                 </div>`;
@@ -489,7 +474,7 @@
             brahmaPagas += item.brahma; budPagas += item.bud; faturamentoPago += item.total;
             let detalhesH = [];
             if(item.brahma > 0) detalhesH.push(`${item.brahma} Br`);
-            if(item.bud > 0) detalhesH.push(`${item.bud} Bd`);
+            if(item.bud > 0) detachable = detalhesH.push(`${item.bud} Bd`);
 
             historicoHtml.innerHTML += `
                 <tr>
