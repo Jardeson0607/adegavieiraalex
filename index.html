@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Adega Vieira</title>
     
+    <!-- Link para o arquivo Manifest separado -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffb300">
+    
     <!-- Configurações Apple/iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Adega Vieira">
-    
-    <!-- Ícones e Manifesto com a imagem embutida para forçar o PWA no Android e iOS -->
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Jardeson0607/adegavieiraalex/principal/Screenshot_2026-06-19-20-58-25-116_com.instagram.android-edit.jpg">
-    <link rel="manifest" href='data:application/manifest+json,{"name":"Adega Vieira","short_name":"Adega Vieira","start_url":".","display":"standalone","background_color":"#121214","theme_color":"#ffb300","icons":[{"src":"https://raw.githubusercontent.com/Jardeson0607/adegavieiraalex/principal/Screenshot_2026-06-19-20-58-25-116_com.instagram.android-edit.jpg","sizes":"512x512","type":"image/png"}]}' />
+    <link rel="apple-touch-icon" href="logo.png">
 
     <style>
         :root {
@@ -51,7 +52,6 @@
             border: 1px solid #2d2d34;
         }
 
-        /* Topo com o Logo e Nome Alinhados */
         .topo-app {
             display: flex;
             flex-direction: column;
@@ -65,27 +65,12 @@
             border-radius: 50%;
             border: 2px solid var(--cor-primaria);
             object-fit: cover;
-            box-shadow: 0 4px 12px rgba(255, 179, 0, 0.2);
         }
         h1 {
             color: var(--cor-primaria);
             margin: 0;
             font-size: 24px;
             letter-spacing: 0.5px;
-        }
-
-        .btn-instalar-app {
-            width: 100%;
-            background: linear-gradient(135deg, var(--cor-primaria), #ff8f00);
-            color: #121214;
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(255, 179, 0, 0.3);
         }
         
         .abas {
@@ -112,12 +97,8 @@
             color: #121214;
         }
 
-        .conteudo-aba {
-            display: none;
-        }
-        .conteudo-aba.ativa {
-            display: block;
-        }
+        .conteudo-aba { display: none; }
+        .conteudo-aba.ativa { display: block; }
 
         .menu-precos {
             display: grid;
@@ -199,17 +180,8 @@
             padding-bottom: 8px;
             margin-bottom: 10px;
         }
-        .nome {
-            font-weight: bold;
-            font-size: 1.2em;
-            color: #fff;
-        }
-        .btn-excluir {
-            background: transparent;
-            color: var(--cor-erro);
-            font-size: 18px;
-            padding: 4px 8px;
-        }
+        .nome { font-weight: bold; font-size: 1.2em; color: #fff; }
+        .btn-excluir { background: transparent; color: var(--cor-erro); font-size: 18px; padding: 4px 8px; }
 
         .produto-linha {
             display: flex;
@@ -217,23 +189,10 @@
             align-items: center;
             padding: 6px 0;
         }
-        .prod-info {
-            font-size: 0.95em;
-            color: var(--texto-secundario);
-        }
-        .prod-info strong {
-            color: #fff;
-        }
-        .botoes-qtd {
-            display: flex;
-            gap: 6px;
-        }
-        .btn-control {
-            width: 38px;
-            height: 38px;
-            font-size: 18px;
-            color: white;
-        }
+        .prod-info { font-size: 0.95em; color: var(--texto-secundario); }
+        .prod-info strong { color: #fff; }
+        .botoes-qtd { display: flex; gap: 6px; }
+        .btn-control { width: 38px; height: 38px; font-size: 18px; color: white; }
         .btn-control.sub { background-color: #3d3d45; color: var(--cor-erro); }
         .btn-control.add { background-color: var(--cor-azul); }
 
@@ -276,16 +235,8 @@
             border: 1px solid #2d2d34;
             background: var(--bg-input);
         }
-        .tabela-historico {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-        .tabela-historico th, .tabela-historico td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #2d2d34;
-            text-align: left;
-        }
+        .tabela-historico { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .tabela-historico th, .tabela-historico td { padding: 12px 10px; border-bottom: 1px solid #2d2d34; text-align: left; }
         .tabela-historico th { background: #2d2d34; color: var(--texto-secundario); }
         .status-pago { color: var(--cor-sucesso); font-weight: bold; }
 
@@ -304,10 +255,9 @@
 <body>
 
 <div class="container">
-    <button class="btn-instalar-app" onclick="instrucaoInstalar()">📲 INSTALAR APLICATIVO OFICIAL</button>
-
     <div class="topo-app">
-        <img class="logo-foto" src="https://raw.githubusercontent.com/Jardeson0607/adegavieiraalex/principal/Screenshot_2026-06-19-20-58-25-116_com.instagram.android-edit.jpg" alt="Logo">
+        <!-- Puxando a foto direto do repositório local -->
+        <img class="logo-foto" src="logo.png" alt="Logo">
         <h1>Adega Vieira</h1>
     </div>
     
@@ -369,15 +319,18 @@
 </div>
 
 <script>
+    // Registro do Service Worker obrigatório para o PWA instalar de verdade
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+        .then(() => console.log("Service Worker ativo!"))
+        .catch(err => console.log("Erro no SW:", err));
+    }
+
     const PRECO_BRAHMA = 3.50;
     const PRECO_BUD = 4.50;
     
     let clientes = JSON.parse(localStorage.getItem('adega_clientes_v3')) || [];
     let historico = JSON.parse(localStorage.getItem('adega_historico_v3')) || [];
-
-    function instrucaoInstalar() {
-        alert("Para salvar como App na sua tela inicial com a imagem:\n\n1. Delete o atalho antigo com a letra 'V' cinza da sua tela.\n2. Abra o link novo no Chrome ou Safari.\n3. No Chrome: Toque nos 3 pontinhos do canto superior e escolha 'Adicionar à tela inicial'.\n4. No Safari: Toque no botão de compartilhar e escolha 'Adicionar à Tela de Início'.");
-    }
 
     function salvarDados() {
         localStorage.setItem('adega_clientes_v3', JSON.stringify(clientes));
@@ -508,6 +461,5 @@
 
     renderizar();
 </script>
-
 </body>
 </html>
