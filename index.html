@@ -24,6 +24,7 @@
             --cor-erro: #e53935;
             --cor-sucesso: #43a047;
             --cor-azul: #00b0ff;
+            --cor-verde-hk: #2e7d32; /* Verde Heineken */
             --texto-principal: #ffffff;
             --texto-secundario: #a4a4a8;
         }
@@ -102,24 +103,29 @@
 
         .menu-precos {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
             margin-bottom: 15px;
         }
         .preco-tag {
             text-align: center;
             font-weight: bold;
-            font-size: 0.9em;
+            font-size: 0.8em;
             background: rgba(255, 179, 0, 0.1);
             border: 1px solid var(--cor-primaria);
             color: var(--cor-primaria);
-            padding: 10px;
+            padding: 8px 4px;
             border-radius: 8px;
         }
         .preco-tag.bud {
             background: rgba(229, 57, 53, 0.1);
             border: 1px solid var(--cor-erro);
             color: var(--cor-erro);
+        }
+        .preco-tag.heineken {
+            background: rgba(74, 175, 80, 0.1);
+            border: 1px solid #4caf50;
+            color: #4caf50;
         }
 
         .form-grupo {
@@ -227,7 +233,7 @@
             border: 1px solid #2d2d34;
         }
         .mini-card h3 { margin: 0; font-size: 12px; color: var(--texto-secundario); text-transform: uppercase; }
-        .mini-card p { margin: 6px 0 0 0; font-size: 14px; font-weight: bold; color: #fff; }
+        .mini-card p { margin: 6px 0 0 0; font-size: 13px; font-weight: bold; color: #fff; line-height: 1.4; }
 
         .tabela-container {
             overflow-x: auto;
@@ -256,7 +262,6 @@
 
 <div class="container">
     <div class="topo-app">
-        <!-- Puxando a foto direto do repositório local -->
         <img class="logo-foto" src="logo.png" alt="Logo">
         <h1>Adega Vieira</h1>
     </div>
@@ -269,8 +274,9 @@
     <!-- ABA 1: BALCÃO -->
     <div id="aba-balcao" class="conteudo-aba ativa">
         <div class="menu-precos">
-            <div class="preco-tag">Brahma: R$ 3,50</div>
-            <div class="preco-tag bud">Budweiser: R$ 4,50</div>
+            <div class="preco-tag">Brahma:<br>R$ 3,50</div>
+            <div class="preco-tag bud">Bud:<br>R$ 4,50</div>
+            <div class="preco-tag heineken">Heineken:<br>R$ 8,00</div>
         </div>
 
         <div class="form-grupo">
@@ -291,11 +297,11 @@
         <div class="dash-grid">
             <div class="mini-card">
                 <h3>Estoque Vendido</h3>
-                <p id="dashCervejas" style="color: var(--cor-primaria);">Brahma: 0 <br> Bud: 0</p>
+                <p id="dashCervejas" style="color: var(--cor-primaria); text-align: left; padding-left: 5px;">Brahma: 0 <br> Bud: 0 <br> Heineken: 0</p>
             </div>
-            <div class="mini-card" style="border-color: rgba(225, 55, 55, 0.3);">
+            <div class="mini-card" style="border-color: rgba(225, 55, 55, 0.3); display: flex; flex-direction: column; justify-content: center;">
                 <h3>Ainda a Receber</h3>
-                <p id="dashDevedores" style="color: var(--cor-erro); font-size: 16px;">R$ 0,00</p>
+                <p id="dashDevedores" style="color: var(--cor-erro); font-size: 18px;">R$ 0,00</p>
             </div>
         </div>
 
@@ -319,7 +325,6 @@
 </div>
 
 <script>
-    // Registro do Service Worker obrigatório para o PWA instalar de verdade
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')
         .then(() => console.log("Service Worker ativo!"))
@@ -328,13 +333,14 @@
 
     const PRECO_BRAHMA = 3.50;
     const PRECO_BUD = 4.50;
+    const PRECO_HEINEKEN = 8.00;
     
-    let clientes = JSON.parse(localStorage.getItem('adega_clientes_v3')) || [];
-    let historico = JSON.parse(localStorage.getItem('adega_historico_v3')) || [];
+    let clientes = JSON.parse(localStorage.getItem('adega_clientes_v4')) || [];
+    let historico = JSON.parse(localStorage.getItem('adega_historico_v4')) || [];
 
     function salvarDados() {
-        localStorage.setItem('adega_clientes_v3', JSON.stringify(clientes));
-        localStorage.setItem('adega_historico_v3', JSON.stringify(historico));
+        localStorage.setItem('adega_clientes_v4', JSON.stringify(clientes));
+        localStorage.setItem('adega_historico_v4', JSON.stringify(historico));
         renderizar();
     }
 
@@ -355,14 +361,18 @@
         const input = document.getElementById('nomeCliente');
         const nome = input.value.trim();
         if (nome === "") { alert("Digite o nome da pessoa!"); return; }
-        clientes.push({ nome: nome, brahma: 0, bud: 0 });
+        clientes.push({ nome: nome, brahma: 0, bud: 0, heineken: 0 });
         input.value = "";
         salvarDados();
     }
 
     function lancarItem(index, marca, valor) {
         const cliente = clientes[index];
-        const nomeMarca = marca === 'brahma' ? 'Brahma' : 'Budweiser';
+        let nomeMarca = '';
+        if(marca === 'brahma') nomeMarca = 'Brahma';
+        if(marca === 'bud') nomeMarca = 'Budweiser';
+        if(marca === 'heineken') nomeMarca = 'Heineken';
+        
         if(valor === -1 && cliente[marca] === 0) return;
 
         if(confirm(`Confirmar ${valor > 0 ? '+1' : '-1'} ${nomeMarca} para ${cliente.nome}?`)) {
@@ -373,13 +383,24 @@
 
     function finalizarPagamento(index) {
         const cliente = clientes[index];
-        if (cliente.brahma === 0 && cliente.bud === 0) { alert("Nenhuma bebida consumida!"); return; }
+        if (cliente.brahma === 0 && cliente.bud === 0 && cliente.heineken === 0) { alert("Nenhuma bebida consumida!"); return; }
 
-        const totalDevido = (cliente.brahma * PRECO_BRAHMA) + (cliente.bud * PRECO_BUD);
-        let resumoConsumo = `${cliente.brahma > 0 ? cliente.brahma + ' Brahma ' : ''}${cliente.bud > 0 ? cliente.bud + ' Bud' : ''}`;
+        const totalDevido = (cliente.brahma * PRECO_BRAHMA) + (cliente.bud * PRECO_BUD) + (cliente.heineken * PRECO_HEINEKEN);
+        
+        let resumoConsumo = [];
+        if(cliente.brahma > 0) resumoConsumo.push(`${cliente.brahma} Brahma`);
+        if(cliente.bud > 0) resumoConsumo.push(`${cliente.bud} Bud`);
+        if(cliente.heineken > 0) resumoConsumo.push(`${cliente.heineken} Hk`);
 
-        if (confirm(`Confirmar que ${cliente.nome} PAGOU R$ ${totalDevido.toFixed(2).replace('.', ',')}?\nConsumo: ${resumoConsumo}`)) {
-            historico.push({ nome: cliente.nome, brahma: cliente.brahma, bud: cliente.bud, total: totalDevido, status: 'Pago' });
+        if (confirm(`Confirmar que ${cliente.nome} PAGOU R$ ${totalDevido.toFixed(2).replace('.', ',')}?\nConsumo: ${resumoConsumo.join(' / ')}`)) {
+            historico.push({ 
+                nome: cliente.nome, 
+                brahma: cliente.brahma, 
+                bud: cliente.bud, 
+                heineken: cliente.heineken,
+                total: totalDevido, 
+                status: 'Pago' 
+            });
             clientes.splice(index, 1);
             salvarDados();
         }
@@ -393,7 +414,7 @@
     }
 
     function zerarTudo() {
-        if (confirm("Deseja limpar todo o Dashboard e reiniciar o caixa?")) {
+        if (confirm("Deseja limpar todo o Dashboard e reiniciar o caixa para o próximo jogo?")) {
             clientes = []; historico = []; salvarDados();
         }
     }
@@ -401,11 +422,20 @@
     function renderizar() {
         const listaHtml = document.getElementById('listaClientes');
         listaHtml.innerHTML = "";
-        let totalDevedoresGeral = 0, brahmaAtivas = 0, budAtivas = 0;
+        let totalDevedoresGeral = 0, brahmaAtivas = 0, budAtivas = 0, heinekenAtivas = 0;
 
         clientes.forEach((cliente, index) => {
-            const totalCliente = (cliente.brahma * PRECO_BRAHMA) + (cliente.bud * PRECO_BUD);
-            totalDevedoresGeral += totalCliente; brahmaAtivas += cliente.brahma; budAtivas += cliente.bud;
+            const totalCliente = (cliente.brahma * PRECO_BRAHMA) + (cliente.bud * PRECO_BUD) + (cliente.heineken * PRECO_HEINEKEN);
+            totalDevedoresGeral += totalCliente; 
+            brahmaAtivas += cliente.brahma; 
+            budAtivas += cliente.bud;
+            heinekenAtivas += cliente.heineken;
+
+            let textoDetalhes = [];
+            if(cliente.brahma > 0) textoDetalhes.push(`${cliente.brahma} Brahma`);
+            if(cliente.bud > 0) textoDetalhes.push(`${cliente.bud} Bud`);
+            if(cliente.heineken > 0) textoDetalhes.push(`${cliente.heineken} Hk`);
+            let stringConsumo = textoDetalhes.length > 0 ? textoDetalhes.join(' / ') : 'Nenhuma';
 
             listaHtml.innerHTML += `
                 <div class="cliente-card">
@@ -427,6 +457,13 @@
                             <button class="btn-control add" onclick="lancarItem(${index}, 'bud', 1)">+</button>
                         </div>
                     </div>
+                    <div class="produto-linha">
+                        <span class="prod-info">Heineken: <strong>${cliente.heineken} un</strong></span>
+                        <div class="botoes-qtd">
+                            <button class="btn-control sub" onclick="lancarItem(${index}, 'heineken', -1)">-</button>
+                            <button class="btn-control add" onclick="lancarItem(${index}, 'heineken', 1)">+</button>
+                        </div>
+                    </div>
                     <div class="resumo-card">
                         <span>Total Parcial:</span>
                         <span style="color:var(--cor-primaria); font-weight:bold;">R$ ${totalCliente.toFixed(2).replace('.', ',')}</span>
@@ -435,15 +472,20 @@
                 </div>`;
         });
 
-        let brahmaPagas = 0, budPagas = 0, faturamentoPago = 0;
+        let brahmaPagas = 0, budPagas = 0, heinekenPagas = 0, faturamentoPago = 0;
         const historicoHtml = document.getElementById('historicoVendas');
         historicoHtml.innerHTML = "";
 
         historico.forEach(item => {
-            brahmaPagas += item.brahma; budPagas += item.bud; faturamentoPago += item.total;
+            brahmaPagas += item.brahma; 
+            budPagas += item.bud; 
+            heinekenPagas += item.heineken || 0;
+            faturamentoPago += item.total;
+            
             let detalhesH = [];
             if(item.brahma > 0) detalhesH.push(`${item.brahma} Br`);
             if(item.bud > 0) detalhesH.push(`${item.bud} Bd`);
+            if(item.heineken > 0) detalhesH.push(`${item.heineken} Hk`);
 
             historicoHtml.innerHTML += `
                 <tr>
@@ -455,7 +497,7 @@
         });
 
         document.getElementById('faturamentoTotal').innerText = `R$ ${(faturamentoPago + totalDevedoresGeral).toFixed(2).replace('.', ',')}`;
-        document.getElementById('dashCervejas').innerHTML = `Brahma: ${brahmaPagas + brahmaAtivas} <br> Budweiser: ${budPagas + budAtivas}`;
+        document.getElementById('dashCervejas').innerHTML = `Brahma: ${brahmaPagas + brahmaAtivas} <br> Budweiser: ${budPagas + budAtivas} <br> Heineken: ${heinekenPagas + heinekenAtivas}`;
         document.getElementById('dashDevedores').innerText = `R$ ${totalDevedoresGeral.toFixed(2).replace('.', ',')}`;
     }
 
