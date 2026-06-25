@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Adega Vieira</title>
+    <title>Adega Vieira - Sistema de Gestão</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#121214">
@@ -29,31 +29,47 @@
         }
 
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-principal); margin: 0; padding: 10px; color: var(--texto-principal); }
-        .container { width: 100%; max-width: 480px; margin: 0 auto; background: var(--bg-card); padding: 18px; border-radius: 20px; border: 1px solid var(--borda); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        body { background-color: var(--bg-principal); margin: 0; padding: 20px 10px; color: var(--texto-principal); }
+        
+        /* Ajuste de responsividade: expande no PC e encaixa no celular */
+        .container { 
+            width: 100%; 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            background: var(--bg-card); 
+            padding: 24px; 
+            border-radius: 20px; 
+            border: 1px solid var(--borda); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+        }
         
         .topo-app { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--borda); }
-        .logo-foto { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--cor-primaria); object-fit: cover; }
-        h1 { color: #fff; margin: 0; font-size: 22px; font-weight: 700; }
+        .logo-foto { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--cor-primaria); object-fit: cover; }
+        h1 { color: #fff; margin: 0; font-size: 24px; font-weight: 700; }
 
-        .abas { display: flex; background: var(--bg-input); padding: 4px; border-radius: 12px; margin-bottom: 20px; gap: 4px; overflow-x: auto; scrollbar-width: none; }
-        .abas::-webkit-scrollbar { display: none; }
-        .aba-btn { flex: 1; padding: 12px 8px; background: transparent; color: var(--texto-secundario); border: none; border-radius: 9px; font-weight: 600; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.2s ease; }
-        .aba-btn.ativa { background: var(--bg-card); color: var(--cor-primaria); border: 1px solid var(--borda); }
+        /* Abas em formato de menu profissional */
+        .abas { display: flex; background: var(--bg-input); padding: 6px; border-radius: 12px; margin-bottom: 25px; gap: 6px; overflow-x: auto; }
+        .aba-btn { flex: 1; padding: 14px 10px; background: transparent; color: var(--texto-secundario); border: none; border-radius: 9px; font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap; transition: all 0.2s ease; text-align: center; }
+        .aba-btn.ativa { background: var(--bg-card); color: var(--cor-primaria); border: 1px solid var(--borda); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         
         .conteudo-aba { display: none; }
         .conteudo-aba.ativa { display: block; }
 
-        .form-grupo { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-bottom: 20px; }
-        input[type="text"], input[type="number"] { width: 100%; padding: 14px; background: var(--bg-input); border: 1px solid var(--borda); border-radius: 10px; font-size: 16px; color: white; outline: none; transition: border-color 0.2s; }
-        input[type="text"]:focus, input[type="number"]:focus { border-color: var(--cor-primaria); }
+        /* Formulários e Inputs */
+        .form-grupo { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-bottom: 20px; }
+        .form-vertical { display: flex; flex-direction: column; gap: 12px; background: var(--bg-input); padding: 16px; border-radius: 14px; border: 1px solid var(--borda); margin-bottom: 20px; }
+        
+        input[type="text"], input[type="number"], select { width: 100%; padding: 14px; background: var(--bg-input); border: 1px solid var(--borda); border-radius: 10px; font-size: 16px; color: white; outline: none; transition: border-color 0.2s; }
+        input[type="text"]:focus, input[type="number"]:focus, select:focus { border-color: var(--cor-primaria); }
         
         button { border: none; border-radius: 10px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
         button:active { opacity: 0.7; }
-        .btn-sucesso { background-color: var(--cor-primaria); color: #121214; padding: 14px 20px; font-size: 16px; }
+        .btn-sucesso { background-color: var(--cor-primaria); color: #121214; padding: 14px 24px; font-size: 16px; }
         
-        /* Layout dos Cartões */
-        .cliente-card { background: var(--bg-input); border: 1px solid var(--borda); margin-bottom: 14px; border-radius: 14px; padding: 16px; }
+        /* Grid para o Balcão ocupar melhor o espaço no computador */
+        .grid-balcao { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+        
+        .cliente-card { background: var(--bg-input); border: 1px solid var(--borda); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; }
         .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--borda); padding-bottom: 10px; margin-bottom: 12px; }
         .nome { font-weight: 700; font-size: 1.2em; color: #fff; }
         .btn-excluir { background: transparent; color: var(--cor-erro); font-size: 20px; }
@@ -69,19 +85,20 @@
         .resumo-card { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--borda); display: flex; justify-content: space-between; font-size: 1.05em; font-weight: 600; }
         
         .botoes-fechamento { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
-        .btn-fechar { padding: 12px; font-size: 13px; color: white; border-radius: 8px; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .btn-fechar { padding: 12px; font-size: 13px; color: white; border-radius: 8px; font-weight: 700; }
         .btn-fechar.pago { background: linear-gradient(135deg, #00c853, #007e33); }
         .btn-fechar.fiado { background: linear-gradient(135deg, #aa00ff, #4a148c); }
 
-        /* Estilos Caderneta */
-        .fiado-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg-input); padding: 14px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--borda); }
+        /* Listas de Gerenciamento (Fiado / Clientes / Produtos) */
+        .lista-geral { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+        .item-geral-card { display: flex; justify-content: space-between; align-items: center; background: var(--bg-input); padding: 16px; border-radius: 12px; border: 1px solid var(--borda); }
         .divida-valor { color: var(--cor-erro); font-weight: 700; font-size: 1.15em; }
         .btn-abater { background: rgba(0,230,118,0.1); color: var(--cor-sucesso); border: 1px solid rgba(0,230,118,0.2); padding: 8px 12px; font-size: 13px; border-radius: 6px; font-weight: 600; margin-top: 6px; }
 
         /* Dashboard */
-        .dash-card { background: linear-gradient(135deg, #161e19, #0a110d); border: 1px solid rgba(0,230,118,0.2); border-radius: 14px; padding: 20px; margin-bottom: 15px; text-align: center; }
-        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .mini-card { background: var(--bg-input); padding: 14px; border-radius: 12px; text-align: center; border: 1px solid var(--borda); }
+        .dash-card { background: linear-gradient(135deg, #161e19, #0a110d); border: 1px solid rgba(0,230,118,0.2); border-radius: 14px; padding: 20px; margin-bottom: 20px; text-align: center; }
+        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .mini-card { background: var(--bg-input); padding: 16px; border-radius: 12px; text-align: center; border: 1px solid var(--borda); }
         
         .btn-zerar { display: block; width: 100%; background-color: rgba(255,82,82,0.05); color: var(--cor-erro); margin-top: 25px; padding: 14px; font-size: 14px; border: 1px solid rgba(255,82,82,0.15); }
     </style>
@@ -95,52 +112,62 @@
     </div>
     
     <div class="abas">
-        <button class="aba-btn ativa" onclick="mudarAba('balcao')">🛒 Balcão (Jogo)</button>
-        <button class="aba-btn" onclick="mudarAba('fiado')">📓 Caderneta Fiado</button>
+        <button class="aba-btn integra ativa" onclick="mudarAba('balcao')">🛒 Atendimento / Vendas</button>
+        <button class="aba-btn" onclick="mudarAba('fiado')">📓 Caderneta de Clientes</button>
         <button class="aba-btn" onclick="mudarAba('produtos')">⚙️ Produtos / Preços</button>
         <button class="aba-btn" onclick="mudarAba('dashboard')">📊 Balanço Geral</button>
     </div>
 
-    <!-- 1. BALCÃO -->
+    <!-- 1. BALCÃO DE ATENDIMENTO -->
     <div id="aba-balcao" class="conteudo-aba ativa">
         <div class="form-grupo">
-            <input type="text" id="nomeCliente" placeholder="Nome de quem chegou..." autocomplete="off">
-            <button class="btn-sucesso" onclick="adicionarCliente()">+</button>
+            <select id="selectClienteAtivo">
+                <option value="">Selecione o cliente para abrir a conta...</option>
+            </select>
+            <button class="btn-sucesso" onclick="abrirComandaCliente()">Abrir Conta</button>
         </div>
-        <div id="listaClientes">Carregando comandos ativos...</div>
+        <div class="grid-balcao" id="listaClientes">Carregando comandas ativas...</div>
     </div>
 
-    <!-- 2. CADERNETA DE FIADO -->
+    <!-- 2. GERENCIAMENTO DE CLIENTES E FIADO -->
     <div id="aba-fiado" class="conteudo-aba">
-        <div id="listaFiados">Nenhum débito em aberto.</div>
+        <div class="form-vertical">
+            <h4 style="margin:0; color:var(--cor-primaria);">Cadastrar Novo Cliente</h4>
+            <div class="form-grupo" style="margin:0;">
+                <input type="text" id="novoClienteNome" placeholder="Nome Completo do Cliente">
+                <button class="btn-sucesso" onclick="cadastrarCliente()" style="background-color: var(--cor-sucesso); color:#fff;">Salvar</button>
+            </div>
+        </div>
+        <h4 style="margin: 20px 0 10px 0; color:var(--texto-secundario);">Lista de Clientes e Saldos</h4>
+        <div class="lista-geral" id="listaFiados">Nenhum cliente cadastrado.</div>
     </div>
 
     <!-- 3. CONFIGURAÇÃO DE PRODUTOS -->
     <div id="aba-produtos" class="conteudo-aba">
-        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; background: var(--bg-input); padding: 14px; border-radius: 12px; border:1px solid var(--borda);">
-            <h4 style="margin:0 0 5px 0; color:var(--cor-primaria);">Cadastrar Novo Item</h4>
-            <input type="text" id="prodNome" placeholder="Nome do Produto (Ex: Skol Latão)">
-            <input type="number" id="prodPreco" placeholder="Preço de Venda (Ex: 6.00)" step="0.01">
-            <button class="btn-sucesso" onclick="cadastrarProduto()" style="padding:12px; font-size:14px; background: var(--cor-sucesso); color: #fff;">Salvar no Cardápio</button>
+        <div class="form-vertical">
+            <h4 style="margin:0; color:var(--cor-primaria);">Cadastrar Novo Produto</h4>
+            <input type="text" id="prodNome" placeholder="Nome do Produto (Ex: Heineken Long Neck)">
+            <input type="number" id="prodPreco" placeholder="Preço de Venda (Ex: 8.00)" step="0.01">
+            <button class="btn-sucesso" onclick="cadastrarProduto()" style="background-color: var(--cor-sucesso); color: #fff;">Salvar no Cardápio</button>
         </div>
-        <h4 style="margin: 0 0 10px 0; color:var(--texto-secundario);">Produtos Disponíveis</h4>
-        <div id="listaProdutosGerenciar"></div>
+        <h4 style="margin: 20px 0 10px 0; color:var(--texto-secundario);">Cardápio Disponível</h4>
+        <div class="lista-geral" id="listaProdutosGerenciar"></div>
     </div>
 
     <!-- 4. DASHBOARD -->
     <div id="aba-dashboard" class="conteudo-aba">
         <div class="dash-card">
             <h2 style="margin:0; font-size:13px; color:var(--texto-secundario); text-transform:uppercase; letter-spacing:0.5px;">Faturamento em Caixa (Dinheiro/Pix)</h2>
-            <div id="faturamentoCaixa" style="font-size: 32px; font-weight: bold; color: var(--cor-sucesso); margin-top: 5px;">R$ 0,00</div>
+            <div id="faturamentoCaixa" style="font-size: 36px; font-weight: bold; color: var(--cor-sucesso); margin-top: 5px;">R$ 0,00</div>
         </div>
         <div class="dash-grid">
             <div class="mini-card" style="border-color: rgba(255,82,82,0.2)">
-                <h3 style="margin:0; font-size:11px; color:var(--texto-secundario); text-transform:uppercase;">Valor Total na Rua</h3>
-                <p id="totalFiadoRua" style="color:var(--cor-erro); font-size:20px; font-weight:700; margin:5px 0 0 0;">R$ 0,00</p>
+                <h3 style="margin:0; font-size:11px; color:var(--texto-secundario); text-transform:uppercase;">Valor Total Pendurado (Fiado)</h3>
+                <p id="totalFiadoRua" style="color:var(--cor-erro); font-size:22px; font-weight:700; margin:5px 0 0 0;">R$ 0,00</p>
             </div>
             <div class="mini-card">
                 <h3 style="margin:0; font-size:11px; color:var(--texto-secundario); text-transform:uppercase;">Volume de Saídas</h3>
-                <p id="dashEstoqueLista" style="font-size:12px; margin:5px 0 0 0; text-align:left; color:var(--cor-primaria); font-weight:600;"></p>
+                <p id="dashEstoqueLista" style="font-size:13px; margin:5px 0 0 0; text-align:left; color:var(--cor-primaria); font-weight:600;"></p>
             </div>
         </div>
         <button class="btn-zerar" onclick="zerarTudo()">Zerar Todo o Sistema para Próxima Data</button>
@@ -148,7 +175,6 @@
 </div>
 
 <script>
-    // CREDENCIAIS INTEGRADAS DO SEU SUPABASE
     const SUPABASE_URL = "https://ellgsqigozmqrwbswukl.supabase.co";
     const SUPABASE_KEY = "sb_publishable_NCIyzDtlbOihMKc3R2b5Hw_9KkKKg77";
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -177,58 +203,70 @@
         carregarBanco();
     }
 
-    async function adicionarCliente() {
-        const input = document.getElementById('nomeCliente');
+    async function cadastrarCliente() {
+        const input = document.getElementById('novoClienteNome');
         const nome = input.value.trim();
         if(!nome) return;
-        
-        let clienteObjeto = listagemClientes.find(c => c.nome.toLowerCase() === nome.toLowerCase());
-        if(!clienteObjeto) {
-            const { data, error } = await _supabase.from('clientes').insert([{ nome }]).select();
-            if(error) return;
-        }
 
+        const { error } = await _supabase.from('clientes').insert([{ nome }]);
+        if(error) { alert("Este cliente já está cadastrado!"); return; }
+        
         input.value = "";
         carregarBanco();
     }
 
+    async function abrirComandaCliente() {
+        const select = document.getElementById('selectClienteAtivo');
+        const clienteId = select.value;
+        if(!clienteId || listagemProdutos.length === 0) return;
+
+        // Abre a comanda vinculando o primeiro produto com quantidade 0 apenas para registrar a mesa
+        let jaExiste = listagemComandas.some(c => c.cliente_id == clienteId);
+        if(!jaExiste) {
+            await _supabase.from('comandas_ativas').insert([{ cliente_id: clienteId, produto_id: listagemProdutos[0].id, quantidade: 0 }]);
+        }
+        carregarBanco();
+    }
+
     async function lancarItem(clienteId, produtoId, valor) {
-        let registro = listagemComandas.find(c => c.cliente_id === clienteId && c.produto_id === produtoId);
+        let registro = listagemComandas.find(c => c.cliente_id == clienteId && c.produto_id == produtoId);
         
         if (!registro) {
             if (valor === -1) return;
             await _supabase.from('comandas_ativas').insert([{ cliente_id: clienteId, produto_id: produtoId, quantidade: 1 }]);
         } else {
             let novaQtd = registro.quantidade + valor;
-            if (novaQtd <= 0) {
-                await _supabase.from('comandas_ativas').delete().eq('id', registro.id);
-            } else {
-                await _supabase.from('comandas_ativas').update({ quantidade: novaQtd }).eq('id', registro.id);
-            }
+            if (novaQtd < 0) novaQtd = 0;
+            await _supabase.from('comandas_ativas').update({ quantidade: novaQtd }).eq('id', registro.id);
         }
         carregarBanco();
     }
 
     function enviarComprovanteZap(texto) {
-        const link = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
-        window.open(link, '_blank');
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
     }
 
     async function fecharConta(clienteId, tipoPagamento) {
-        const cliente = listagemClientes.find(c => c.id === clienteId);
-        const comandasDoCliente = listagemComandas.filter(c => c.cliente_id === clienteId);
-        if(comandasDoCliente.length === 0) return;
-
+        const cliente = listagemClientes.find(c => c.id == clienteId);
+        const comandasDoCliente = listagemComandas.filter(c => c.cliente_id == clienteId);
+        
         let total = 0, resumoText = [];
         comandasDoCliente.forEach(com => {
-            let p = listagemProdutos.find(prod => prod.id === com.produto_id);
-            if(p) {
+            let p = listagemProdutos.find(prod => prod.id == com.produto_id);
+            if(p && com.quantidade > 0) {
                 total += p.preco * com.quantidade;
                 resumoText.push(`${com.quantidade}x ${p.nome}`);
             }
         });
 
-        if(confirm(`Fechar conta de ${cliente.nome} no valor de R$ ${total.toFixed(2)} como ${tipoPagamento}?`)) {
+        if(total === 0 && tipoPagamento === 'Pix/Dinheiro') {
+            // Se a comanda estava vazia e o Alex quer fechar, só remove do balcão
+            await _supabase.from('comandas_ativas').delete().eq('cliente_id', clienteId);
+            carregarBanco();
+            return;
+        }
+
+        if(confirm(`Fechar conta de ${cliente.nome} no valor de R$ ${total.toFixed(2).replace('.', ',')} como ${tipoPagamento}?`)) {
             let novoSaldo = Number(cliente.saldo_fiado);
             if(tipoPagamento === 'Fiado') novoSaldo += total;
 
@@ -236,15 +274,17 @@
             await _supabase.from('historico_vendas').insert([{
                 cliente_nome: cliente.nome,
                 tipo_operacao: tipoPagamento === 'Fiado' ? 'Acúmulo Fiado' : 'Venda Balcão',
-                detalhes_consumo: resumoText.join(' / '),
+                detalhes_consumo: resumoText.join(' / ') || 'Nenhum item',
                 valor_movimentated: total,
                 saldo_restante_fiado: novoSaldo
             }]);
 
             await _supabase.from('comandas_ativas').delete().eq('cliente_id', clienteId);
             
-            let comprovante = `*ADEGA VIEIRA* 🍻\n---------------------------\n*CLIENTE:* ${cliente.nome}\n*CONSUMO:* ${resumoText.join(' / ')}\n*TOTAL:* R$ ${total.toFixed(2).replace('.', ',')}\n*STATUS:* ${tipoPagamento === 'Fiado' ? '❌ Pendurado no Fiado' : '✅ Pago (Dinheiro/Pix)'}\n---------------------------\n_Obrigado pela preferência!_`;
-            if(confirm("Deseja enviar o comprovante via WhatsApp?")) enviarComprovanteZap(comprovante);
+            if(resumoText.length > 0) {
+                let comprovante = `*ADEGA VIEIRA* 🍻\n---------------------------\n*CLIENTE:* ${cliente.nome}\n*CONSUMO:* ${resumoText.join(' / ')}\n*TOTAL:* R$ ${total.toFixed(2).replace('.', ',')}\n*STATUS:* ${tipoPagamento === 'Fiado' ? '❌ Adicionado ao seu Fiado' : '✅ Pago com Sucesso'}\n---------------------------\n_Obrigado pela preferência!_`;
+                if(confirm("Deseja enviar o comprovante via WhatsApp?")) enviarComprovanteZap(comprovante);
+            }
 
             carregarBanco();
         }
@@ -260,15 +300,15 @@
 
         await _supabase.from('clientes').update({ saldo_fiado: novoSaldo }).eq('id', clienteId);
         await _supabase.from('historico_vendas').insert([{
-            cliente_nome: listagemClientes.find(c => c.id === clienteId).nome,
+            cliente_nome: listagemClientes.find(c => c.id == clienteId).nome,
             tipo_operacao: tipoOp,
             detalhes_consumo: "Abatimento de Dívida",
             valor_movimentated: valorPago,
             saldo_restante_fiado: novoSaldo
         }]);
 
-        let comprovante = `*ADEGA VIEIRA* 🍻\n*COMPROVANTE DE PAGAMENTO*\n---------------------------\n*CLIENTE:* ${listagemClientes.find(c => c.id === clienteId).nome}\n*VALOR ENTREGUE:* R$ ${valorPago.toFixed(2).replace('.', ',')}\n*SALDO DEVEDOR RESTANTE:* R$ ${novoSaldo.toFixed(2).replace('.', ',')}\n*STATUS:* ${novoSaldo <= 0 ? '✅ Conta Totalmente Quitada!' : '⚠️ Conta Atualizada'}\n---------------------------\n_Controle de Caixa Automatizado._`;
-        if(confirm("Deseja enviar o recibo de pagamento via WhatsApp?")) enviarComprovanteZap(comprovante);
+        let comprovante = `*ADEGA VIEIRA* 🍻\n*RECIBO DE PAGAMENTO*\n---------------------------\n*CLIENTE:* ${listagemClientes.find(c => c.id == clienteId).nome}\n*VALOR ENTREGUE:* R$ ${valorPago.toFixed(2).replace('.', ',')}\n*SALDO RESTANTE:* R$ ${novoSaldo.toFixed(2).replace('.', ',')}\n*STATUS:* ${novoSaldo <= 0 ? '✅ Conta Totalmente Paga!' : '⚠️ Abatido Parcialmente'}\n---------------------------\n_Obrigado!_`;
+        if(confirm("Deseja enviar o recibo via WhatsApp?")) enviarComprovanteZap(comprovante);
 
         carregarBanco();
     }
@@ -285,21 +325,14 @@
     }
 
     async function deletarProduto(id) {
-        if(confirm("Deseja remover este produto do cardápio?")) {
+        if(confirm("Deseja remover este produto?")) {
             await _supabase.from('produtos').delete().eq('id', id);
             carregarBanco();
         }
     }
 
-    async function excluirComandaTotal(id) {
-        if(confirm("Limpar consumo atual deste cliente?")) {
-            await _supabase.from('comandas_ativas').delete().eq('cliente_id', id);
-            carregarBanco();
-        }
-    }
-
     async function zerarTudo() {
-        if(confirm("Deseja LIMPAR DEFINITIVAMENTE todas as movimentações e estoques para reabrir o caixa do zero?")) {
+        if(confirm("Deseja LIMPAR COMPLETAMENTE o histórico e os fiados da adega?")) {
             await _supabase.from('comandas_ativas').delete().neq('id', 0);
             await _supabase.from('historico_vendas').delete().neq('id', 0);
             await _supabase.from('clientes').update({ saldo_fiado: 0 }).neq('id', 0);
@@ -308,22 +341,30 @@
     }
 
     function renderizarTudo() {
+        // ATUALIZA O SELETOR DE CLIENTES NO BALCÃO
+        const select = document.getElementById('selectClienteAtivo');
+        select.innerHTML = '<option value="">Selecione o cliente para abrir a conta...</option>';
+        listagemClientes.forEach(c => {
+            select.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
+        });
+
+        // RENDER BALCÃO ATIVO
         const listaBalcao = document.getElementById('listaClientes');
         let clientesComComanda = [...new Set(listagemComandas.map(c => c.cliente_id))];
         
         if(clientesComComanda.length === 0) {
-            listaBalcao.innerHTML = "<p style='color:var(--texto-secundario); text-align:center; padding: 20px 0;'>Nenhuma mesa ou comanda aberta no momento.</p>";
+            listaBalcao.innerHTML = "<div style='grid-column: 1/-1; color:var(--texto-secundario); text-align:center; padding: 40px 0;'>Nenhum cliente em atendimento no balcão.</div>";
         } else {
             listaBalcao.innerHTML = "";
             clientesComComanda.forEach(cId => {
-                let cliente = listagemClientes.find(c => c.id === cId);
+                let cliente = listagemClientes.find(c => c.id == cId);
                 if(!cliente) return;
                 
-                let coms = listagemComandas.filter(com => com.cliente_id === cId);
+                let coms = listagemComandas.filter(com => com.cliente_id == cId);
                 let totalCard = 0, linhasProdutosHtml = "";
 
                 listagemProdutos.forEach(prod => {
-                    let comUnica = coms.find(c => c.produto_id === prod.id);
+                    let comUnica = coms.find(c => c.produto_id == prod.id);
                     let qtd = comUnica ? comUnica.quantidade : 0;
                     totalCard += qtd * prod.preco;
 
@@ -341,63 +382,56 @@
                     <div class="cliente-card">
                         <div class="card-header">
                             <span class="nome">${cliente.nome}</span>
-                            <button class="btn-excluir" onclick="excluirComandaTotal(${cliente.id})">✕</button>
+                            <button class="btn-excluir" onclick="fecharConta(${cliente.id}, 'Pix/Dinheiro')">✕</button>
                         </div>
-                        ${linhasProdutosHtml}
-                        <div class="resumo-card">
-                            <span>Total do Jogo:</span>
-                            <span style="color:var(--cor-primaria); font-weight:bold;">R$ ${totalCard.toFixed(2).replace('.', ',')}</span>
-                        </div>
-                        <div class="botoes-fechamento">
-                            <button class="btn-fechar pago" onclick="fecharConta(${cliente.id}, 'Pix/Dinheiro')">💵 PAGO AGORA</button>
-                            <button class="btn-fechar fiado" onclick="fecharConta(${cliente.id}, 'Fiado')">📓 PENDURAR</button>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        const listaFiados = document.getElementById('listaFiados');
-        let devedores = listagemClientes.filter(c => Number(c.saldo_fiado) > 0);
-        if(devedores.length === 0) {
-            listaFiados.innerHTML = "<p style='color:var(--texto-secundario); text-align:center; padding: 20px 0;'>Caixa limpo! Nenhuma conta pendente na rua.</p>";
-        } else {
-            listaFiados.innerHTML = "";
-            devedores.forEach(dev => {
-                listaFiados.innerHTML += `
-                    <div class="fiado-item">
+                        <div style="flex-grow:1;">${linhasProdutosHtml}</div>
                         <div>
-                            <strong style="font-size:1.1em; color:#fff;">${dev.nome}</strong><br>
-                            <button class="btn-abater" onclick="abaterFiado(${dev.id}, ${dev.saldo_fiado})">🤝 Receber Parcial/Total</button>
+                            <div class="resumo-card">
+                                <span>Total Parcial:</span>
+                                <span style="color:var(--cor-primaria); font-weight:bold;">R$ ${totalCard.toFixed(2).replace('.', ',')}</span>
+                            </div>
+                            <div class="botoes-fechamento">
+                                <button class="btn-fechar pago" onclick="fecharConta(${cliente.id}, 'Pix/Dinheiro')">💵 PAGO</button>
+                                <button class="btn-fechar fiado" onclick="fecharConta(${cliente.id}, 'Fiado')">📓 FIADO</button>
+                            </div>
                         </div>
-                        <span class="divida-valor">R$ ${Number(dev.saldo_fiado).toFixed(2).replace('.', ',')}</span>
                     </div>`;
             });
         }
 
+        // RENDER CADERNETA DE FIADOS
+        const listaFiados = document.getElementById('listaFiados');
+        listaFiados.innerHTML = "";
+        listagemClientes.forEach(dev => {
+            listaFiados.innerHTML += `
+                <div class="item-geral-card">
+                    <div>
+                        <strong style="font-size:1.1em; color:#fff;">${dev.nome}</strong><br>
+                        <button class="btn-abater" onclick="abaterFiado(${dev.id}, ${dev.saldo_fiado})">🤝 Receber R$</button>
+                    </div>
+                    <span class="divida-valor" style="color: ${Number(dev.saldo_fiado) > 0 ? 'var(--cor-erro)' : 'var(--cor-sucesso)'}">R$ ${Number(dev.saldo_fiado).toFixed(2).replace('.', ',')}</span>
+                </div>`;
+        });
+
+        // RENDER CARDÁPIO
         const listaGerenciar = document.getElementById('listaProdutosGerenciar');
         listaGerenciar.innerHTML = "";
-        if(listagemProdutos.length === 0) {
-            listaGerenciar.innerHTML = "<p style='color:var(--texto-secundario); font-size:13px;'>Nenhum item cadastrado no cardápio ainda.</p>";
-        }
         listagemProdutos.forEach(p => {
             listaGerenciar.innerHTML += `
-                <div class="fiado-item" style="padding:10px 14px;">
+                <div class="item-geral-card">
                     <span>${p.nome} - <strong style="color:var(--cor-primaria);">R$ ${p.preco.toFixed(2).replace('.', ',')}</strong></span>
                     <button class="btn-control sub" onclick="deletarProduto(${p.id})" style="width:32px; height:32px; font-size:14px;">✕</button>
                 </div>`;
         });
 
+        // RE-CALCULA DASHBOARD
         _supabase.from('historico_vendas').select('*').then(({ data }) => {
-            let totalCaixa = 0;
-            let contagemProdutos = {};
+            let totalCaixa = 0, contagemProdutos = {};
             
             (data || []).forEach(item => {
-                if(item.tipo_operacao !== 'Acúmulo Fiado') {
-                    totalCaixa += Number(item.valor_movimentated);
-                }
+                if(item.tipo_operacao !== 'Acúmulo Fiado') totalCaixa += Number(item.valor_movimentated);
                 if(item.detalhes_consumo && item.detalhes_consumo !== "Abatimento de Dívida") {
-                    let partes = item.detalhes_consumo.split(' / ');
-                    partes.forEach(p => {
+                    item.detalhes_consumo.split(' / ').forEach(p => {
                         let sub = p.split('x ');
                         let qtd = Number(sub[0]);
                         let nome = sub.slice(1).join('x ');
@@ -407,13 +441,10 @@
             });
 
             document.getElementById('faturamentoCaixa').innerText = `R$ ${totalCaixa.toFixed(2).replace('.', ',')}`;
-            let totalRua = listagemClientes.reduce((acc, c) => acc + Number(c.saldo_fiado), 0);
-            document.getElementById('totalFiadoRua').innerText = `R$ ${totalRua.toFixed(2).replace('.', ',')}`;
+            document.getElementById('totalFiadoRua').innerText = `R$ ${listagemClientes.reduce((acc, c) => acc + Number(c.saldo_fiado), 0).toFixed(2).replace('.', ',')}`;
 
             let estoqueHtml = "";
-            for(let prop in contagemProdutos) {
-                estoqueHtml += `• ${prop}: <strong>${contagemProdutos[prop]} un</strong>br>`;
-            }
+            for(let prop in contagemProdutos) estoqueHtml += `• ${prop}: <strong>${contagemProdutos[prop]} un</strong><br>`;
             document.getElementById('dashEstoqueLista').innerHTML = estoqueHtml || "Sem saídas registradas.";
         });
     }
