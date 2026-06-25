@@ -222,18 +222,126 @@
         carregarBanco();
     }
 
-    async function abrirComandaCliente() {
+   async function abrirComandaCliente() {
         const select = document.getElementById('selectClienteAtivo');
         const clienteId = select.value;
-        if(!clienteId || listagemProdutos.length === 0) return;
+        if(!clienteId) return;
 
         let jaExiste = listagemComandas.some(c => c.cliente_id == clienteId);
         if(!jaExiste) {
-            await _supabase.from('comandas_ativas').insert([{ cliente_id: clienteId, produto_id: listagemProdutos[0].id, quantidade: 0 }]);
+            // Se houver produtos, usa o primeiro. Se não houver, envia null (vazio) de forma segura
+            let prodId = listagemProdutos.length > 0 ? listagemProdutos[0].id : null;
+            await _supabase.from('comandas_ativas').insert([{ cliente_id: clienteId, produto_id: prodId, quantidade: 0 }]);
         }
         carregarBanco();
     }
 
+    function renderizarTudo() {
+        const select = document.getElementById('selectClienteAtivo');
+        select.innerHTML = '<option value="">Selecione o cliente para abrir a conta...</option>';
+        listagemClientes.forEach(c => {
+            select.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
+        });
+
+        const listaBalcao = document.getElementById('listaClientes');
+        let clientesComComanda = [...new Set(listagemComandas.map(c => c.cliente_id))];
+        
+        if(clientesComComanda.length === 0) {
+            listaBalcao.innerHTML = "<div style='grid-column: 1/-1; color:var(--texto-secundario); text-align:center; padding: 40px 0;'>Nenhum cliente em atendimento no balcão.</div>";
+        } else {
+            listaBalcao.innerHTML = "";
+            clientesComComanda.forEach(cId => {
+                let cliente = listagemClientes.find(c => c.id == cId);
+                if(!cliente) return;
+                
+                let coms = listagemComandas.filter(com => com.cliente_id == cId);
+                let totalCard = 0, linhasProdutosHtml = "";
+
+                // Renderiza as linhas de produtos apenas se o Alex tiver cadastrado algo
+                if (listagemProdutos.length > 0) {
+                    listagemProdutos.forEach(prod => {
+                        let comUnica = coms.find(c => c.produto_id == prod.id);
+                        let qtd = comUnica ? comUnica.quantidade : 0;
+                        totalCard += qtd * prod.preco;
+
+                        linhasProdutosHtml += `
+                            <div class="produto-linha">
+                                <span class="prod-info">${prod.nome} (R$ ${prod.preco.toFixed(2).replace('.', ',')}): <strong>${qtd} un</strong></span>
+                                <div class="botoes-qtd">
+                                    <button class="btn-control sub" onclick="lancarItem(${cliente.id}, ${prod.id}, -1)">-</button>
+                                    <button class="btn-control add" onclick="lancarItem(${cliente.id}, ${prod.id}, 1)">+</button>
+                                </div>
+                            </div>`;
+                    });
+                } else {
+                    linhasProdutosHtml = `<p style="color:var(--texto-secundario); font-size:13px; text-align:center; padding:10px 0;">Cadastre produtos na aba ao lado para lançar consumo.</p>`;
+                }
+
+                listaBalcao.innerHTML += `
+                    <div class="cliente-card">
+                        <div class="card-header">
+                            <span class="nome">${cliente.nome}</span>
+                            <button class="btn-excluir" onclick="fecharConta(${cliente.id}, 'Pix/Dinheiro')">✕</button>
+                        </div>
+                        <div style="flex-grow:1;">${linhasProdutosHtml}</div>
+                        <div>
+                            <div class="resumo-card">
+                                <span>Total Parcial:</span>
+                                <span style="color:var(--cor-primaria); font-weight:bold;">R$ ${totalCard.toFixed(2).replace('.', ',')}</span>
+                            </div>
+                            <div class="botoes-fechamento">
+                                <button class="btn-fechar pago" onclick="fecharConta(${cliente.id}, 'Pix/Dinheiro')">💵 PAGO</button>
+                                <button class="btn-fechar fiado" onclick="fecharConta(${cliente.id}, 'Fiado')">📓 FIADO</button>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // Mantém as outras renderizações de fiados, produtos e dashboard idênticas...
+        const listaFiados = document.getElementById('listaFiados');
+        listaFiados.innerHTML = "";
+        listagemClientes.forEach(dev => {
+            listaFiados.innerHTML += `
+                <div class="item-geral-card">
+                    <div>
+                        <strong style="font-size:1.1em; color:#fff;">${dev.nome}</strong><br>
+                        <button class="btn-abater" onclick="abaterFiado(${dev.id}, ${dev.saldo_fiado})">🤝 Receber R$</button>
+                    </div>
+                    <span class="divida-valor" style="color: ${Number(dev.saldo_fiado) > 0 ? 'var(--cor-erro)' : 'var(--cor-sucesso)'}">R$ ${Number(dev.saldo_fiado).toFixed(2).replace('.', ',')}</span>
+                </div>`;
+        });
+
+        const listaGerenciar = document.getElementById('listaProdutosGerenciar');
+        listaGerenciar.innerHTML = "";
+        listagemProdutos.forEach(p => {
+            listaGerenciar.innerHTML += `
+                <div class="item-geral-card">
+                    <span>${p.nome} - <strong style="color:var(--cor-primaria);">R$ ${p.preco.toFixed(2).replace('.', ',')}</strong></span>
+                    <button class="btn-control sub" onclick="deletarProduto(${p.id})" style="width:32px; height:32px; font-size:14px;">✕</button>
+                </div>`;
+        });
+
+        _supabase.from('historico_vendas').select('*').then(({ data }) => {
+            let totalCaixa = 0, contagemProdutos = {};
+            (data || []).forEach(item => {
+                if(item.tipo_operacao !== 'Acúmulo Fiado') totalCaixa += Number(item.valor_movimentated);
+                if(item.detalhes_consumo && item.detalhes_consumo !== "Abatimento de Dívida") {
+                    item.detalhes_consumo.split(' / ').forEach(p => {
+                        let sub = p.split('x ');
+                        let qtd = Number(sub[0]);
+                        let nome = sub.slice(1).join('x ');
+                        if(nome) contagemProdutos[nome] = (contagemProdutos[nome] || 0) + qtd;
+                    });
+                }
+            });
+            document.getElementById('faturamentoCaixa').innerText = `R$ ${totalCaixa.toFixed(2).replace('.', ',')}`;
+            document.getElementById('totalFiadoRua').innerText = `R$ ${listagemClientes.reduce((acc, c) => acc + Number(c.saldo_fiado), 0).toFixed(2).replace('.', ',')}`;
+            let estoqueHtml = "";
+            for(let prop in contagemProdutos) estoqueHtml += `• ${prop}: <strong>${contagemProdutos[prop]} un</strong><br>`;
+            document.getElementById('dashEstoqueLista').innerHTML = estoqueHtml || "Sem saídas registradas.";
+        });
+    }
     async function lancarItem(clienteId, produtoId, valor) {
         let registro = listagemComandas.find(c => c.cliente_id == clienteId && c.produto_id == produtoId);
         
