@@ -29,12 +29,12 @@
         }
 
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-principal); margin: 0; padding: 20px 10px; color: var(--texto-principal); }
+        body { background-color: var(--bg-principal); margin: 0; padding: 20px; color: var(--texto-principal); }
         
-        /* Ajuste de responsividade: expande no PC e encaixa no celular */
+        /* 100% Fluido: Ocupa a tela inteira do PC de forma profissional e limpa */
         .container { 
             width: 100%; 
-            max-width: 1000px; 
+            max-width: 1400px; 
             margin: 0 auto; 
             background: var(--bg-card); 
             padding: 24px; 
@@ -47,15 +47,16 @@
         .logo-foto { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--cor-primaria); object-fit: cover; }
         h1 { color: #fff; margin: 0; font-size: 24px; font-weight: 700; }
 
-        /* Abas em formato de menu profissional */
-        .abas { display: flex; background: var(--bg-input); padding: 6px; border-radius: 12px; margin-bottom: 25px; gap: 6px; overflow-x: auto; }
+        /* Abas Estilo Dashboard Corporativo */
+        .abas { display: flex; background: var(--bg-input); padding: 6px; border-radius: 12px; margin-bottom: 25px; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+        .abas::-webkit-scrollbar { display: none; }
         .aba-btn { flex: 1; padding: 14px 10px; background: transparent; color: var(--texto-secundario); border: none; border-radius: 9px; font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap; transition: all 0.2s ease; text-align: center; }
         .aba-btn.ativa { background: var(--bg-card); color: var(--cor-primaria); border: 1px solid var(--borda); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         
         .conteudo-aba { display: none; }
         .conteudo-aba.ativa { display: block; }
 
-        /* Formulários e Inputs */
+        /* Formulários */
         .form-grupo { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-bottom: 20px; }
         .form-vertical { display: flex; flex-direction: column; gap: 12px; background: var(--bg-input); padding: 16px; border-radius: 14px; border: 1px solid var(--borda); margin-bottom: 20px; }
         
@@ -66,15 +67,15 @@
         button:active { opacity: 0.7; }
         .btn-sucesso { background-color: var(--cor-primaria); color: #121214; padding: 14px 24px; font-size: 16px; }
         
-        /* Grid para o Balcão ocupar melhor o espaço no computador */
-        .grid-balcao { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+        /* Grid dinâmico para aproveitar monitores grandes */
+        .grid-balcao { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
         
-        .cliente-card { background: var(--bg-input); border: 1px solid var(--borda); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; }
+        .cliente-card { background: var(--bg-input); border: 1px solid var(--borda); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
         .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--borda); padding-bottom: 10px; margin-bottom: 12px; }
-        .nome { font-weight: 700; font-size: 1.2em; color: #fff; }
+        .nome { font-weight: 700; font-size: 1.25em; color: #fff; }
         .btn-excluir { background: transparent; color: var(--cor-erro); font-size: 20px; }
         
-        .produto-linha { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .produto-linha { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
         .prod-info { font-size: 0.95em; color: var(--texto-secundario); }
         .prod-info strong { color: #fff; font-size: 1.1em; }
         .botoes-qtd { display: flex; gap: 8px; }
@@ -82,25 +83,25 @@
         .btn-control.sub { background-color: rgba(255,82,82,0.1); color: var(--cor-erro); border: 1px solid rgba(255,82,82,0.2); }
         .btn-control.add { background-color: rgba(0,176,255,0.1); color: var(--cor-azul); border: 1px solid rgba(0,176,255,0.2); }
         
-        .resumo-card { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--borda); display: flex; justify-content: space-between; font-size: 1.05em; font-weight: 600; }
+        .resumo-card { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--borda); display: flex; justify-content: space-between; font-size: 1.1em; font-weight: 600; }
         
         .botoes-fechamento { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
-        .btn-fechar { padding: 12px; font-size: 13px; color: white; border-radius: 8px; font-weight: 700; }
+        .btn-fechar { padding: 14px; font-size: 14px; color: white; border-radius: 8px; font-weight: 700; }
         .btn-fechar.pago { background: linear-gradient(135deg, #00c853, #007e33); }
         .btn-fechar.fiado { background: linear-gradient(135deg, #aa00ff, #4a148c); }
 
-        /* Listas de Gerenciamento (Fiado / Clientes / Produtos) */
-        .lista-geral { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-        .item-geral-card { display: flex; justify-content: space-between; align-items: center; background: var(--bg-input); padding: 16px; border-radius: 12px; border: 1px solid var(--borda); }
-        .divida-valor { color: var(--cor-erro); font-weight: 700; font-size: 1.15em; }
-        .btn-abater { background: rgba(0,230,118,0.1); color: var(--cor-sucesso); border: 1px solid rgba(0,230,118,0.2); padding: 8px 12px; font-size: 13px; border-radius: 6px; font-weight: 600; margin-top: 6px; }
+        /* Listas Modernas de Exibição */
+        .lista-geral { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+        .item-geral-card { display: flex; justify-content: space-between; align-items: center; background: var(--bg-input); padding: 18px; border-radius: 12px; border: 1px solid var(--borda); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .divida-valor { color: var(--cor-erro); font-weight: 700; font-size: 1.2em; }
+        .btn-abater { background: rgba(0,230,118,0.1); color: var(--cor-sucesso); border: 1px solid rgba(0,230,118,0.2); padding: 8px 14px; font-size: 13px; border-radius: 6px; font-weight: 600; margin-top: 6px; }
 
-        /* Dashboard */
-        .dash-card { background: linear-gradient(135deg, #161e19, #0a110d); border: 1px solid rgba(0,230,118,0.2); border-radius: 14px; padding: 20px; margin-bottom: 20px; text-align: center; }
-        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .mini-card { background: var(--bg-input); padding: 16px; border-radius: 12px; text-align: center; border: 1px solid var(--borda); }
+        /* Dashboard de Alta Fidelidade */
+        .dash-card { background: linear-gradient(135deg, #161e19, #0a110d); border: 1px solid rgba(0,230,118,0.2); border-radius: 14px; padding: 25px; margin-bottom: 25px; text-align: center; }
+        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .mini-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--borda); }
         
-        .btn-zerar { display: block; width: 100%; background-color: rgba(255,82,82,0.05); color: var(--cor-erro); margin-top: 25px; padding: 14px; font-size: 14px; border: 1px solid rgba(255,82,82,0.15); }
+        .btn-zerar { display: block; width: 100%; background-color: rgba(255,82,82,0.05); color: var(--cor-erro); margin-top: 35px; padding: 16px; font-size: 14px; border: 1px solid rgba(255,82,82,0.15); }
     </style>
 </head>
 <body>
@@ -112,7 +113,7 @@
     </div>
     
     <div class="abas">
-        <button class="aba-btn integra ativa" onclick="mudarAba('balcao')">🛒 Atendimento / Vendas</button>
+        <button class="aba-btn ativa" onclick="mudarAba('balcao')">🛒 Atendimento / Vendas</button>
         <button class="aba-btn" onclick="mudarAba('fiado')">📓 Caderneta de Clientes</button>
         <button class="aba-btn" onclick="mudarAba('produtos')">⚙️ Produtos / Preços</button>
         <button class="aba-btn" onclick="mudarAba('dashboard')">📊 Balanço Geral</button>
@@ -126,48 +127,50 @@
             </select>
             <button class="btn-sucesso" onclick="abrirComandaCliente()">Abrir Conta</button>
         </div>
-        <div class="grid-balcao" id="listaClientes">Carregando comandas ativas...</div>
+        <div class="grid-balcao" id="listaClientes">Carregando comanda ativos...</div>
     </div>
 
-    <!-- 2. GERENCIAMENTO DE CLIENTES E FIADO -->
+    <!-- 2. GERENCIAMENTO DE CLIENTES -->
     <div id="aba-fiado" class="conteudo-aba">
         <div class="form-vertical">
-            <h4 style="margin:0; color:var(--cor-primaria);">Cadastrar Novo Cliente</h4>
+            <h4 style="margin:0; color:var(--cor-primaria); font-size: 16px;">Cadastrar Novo Cliente</h4>
             <div class="form-grupo" style="margin:0;">
                 <input type="text" id="novoClienteNome" placeholder="Nome Completo do Cliente">
                 <button class="btn-sucesso" onclick="cadastrarCliente()" style="background-color: var(--cor-sucesso); color:#fff;">Salvar</button>
             </div>
         </div>
-        <h4 style="margin: 20px 0 10px 0; color:var(--texto-secundario);">Lista de Clientes e Saldos</h4>
-        <div class="lista-geral" id="listaFiados">Nenhum cliente cadastrado.</div>
+        <h4 style="margin: 25px 0 12px 0; color:var(--texto-secundario); font-size: 16px;">Lista de Clientes e Saldos</h4>
+        <div class="lista-grid-container">
+            <div class="lista-geral" id="listaFiados">Nenhum cliente cadastrado.</div>
+        </div>
     </div>
 
     <!-- 3. CONFIGURAÇÃO DE PRODUTOS -->
     <div id="aba-produtos" class="conteudo-aba">
         <div class="form-vertical">
-            <h4 style="margin:0; color:var(--cor-primaria);">Cadastrar Novo Produto</h4>
+            <h4 style="margin:0; color:var(--cor-primaria); font-size: 16px;">Cadastrar Novo Produto</h4>
             <input type="text" id="prodNome" placeholder="Nome do Produto (Ex: Heineken Long Neck)">
             <input type="number" id="prodPreco" placeholder="Preço de Venda (Ex: 8.00)" step="0.01">
             <button class="btn-sucesso" onclick="cadastrarProduto()" style="background-color: var(--cor-sucesso); color: #fff;">Salvar no Cardápio</button>
         </div>
-        <h4 style="margin: 20px 0 10px 0; color:var(--texto-secundario);">Cardápio Disponível</h4>
+        <h4 style="margin: 25px 0 12px 0; color:var(--texto-secundario); font-size: 16px;">Cardápio Disponível</h4>
         <div class="lista-geral" id="listaProdutosGerenciar"></div>
     </div>
 
     <!-- 4. DASHBOARD -->
     <div id="aba-dashboard" class="conteudo-aba">
         <div class="dash-card">
-            <h2 style="margin:0; font-size:13px; color:var(--texto-secundario); text-transform:uppercase; letter-spacing:0.5px;">Faturamento em Caixa (Dinheiro/Pix)</h2>
-            <div id="faturamentoCaixa" style="font-size: 36px; font-weight: bold; color: var(--cor-sucesso); margin-top: 5px;">R$ 0,00</div>
+            <h2 style="margin:0; font-size:14px; color:var(--texto-secundario); text-transform:uppercase; letter-spacing:0.5px;">Faturamento em Caixa (Dinheiro/Pix)</h2>
+            <div id="faturamentoCaixa" style="font-size: 40px; font-weight: bold; color: var(--cor-sucesso); margin-top: 5px;">R$ 0,00</div>
         </div>
         <div class="dash-grid">
             <div class="mini-card" style="border-color: rgba(255,82,82,0.2)">
-                <h3 style="margin:0; font-size:11px; color:var(--texto-secundario); text-transform:uppercase;">Valor Total Pendurado (Fiado)</h3>
-                <p id="totalFiadoRua" style="color:var(--cor-erro); font-size:22px; font-weight:700; margin:5px 0 0 0;">R$ 0,00</p>
+                <h3 style="margin:0; font-size:12px; color:var(--texto-secundario); text-transform:uppercase;">Valor Total Pendurado (Fiado)</h3>
+                <p id="totalFiadoRua" style="color:var(--cor-erro); font-size:24px; font-weight:700; margin:5px 0 0 0;">R$ 0,00</p>
             </div>
             <div class="mini-card">
-                <h3 style="margin:0; font-size:11px; color:var(--texto-secundario); text-transform:uppercase;">Volume de Saídas</h3>
-                <p id="dashEstoqueLista" style="font-size:13px; margin:5px 0 0 0; text-align:left; color:var(--cor-primaria); font-weight:600;"></p>
+                <h3 style="margin:0; font-size:12px; color:var(--texto-secundario); text-transform:uppercase;">Volume de Saídas</h3>
+                <p id="dashEstoqueLista" style="font-size:14px; margin:8px 0 0 0; text-align:left; color:var(--cor-primaria); font-weight:600; line-height:1.5;"></p>
             </div>
         </div>
         <button class="btn-zerar" onclick="zerarTudo()">Zerar Todo o Sistema para Próxima Data</button>
@@ -209,7 +212,11 @@
         if(!nome) return;
 
         const { error } = await _supabase.from('clientes').insert([{ nome }]);
-        if(error) { alert("Este cliente já está cadastrado!"); return; }
+        if(error) { 
+            // Exibe o erro real para auditoria caso não seja apenas duplicidade
+            alert("Não foi possível salvar o cliente. Verifique se ele já existe ou se as políticas RLS do seu Supabase estão desativadas."); 
+            return; 
+        }
         
         input.value = "";
         carregarBanco();
@@ -220,7 +227,6 @@
         const clienteId = select.value;
         if(!clienteId || listagemProdutos.length === 0) return;
 
-        // Abre a comanda vinculando o primeiro produto com quantidade 0 apenas para registrar a mesa
         let jaExiste = listagemComandas.some(c => c.cliente_id == clienteId);
         if(!jaExiste) {
             await _supabase.from('comandas_ativas').insert([{ cliente_id: clienteId, produto_id: listagemProdutos[0].id, quantidade: 0 }]);
@@ -260,7 +266,6 @@
         });
 
         if(total === 0 && tipoPagamento === 'Pix/Dinheiro') {
-            // Se a comanda estava vazia e o Alex quer fechar, só remove do balcão
             await _supabase.from('comandas_ativas').delete().eq('cliente_id', clienteId);
             carregarBanco();
             return;
@@ -341,14 +346,12 @@
     }
 
     function renderizarTudo() {
-        // ATUALIZA O SELETOR DE CLIENTES NO BALCÃO
         const select = document.getElementById('selectClienteAtivo');
         select.innerHTML = '<option value="">Selecione o cliente para abrir a conta...</option>';
         listagemClientes.forEach(c => {
             select.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
         });
 
-        // RENDER BALCÃO ATIVO
         const listaBalcao = document.getElementById('listaClientes');
         let clientesComComanda = [...new Set(listagemComandas.map(c => c.cliente_id))];
         
@@ -399,7 +402,6 @@
             });
         }
 
-        // RENDER CADERNETA DE FIADOS
         const listaFiados = document.getElementById('listaFiados');
         listaFiados.innerHTML = "";
         listagemClientes.forEach(dev => {
@@ -413,7 +415,6 @@
                 </div>`;
         });
 
-        // RENDER CARDÁPIO
         const listaGerenciar = document.getElementById('listaProdutosGerenciar');
         listaGerenciar.innerHTML = "";
         listagemProdutos.forEach(p => {
@@ -424,7 +425,6 @@
                 </div>`;
         });
 
-        // RE-CALCULA DASHBOARD
         _supabase.from('historico_vendas').select('*').then(({ data }) => {
             let totalCaixa = 0, contagemProdutos = {};
             
