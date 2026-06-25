@@ -3,109 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Adega Vieira - Gestão Comercial</title>
+    <title>Adega Vieira</title>
     
+    <!-- Link para o arquivo Manifest separado -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0d0e12">
+    <meta name="theme-color" content="#ffb300">
+    
+    <!-- Configurações Apple/iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Adega Vieira">
     <link rel="apple-touch-icon" href="logo.png">
-
-    <!-- SDK do Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
-            --bg-principal: #0d0e12;
-            --bg-card: #16171d;
-            --bg-input: #21232c;
+            --bg-principal: #121214;
+            --bg-card: #1a1a1e;
+            --bg-input: #26262b;
             --cor-primaria: #ffb300;
-            --cor-erro: #ff5252;
-            --cor-sucesso: #00e676;
+            --cor-erro: #e53935;
+            --cor-sucesso: #43a047;
             --cor-azul: #00b0ff;
+            --cor-verde-hk: #2e7d32; /* Verde Heineken */
             --texto-principal: #ffffff;
-            --texto-secundario: #9699a6;
-            --borda: #292c35;
+            --texto-secundario: #a4a4a8;
         }
 
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-principal); margin: 0; padding: 20px; color: var(--texto-principal); }
-        
-        .container { width: 100%; max-width: 1400px; margin: 0 auto; background: var(--bg-card); padding: 24px; border-radius: 20px; border: 1px solid var(--borda); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        
-        .topo-app { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--borda); }
-        .logo-foto { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--cor-primaria); object-fit: cover; }
-        h1 { color: #fff; margin: 0; font-size: 24px; font-weight: 700; }
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        .abas { display: flex; background: var(--bg-input); padding: 6px; border-radius: 12px; margin-bottom: 25px; gap: 6px; overflow-x: auto; scrollbar-width: none; }
-        .abas::-webkit-scrollbar { display: none; }
-        .aba-btn { flex: 1; padding: 14px 10px; background: transparent; color: var(--texto-secundario); border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap; transition: all 0.2s ease; text-align: center; }
-        .aba-btn.ativa { background: var(--bg-card); color: var(--cor-primaria); border: 1px solid var(--borda); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        body {
+            background-color: var(--bg-principal);
+            margin: 0;
+            padding: 8px;
+            color: var(--texto-principal);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            border: 1px solid #2d2d34;
+        }
+
+        .topo-app {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0 20px 0;
+        }
+        .logo-foto {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            border: 2px solid var(--cor-primaria);
+            object-fit: cover;
+        }
+        h1 {
+            color: var(--cor-primaria);
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
         
+        .abas {
+            display: flex;
+            background: var(--bg-input);
+            padding: 4px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            gap: 4px;
+        }
+        .aba-btn {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            color: var(--texto-secundario);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .aba-btn.ativa {
+            background: var(--cor-primaria);
+            color: #121214;
+        }
+
         .conteudo-aba { display: none; }
         .conteudo-aba.ativa { display: block; }
 
-        .form-grupo { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-bottom: 20px; }
-        .form-vertical { display: flex; flex-direction: column; gap: 12px; background: var(--bg-input); padding: 16px; border-radius: 14px; border: 1px solid var(--borda); margin-bottom: 20px; }
-        
-        input[type="text"], input[type="number"], select { width: 100%; padding: 14px; background: var(--bg-input); border: 1px solid var(--borda); border-radius: 10px; font-size: 16px; color: white; outline: none; transition: border-color 0.2s; }
-        input[type="text"]:focus, input[type="number"]:focus, select:focus { border-color: var(--cor-primaria); }
-        
-        button { border: none; border-radius: 10px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; justify-content: center; transition: background 0.2s, transform 0.1s; }
-        button:active { transform: scale(0.98); }
-        .btn-sucesso { background-color: var(--cor-primaria); color: #121214; padding: 14px 24px; font-size: 16px; }
-        
-        /* Grid do Balcão */
-        .grid-balcao { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-        
-        .cliente-card { background: var(--bg-input); border: 1px solid var(--borda); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
-        .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--borda); padding-bottom: 10px; margin-bottom: 12px; }
-        .nome { font-weight: 700; font-size: 1.25em; color: #fff; }
-        .btn-excluir { background: transparent; color: var(--cor-erro); font-size: 20px; }
-        
-        .produto-linha { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
-        .prod-info { font-size: 0.95em; color: var(--texto-secundario); }
-        .prod-info strong { color: #fff; font-size: 1.1em; }
-        .botoes-qtd { display: flex; gap: 8px; }
-        .btn-control { width: 36px; height: 36px; font-size: 18px; color: white; border-radius: 8px; }
-        .btn-control.sub { background-color: rgba(255,82,82,0.1); color: var(--cor-erro); border: 1px solid rgba(255,82,82,0.2); }
-        .btn-control.add { background-color: rgba(0,176,255,0.1); color: var(--cor-azul); border: 1px solid rgba(0,176,255,0.2); }
-        
-        .btn-add-item { width: 100%; background: #2d303b; color: var(--cor-primaria); padding: 10px; font-size: 13px; font-weight: 600; margin-top: 10px; border: 1px dashed rgba(255,179,0,0.3); border-radius: 8px; }
-        .resumo-card { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--borda); display: flex; justify-content: space-between; font-size: 1.1em; font-weight: 600; }
-        
-        .btn-fechar-comanda { width: 100%; padding: 14px; font-size: 14px; border-radius: 8px; font-weight: 700; margin-top: 14px; background: linear-gradient(135deg, #ffb300, #ff8f00); color: #121214; }
-
-        .lista-geral { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
-        .item-geral-card { display: flex; justify-content: space-between; align-items: center; background: var(--bg-input); padding: 18px; border-radius: 12px; border: 1px solid var(--borda); }
-        .divida-valor { color: var(--cor-erro); font-weight: 700; font-size: 1.2em; }
-        .btn-abater { background: rgba(0,230,118,0.1); color: var(--cor-sucesso); border: 1px solid rgba(0,230,118,0.2); padding: 8px 12px; font-size: 13px; border-radius: 6px; font-weight: 600; margin-top: 6px; }
-
-        /* Dashboard */
-        .dash-card { background: linear-gradient(135deg, #161e19, #0a110d); border: 1px solid rgba(0,230,118,0.2); border-radius: 14px; padding: 25px; margin-bottom: 25px; text-align: center; }
-        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .mini-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--borda); }
-        .btn-zerar { display: block; width: 100%; background-color: rgba(255,82,82,0.05); color: var(--cor-erro); margin-top: 35px; padding: 16px; font-size: 14px; border: 1px solid rgba(255,82,82,0.15); }
-
-        /* MODALS ESTILIZADOS */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 8, 0.85); backdrop-filter: blur(5px); z-index: 999; align-items: center; justify-content: center; padding: 15px; }
-        .modal-overlay.ativo { display: flex; }
-        .modal-box { background: var(--bg-card); border: 1px solid var(--borda); padding: 24px; border-radius: 20px; width: 100%; max-width: 440px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); animation: subir 0.3s ease-out; }
-        
-        @keyframes subir {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .menu-precos {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+        .preco-tag {
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.8em;
+            background: rgba(255, 179, 0, 0.1);
+            border: 1px solid var(--cor-primaria);
+            color: var(--cor-primaria);
+            padding: 8px 4px;
+            border-radius: 8px;
+        }
+        .preco-tag.bud {
+            background: rgba(229, 57, 53, 0.1);
+            border: 1px solid var(--cor-erro);
+            color: var(--cor-erro);
+        }
+        .preco-tag.heineken {
+            background: rgba(74, 175, 80, 0.1);
+            border: 1px solid #4caf50;
+            color: #4caf50;
         }
 
-        .modal-titulo { font-size: 1.3em; font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid var(--borda); padding-bottom: 10px; color: #fff; }
-        .modal-opcoes-grid { display: grid; grid-template-columns: 1fr; gap: 8px; max-height: 260px; overflow-y: auto; margin-bottom: 20px; padding-right: 4px; }
-        .btn-opcao-prod { width: 100%; background: var(--bg-input); border: 1px solid var(--borda); padding: 14px; text-align: left; color: #fff; font-size: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-opcao-prod:hover { border-color: var(--cor-primaria); background: #262933; }
+        .form-grupo {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-input);
+            border: 1px solid #3d3d45;
+            border-radius: 8px;
+            font-size: 16px;
+            color: white;
+            outline: none;
+        }
         
-        .modal-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-modal { padding: 14px; font-size: 14px; border-radius: 8px; font-weight: 700; }
-        .btn-modal.cancelar { background: #2d303b; color: var(--texto-secundario); }
-        .btn-modal.confirmar { background: var(--cor-sucesso); color: #fff; }
+        button {
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+        .btn-sucesso { 
+            background-color: var(--cor-sucesso); 
+            color: white;
+            padding: 12px 16px;
+            font-size: 16px;
+        }
+        .btn-pagar { 
+            background: linear-gradient(135deg, #43a047, #2e7d32);
+            color: white;
+            font-size: 14px; 
+            padding: 12px;
+            width: 100%;
+            margin-top: 12px;
+            border-radius: 8px;
+        }
+
+        .cliente-card {
+            background: #222227;
+            border: 1px solid #2d2d34;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            padding: 14px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2d2d34;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+        .nome { font-weight: bold; font-size: 1.2em; color: #fff; }
+        .btn-excluir { background: transparent; color: var(--cor-erro); font-size: 18px; padding: 4px 8px; }
+
+        .produto-linha {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+        }
+        .prod-info { font-size: 0.95em; color: var(--texto-secundario); }
+        .prod-info strong { color: #fff; }
+        .botoes-qtd { display: flex; gap: 6px; }
+        .btn-control { width: 38px; height: 38px; font-size: 18px; color: white; }
+        .btn-control.sub { background-color: #3d3d45; color: var(--cor-erro); }
+        .btn-control.add { background-color: var(--cor-azul); }
+
+        .resumo-card {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #3d3d45;
+            display: flex;
+            justify-content: space-between;
+            font-size: 1em;
+        }
+
+        .dash-card {
+            background: linear-gradient(135deg, #1e251f, #141a15);
+            border: 1px solid var(--cor-sucesso);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .mini-card {
+            background: var(--bg-input);
+            padding: 14px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #2d2d34;
+        }
+        .mini-card h3 { margin: 0; font-size: 12px; color: var(--texto-secundario); text-transform: uppercase; }
+        .mini-card p { margin: 6px 0 0 0; font-size: 13px; font-weight: bold; color: #fff; line-height: 1.4; }
+
+        .tabela-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #2d2d34;
+            background: var(--bg-input);
+        }
+        .tabela-historico { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .tabela-historico th, .tabela-historico td { padding: 12px 10px; border-bottom: 1px solid #2d2d34; text-align: left; }
+        .tabela-historico th { background: #2d2d34; color: var(--texto-secundario); }
+        .status-pago { color: var(--cor-sucesso); font-weight: bold; }
+
+        .btn-zerar {
+            display: block;
+            width: 100%;
+            background-color: #2d2d34;
+            color: #ff5252;
+            margin-top: 25px;
+            padding: 14px;
+            font-size: 14px;
+            border: 1px solid rgba(255, 82, 82, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -117,487 +267,241 @@
     </div>
     
     <div class="abas">
-        <button class="aba-btn ativa" onclick="mudarAba('balcao')">🛒 Atendimento / Vendas</button>
-        <button class="aba-btn" onclick="mudarAba('fiado')">📓 Caderneta de Clientes</button>
-        <button class="aba-btn" onclick="mudarAba('produtos')">⚙️ Produtos / Preços</button>
-        <button class="aba-btn" onclick="mudarAba('dashboard')">📊 Balanço Geral</button>
+        <button class="aba-btn ativa" onclick="mudarAba('balcao')">🛒 Balcão (Jogo)</button>
+        <button class="aba-btn" onclick="mudarAba('dashboard')">📊 Dashboard</button>
     </div>
 
-    <!-- 1. BALCÃO DE ATENDIMENTO -->
+    <!-- ABA 1: BALCÃO -->
     <div id="aba-balcao" class="conteudo-aba ativa">
+        <div class="menu-precos">
+            <div class="preco-tag">Brahma:<br>R$ 3,50</div>
+            <div class="preco-tag bud">Bud:<br>R$ 4,50</div>
+            <div class="preco-tag heineken">Heineken:<br>R$ 8,00</div>
+        </div>
+
         <div class="form-grupo">
-            <select id="selectClienteAtivo"></select>
-            <button class="btn-sucesso" onclick="abrirComandaCliente()">Abrir Conta</button>
+            <input type="text" id="nomeCliente" placeholder="Nome de quem chegou..." autocomplete="off">
+            <button class="btn-sucesso" onclick="adicionarCliente()">Adicionar</button>
         </div>
-        <div class="grid-balcao" id="listaClientes">Carregando comandas...</div>
+
+        <div class="lista-clientes" id="listaClientes"></div>
     </div>
 
-    <!-- 2. CADERNETA DE CLIENTES -->
-    <div id="aba-fiado" class="conteudo-aba">
-        <div class="form-vertical">
-            <h4 style="margin:0; color:var(--cor-primaria); font-size: 16px;">Cadastrar Novo Cliente</h4>
-            <div class="form-grupo" style="margin:0;">
-                <input type="text" id="novoClienteNome" placeholder="Nome Completo do Cliente">
-                <button class="btn-sucesso" onclick="cadastrarCliente()" style="background-color: var(--cor-sucesso); color:#fff;">Salvar</button>
-            </div>
-        </div>
-        <h4 style="margin: 25px 0 12px 0; color:var(--texto-secundario); font-size: 16px;">Lista Geral de Clientes (Estilo Caderneta)</h4>
-        <div class="lista-geral" id="listaFiados">Nenhum cliente cadastrado.</div>
-    </div>
-
-    <!-- 3. CONFIGURAÇÃO DE PRODUTOS -->
-    <div id="aba-produtos" class="conteudo-aba">
-        <div class="form-vertical">
-            <h4 style="margin:0; color:var(--cor-primaria); font-size: 16px;">Cadastrar Novo Produto</h4>
-            <input type="text" id="prodNome" placeholder="Nome do Produto (Ex: Heineken Latão)">
-            <input type="number" id="prodPreco" placeholder="Preço de Venda (Ex: 8.50)" step="0.01">
-            <button class="btn-sucesso" onclick="cadastrarProduto()" style="background-color: var(--cor-sucesso); color: #fff;">Salvar no Cardápio</button>
-        </div>
-        <h4 style="margin: 25px 0 12px 0; color:var(--texto-secundario); font-size: 16px;">Cardápio Disponível</h4>
-        <div class="lista-geral" id="listaProdutosGerenciar"></div>
-    </div>
-
-    <!-- 4. DASHBOARD -->
+    <!-- ABA 2: DASHBOARD -->
     <div id="aba-dashboard" class="conteudo-aba">
         <div class="dash-card">
-            <h2 style="margin:0; font-size:14px; color:var(--texto-secundario); text-transform:uppercase;">Faturamento em Caixa (Dinheiro/Pix/Cartão)</h2>
-            <div id="faturamentoCaixa" style="font-size: 40px; font-weight: bold; color: var(--cor-sucesso); margin-top: 5px;">R$ 0,00</div>
+            <h2 style="margin:0 0 6px 0; color: var(--texto-secundario); font-size: 14px; text-transform: uppercase;">Faturamento Total (Dia)</h2>
+            <div id="faturamentoTotal" style="font-size: 32px; font-weight: bold; color: var(--cor-sucesso);">R$ 0,00</div>
         </div>
+
         <div class="dash-grid">
-            <div class="mini-card" style="border-color: rgba(255,82,82,0.2)">
-                <h3 style="margin:0; font-size:12px; color:var(--texto-secundario); text-transform:uppercase;">Valor Total Pendurado (Fiado Total)</h3>
-                <p id="totalFiadoRua" style="color:var(--cor-erro); font-size:24px; font-weight:700; margin:5px 0 0 0;">R$ 0,00</p>
-            </div>
             <div class="mini-card">
-                <h3 style="margin:0; font-size:12px; color:var(--texto-secundario); text-transform:uppercase;">Volume de Saídas</h3>
-                <p id="dashEstoqueLista" style="font-size:14px; margin:8px 0 0 0; text-align:left; color:var(--cor-primaria); font-weight:600; line-height:1.5;"></p>
+                <h3>Estoque Vendido</h3>
+                <p id="dashCervejas" style="color: var(--cor-primaria); text-align: left; padding-left: 5px;">Brahma: 0 <br> Bud: 0 <br> Heineken: 0</p>
+            </div>
+            <div class="mini-card" style="border-color: rgba(225, 55, 55, 0.3); display: flex; flex-direction: column; justify-content: center;">
+                <h3>Ainda a Receber</h3>
+                <p id="dashDevedores" style="color: var(--cor-erro); font-size: 18px;">R$ 0,00</p>
             </div>
         </div>
-        <button class="btn-zerar" onclick="zerarTudo()">Zerar Todo o Sistema para Próxima Data</button>
-    </div>
-</div>
 
-<!-- ================= MODALS INTERNOS DO APP ================= -->
-
-<!-- 1. MODAL LANÇAR PRODUTO NO BALCÃO -->
-<div class="modal-overlay" id="modalLancar">
-    <div class="modal-box">
-        <div class="modal-titulo" id="modalLancarTitulo">Lançar Item</div>
-        <div class="modal-opcoes-grid" id="modalLancarProdutosContainer"></div>
-        <button class="btn-modal cancelar" onclick="fecharModal('modalLancar')" style="width:100%;">Fechar Janela</button>
-    </div>
-</div>
-
-<!-- 2. MODAL FECHAMENTO INTELIGENTE DE COMANDA -->
-<div class="modal-overlay" id="modalFechamentoComanda">
-    <div class="modal-box">
-        <div class="modal-titulo">🧾 Finalizar Atendimento</div>
-        
-        <div style="margin-bottom: 14px;">
-            <p style="margin:0; font-size:12px; color:var(--texto-secundario);">VALOR TOTAL DO CONSUMO</p>
-            <div id="modalFechamentoTotal" style="font-size:24px; font-weight:700; color:var(--cor-primaria);">R$ 0,00</div>
+        <h2 style="font-size: 15px; margin: 20px 0 10px 0; color: var(--texto-secundario);">Histórico de Contas Fechadas</h2>
+        <div class="tabela-container">
+            <table class="tabela-historico">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Consumo</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="historicoVendas"></tbody>
+            </table>
         </div>
 
-        <div style="margin-bottom: 14px;">
-            <label style="font-size:13px; color:var(--texto-secundario); display:block; margin-bottom:4px;">FORMA DE PAGAMENTO</label>
-            <select id="modalFechamentoMeio">
-                <option value="Pix">Pix</option>
-                <option value="Dinheiro">Dinheiro</option>
-                <option value="Cartão">Cartão</option>
-            </select>
-        </div>
-
-        <div style="margin-bottom: 20px;">
-            <label style="font-size:13px; color:var(--texto-secundario); display:block; margin-bottom:4px;">VALOR PAGO AGORA (Deixe 0 se for fiado total)</label>
-            <input type="number" id="modalFechamentoValorPagoInput" placeholder="Ex: 50.00" step="0.01">
-        </div>
-
-        <div class="modal-botoes">
-            <button class="btn-modal cancelar" onclick="fecharModal('modalFechamentoComanda')">Cancelar</button>
-            <button class="btn-modal confirmar" onclick="processarFechamentoComandaBanco()">Confirmar Caixa</button>
-        </div>
-    </div>
-</div>
-
-<!-- 3. MODAL ABATIMENTO DA CADERNETA -->
-<div class="modal-overlay" id="modalAbater">
-    <div class="modal-box">
-        <div class="modal-titulo">🤝 Receber Conta da Caderneta</div>
-        <div style="margin-bottom: 15px;">
-            <p style="margin:0 0 5px 0; font-size:13px; color:var(--texto-secundario);">SALDO DEVEDOR ATUAL</p>
-            <div id="modalAbaterSaldoAtual" style="font-size:22px; font-weight:700; color:var(--cor-erro);">R$ 0,00</div>
-        </div>
-        
-        <div style="margin-bottom: 14px;">
-            <label style="font-size:13px; color:var(--texto-secundario); display:block; margin-bottom:4px;">FORMA DE RECEBIMENTO</label>
-            <select id="modalAbaterMeio">
-                <option value="Pix">Pix</option>
-                <option value="Dinheiro">Dinheiro</option>
-                <option value="Cartão">Cartão</option>
-            </select>
-        </div>
-
-        <div style="margin-bottom: 20px;">
-            <label style="font-size:13px; color:var(--texto-secundario); display:block; margin-bottom:6px;">VALOR ENTREGUE PELO CLIENTE</label>
-            <input type="number" id="modalAbaterValorInput" placeholder="Ex: 30.00" step="0.01">
-        </div>
-        <div class="modal-botoes">
-            <button class="btn-modal cancelar" onclick="fecharModal('modalAbater')">Cancelar</button>
-            <button class="btn-modal confirmar" onclick="confirmarAbatimentoParcialFiado()">Confirmar Recebimento</button>
-        </div>
-    </div>
-</div>
-
-<!-- 4. MODAL ALERTA DE CONFIRMAÇÕES -->
-<div class="modal-overlay" id="modalAlerta">
-    <div class="modal-box">
-        <div class="modal-titulo" id="alertaTitulo">Confirmação</div>
-        <p id="alertaTexto" style="color:var(--texto-secundario); font-size:15px; margin:0 0 20px 0; line-height:1.4;"></p>
-        <div class="modal-botoes">
-            <button class="btn-modal cancelar" onclick="fecharModal('modalAlerta')">Não, Voltar</button>
-            <button class="btn-modal confirmar" id="btnConfirmarAlerta" style="background-color: var(--cor-sucesso);">Sim, Confirmar</button>
-        </div>
+        <button class="btn-zerar" onclick="zerarTudo()">Zerar Caixa / Próximo Jogo</button>
     </div>
 </div>
 
 <script>
-    const SUPABASE_URL = "https://ellgsqigozmqrwbswukl.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_NCIyzDtlbOihMKc3R2b5Hw_9KkKKg77";
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+        .then(() => console.log("Service Worker ativo!"))
+        .catch(err => console.log("Erro no SW:", err));
+    }
 
-    let listagemProdutos = [];
-    let listagemClientes = [];
-    let listagemComandas = [];
+    const PRECO_BRAHMA = 3.50;
+    const PRECO_BUD = 4.50;
+    const PRECO_HEINEKEN = 8.00;
     
-    let acaoConfirmacaoGlobal = null;
-    let clienteIdSelecionadoGlobal = null;
-    let totalConsumoComandaGlobal = 0;
-    let resumoConsumoComandaGlobal = "";
-    let saldoDevedorGlobal = 0;
+    let clientes = JSON.parse(localStorage.getItem('adega_clientes_v4')) || [];
+    let historico = JSON.parse(localStorage.getItem('adega_historico_v4')) || [];
 
-    async function carregarBanco() {
-        let { data: prods } = await _supabase.from('produtos').select('*').order('nome');
-        let { data: clis } = await _supabase.from('clientes').select('*').order('nome');
-        let { data: coms } = await _supabase.from('comandas_ativas').select('*');
-        
-        listagemProdutos = prods || [];
-        listagemClientes = clis || [];
-        listagemComandas = coms || [];
-        
-        renderizarTudo();
+    function salvarDados() {
+        localStorage.setItem('adega_clientes_v4', JSON.stringify(clientes));
+        localStorage.setItem('adega_historico_v4', JSON.stringify(historico));
+        renderizar();
     }
 
     function mudarAba(aba) {
         document.querySelectorAll('.aba-btn').forEach(btn => btn.classList.remove('ativa'));
         document.querySelectorAll('.conteudo-aba').forEach(c => c.classList.remove('ativa'));
-        event.target.classList.add('ativa');
-        document.getElementById(`aba-${aba}`).classList.add('ativa');
-        carregarBanco();
-    }
 
-    function abrirModal(id) { document.getElementById(id).classList.add('ativo'); }
-    function fecharModal(id) { document.getElementById(id).classList.remove('ativo'); }
-
-    function exibirModalAlerta(titulo, texto, callback) {
-        document.getElementById('alertaTitulo').innerText = titulo;
-        document.getElementById('alertaTexto').innerText = texto;
-        acaoConfirmacaoGlobal = callback;
-        abrirModal('modalAlerta');
-    }
-
-    document.getElementById('btnConfirmarAlerta').onclick = () => {
-        if(acaoConfirmacaoGlobal) acaoConfirmacaoGlobal();
-        fecharModal('modalAlerta');
-    };
-
-    async function cadastrarCliente() {
-        const input = document.getElementById('novoClienteNome');
-        const nome = input.value.trim();
-        if(!nome) return;
-        const { error } = await _supabase.from('clientes').insert([{ nome }]);
-        if(error) { exibirModalAlerta("Aviso", "Este cliente já está cadastrado ou o banco rejeitou o nome.", null); return; }
-        input.value = "";
-        carregarBanco();
-    }
-
-    async function abrirComandaCliente() {
-        const select = document.getElementById('selectClienteAtivo');
-        const clienteId = select.value;
-        if(!clienteId) return;
-
-        let jaExiste = listagemComandas.some(c => c.cliente_id == clienteId);
-        if(!jaExiste) {
-            await _supabase.from('comandas_ativas').insert([{ cliente_id: clienteId, produto_id: null, quantidade: 0 }]);
-        }
-        carregarBanco();
-    }
-
-    function abrirModalLancar(clienteId, nomeCliente) {
-        clienteIdSelecionadoGlobal = clienteId;
-        document.getElementById('modalLancarTitulo').innerText = `Lançar para ${nomeCliente}`;
-        const container = document.getElementById('modalLancarProdutosContainer');
-        container.innerHTML = "";
-
-        if(listagemProdutos.length === 0) {
-            container.innerHTML = "<p style='color:var(--texto-secundario); font-size:14px;'>Cadastre produtos primeiro na aba ao lado.</p>";
-        }
-
-        listagemProdutos.forEach(prod => {
-            container.innerHTML += `
-                <button class="btn-opcao-prod" onclick="executarLancamentoModal(${prod.id})">
-                    <span>${prod.nome}</span>
-                    <strong style="color:var(--cor-primaria)">R$ ${prod.preco.toFixed(2).replace('.', ',')}</strong>
-                </button>`;
-        });
-        abrirModal('modalLancar');
-    }
-
-    async function executarLancamentoModal(produtoId) {
-        fecharModal('modalLancar');
-        await lancarItem(clienteIdSelecionadoGlobal, produtoId, 1);
-    }
-
-    async function lancarItem(clienteId, produtoId, valor) {
-        await _supabase.from('comandas_ativas').delete().eq('cliente_id', clienteId).is('produto_id', null);
-        let registro = listagemComandas.find(c => c.cliente_id == clienteId && c.produto_id == produtoId);
-        
-        if (!registro) {
-            if (valor === -1) return;
-            // Corrigido: Removido o termo 'grandmother' inválido que causava o congelamento do app
-            await _supabase.from('comandas_ativas').insert([{ cliente_id: clienteId, produto_id: produtoId, quantidade: 1 }]);
+        if(aba === 'balcao') {
+            document.querySelectorAll('.aba-btn')[0].classList.add('ativa');
+            document.getElementById('aba-balcao').classList.add('ativa');
         } else {
-            let novaQtd = registro.quantidade + valor;
-            if (novaQtd <= 0) {
-                await _supabase.from('comandas_ativas').delete().eq('id', registro.id);
-            } else {
-                await _supabase.from('comandas_ativas').update({ quantidade: novaQtd }).eq('id', registro.id);
-            }
+            document.querySelectorAll('.aba-btn')[1].classList.add('ativa');
+            document.getElementById('aba-dashboard').classList.add('ativa');
         }
-        carregarBanco();
     }
 
-    function abrirModalFechamentoComandaPrompt(clienteId) {
-        clienteIdSelecionadoGlobal = clienteId;
-        const comandasDoCliente = listagemComandas.filter(c => c.cliente_id == clienteId && c.produto_id != null);
-        
-        let total = 0, resumoText = [];
-        comandasDoCliente.forEach(com => {
-            let p = listagemProdutos.find(prod => prod.id == com.produto_id);
-            if(p && com.quantidade > 0) {
-                total += p.preco * com.quantidade;
-                resumoText.push(`${com.quantidade}x ${p.nome}`);
-            }
-        });
+    function adicionarCliente() {
+        const input = document.getElementById('nomeCliente');
+        const nome = input.value.trim();
+        if (nome === "") { alert("Digite o nome da pessoa!"); return; }
+        clientes.push({ nome: nome, brahma: 0, bud: 0, heineken: 0 });
+        input.value = "";
+        salvarDados();
+    }
 
-        if(total === 0) {
-            _supabase.from('comandas_ativas').delete().eq('cliente_id', clienteId).then(() => carregarBanco());
-            return;
+    function lancarItem(index, marca, valor) {
+        const cliente = clientes[index];
+        let nomeMarca = '';
+        if(marca === 'brahma') nomeMarca = 'Brahma';
+        if(marca === 'bud') nomeMarca = 'Budweiser';
+        if(marca === 'heineken') nomeMarca = 'Heineken';
+        
+        if(valor === -1 && cliente[marca] === 0) return;
+
+        if(confirm(`Confirmar ${valor > 0 ? '+1' : '-1'} ${nomeMarca} para ${cliente.nome}?`)) {
+            cliente[marca] += valor;
+            salvarDados();
         }
+    }
 
-        totalConsumoComandaGlobal = total;
-        resumoConsumoComandaGlobal = resumoText.join(' / ');
+    function finalizarPagamento(index) {
+        const cliente = clientes[index];
+        if (cliente.brahma === 0 && cliente.bud === 0 && cliente.heineken === 0) { alert("Nenhuma bebida consumida!"); return; }
 
-        document.getElementById('modalFechamentoTotal').innerText = `R$ ${totalConsumoComandaGlobal.toFixed(2).replace('.', ',')}`;
-        document.getElementById('modalFechamentoValorPagoInput').value = totalConsumoComandaGlobal.toFixed(2);
+        const totalDevido = (cliente.brahma * PRECO_BRAHMA) + (cliente.bud * PRECO_BUD) + (cliente.heineken * PRECO_HEINEKEN);
         
-        abrirModal('modalFechamentoComanda');
+        let resumoConsumo = [];
+        if(cliente.brahma > 0) resumoConsumo.push(`${cliente.brahma} Brahma`);
+        if(cliente.bud > 0) resumoConsumo.push(`${cliente.bud} Bud`);
+        if(cliente.heineken > 0) resumoConsumo.push(`${cliente.heineken} Hk`);
+
+        if (confirm(`Confirmar que ${cliente.nome} PAGOU R$ ${totalDevido.toFixed(2).replace('.', ',')}?\nConsumo: ${resumoConsumo.join(' / ')}`)) {
+            historico.push({ 
+                nome: cliente.nome, 
+                brahma: cliente.brahma, 
+                bud: cliente.bud, 
+                heineken: cliente.heineken,
+                total: totalDevido, 
+                status: 'Pago' 
+            });
+            clientes.splice(index, 1);
+            salvarDados();
+        }
     }
 
-    async function processarFechamentoComandaBanco() {
-        let inputVal = document.getElementById('modalFechamentoValorPagoInput').value;
-        if(inputVal === "" || isNaN(inputVal) || Number(inputVal) < 0) return;
-
-        let valorPagoAgora = Number(inputVal);
-        let meioPagamento = document.getElementById('modalFechamentoMeio').value;
-        fecharModal('modalFechamentoComanda');
-
-        const cliente = listagemClientes.find(c => c.id == clienteIdSelecionadoGlobal);
-        let valorFaltantePendurar = totalConsumoComandaGlobal - valorPagoAgora;
-        
-        let novoSaldoCaderneta = Number(cliente.saldo_fiado) + valorFaltantePendurar;
-        await _supabase.from('clientes').update({ saldo_fiado: novoSaldoCaderneta }).eq('id', clienteIdSelecionadoGlobal);
-
-        await _supabase.from('historico_vendas').insert([{
-            cliente_nome: cliente.nome,
-            tipo_operacao: valorFaltantePendurar > 0 ? 'Fechamento Misto/Fiado' : 'Venda Balcão Integral',
-            detalhes_consumo: resumoConsumoComandaGlobal + ` (Pago: R$ ${valorPagoAgora.toFixed(2)} via ${meioPagamento} | Pendurado: R$ ${valorFaltantePendurar.toFixed(2)})`,
-            valor_movimentated: valorPagoAgora,
-            saldo_restante_fiado: novoSaldoCaderneta
-        }]);
-
-        await _supabase.from('comandas_ativas').delete().eq('cliente_id', clienteIdSelecionadoGlobal);
-        carregarBanco();
-    }
-
-    function abrirModalAbaterFiado(clienteId, saldoAtual) {
-        clienteIdSelecionadoGlobal = clienteId;
-        saldoDevedorGlobal = Number(saldoAtual);
-        document.getElementById('modalAbaterSaldoAtual').innerText = `R$ ${saldoDevedorGlobal.toFixed(2).replace('.', ',')}`;
-        document.getElementById('modalAbaterValorInput').value = "";
-        abrirModal('modalAbater');
-    }
-
-    async function confirmarAbatimentoParcialFiado() {
-        let inputVal = document.getElementById('modalAbaterValorInput').value;
-        if(!inputVal || isNaN(inputVal) || Number(inputVal) <= 0) return;
-        
-        let valorPago = Number(inputVal);
-        let meioPagamento = document.getElementById('modalAbaterMeio').value;
-        fecharModal('modalAbater');
-
-        let novoSaldo = saldoDevedorGlobal - valorPago;
-        let tipoOp = novoSaldo <= 0 ? 'Quitação Total' : 'Abatimento Parcial';
-        let nomeCli = listagemClientes.find(c => c.id == clienteIdSelecionadoGlobal).nome;
-
-        await _supabase.from('clientes').update({ saldo_fiado: novoSaldo }).eq('id', clienteIdSelecionadoGlobal);
-        await _supabase.from('historico_vendas').insert([{
-            cliente_nome: nomeCli,
-            tipo_operacao: tipoOp,
-            detalhes_consumo: `Abatimento Parcial de Dívida via ${meioPagamento}`,
-            valor_movimentated: valorPago,
-            saldo_restante_fiado: novoSaldo
-        }]);
-
-        carregarBanco();
-    }
-
-    async function cadastrarProduto() {
-        const nome = document.getElementById('prodNome').value.trim();
-        const preco = document.getElementById('prodPreco').value;
-        if(!nome || !preco) return;
-        await _supabase.from('produtos').insert([{ nome, preco: Number(preco) }]);
-        document.getElementById('prodNome').value = "";
-        document.getElementById('prodPreco').value = "";
-        carregarBanco();
-    }
-
-    function deletarProduto(id) {
-        exibirModalAlerta("Excluir Item", "Deseja remover este produto do cardápio?", async () => {
-            await _supabase.from('produtos').delete().eq('id', id);
-            carregarBanco();
-        });
-    }
-
-    function limparMesaVazia(clienteId) {
-        _supabase.from('comandas_ativas').delete().eq('cliente_id', clienteId).then(() => carregarBanco());
+    function removerCliente(index) {
+        if (confirm(`Excluir ${clientes[index].nome} da lista?`)) {
+            clientes.splice(index, 1);
+            salvarDados();
+        }
     }
 
     function zerarTudo() {
-        exibirModalAlerta("Zerar Tudo 🚨", "Atenção: Isso limpará de forma definitiva o caixa e os fiados das cadernetas. Continuar?", async () => {
-            await _supabase.from('comandas_ativas').delete().neq('id', 0);
-            await _supabase.from('historico_vendas').delete().neq('id', 0);
-            await _supabase.from('clientes').update({ saldo_fiado: 0 }).neq('id', 0);
-            carregarBanco();
-        });
-    }
-
-    function renderizarTudo() {
-        const select = document.getElementById('selectClienteAtivo');
-        select.innerHTML = '<option value="">Selecione o cliente para abrir a conta...</option>';
-        listagemClientes.forEach(c => { select.innerHTML += `<option value="${c.id}">${c.nome}</option>`; });
-
-        const listaBalcao = document.getElementById('listaClientes');
-        let clientesComComanda = [...new Set(listagemComandas.map(c => c.cliente_id))];
-        
-        if(clientesComComanda.length === 0) {
-            listaBalcao.innerHTML = "<div style='grid-column: 1/-1; color:var(--texto-secundario); text-align:center; padding: 40px 0;'>Nenhum cliente ativo no balcão de atendimento.</div>";
-        } else {
-            listaBalcao.innerHTML = "";
-            clientesComComanda.forEach(cId => {
-                let cliente = listagemClientes.find(c => c.id == cId);
-                if(!cliente) return;
-                
-                let coms = listagemComandas.filter(com => com.cliente_id == cId && com.produto_id != null);
-                let totalCard = 0, linhasProdutosHtml = "";
-
-                coms.forEach(com => {
-                    let prod = listagemProdutos.find(p => p.id == com.produto_id);
-                    if(prod && com.quantidade > 0) {
-                        totalCard += com.quantidade * prod.preco;
-                        linhasProdutosHtml += `
-                            <div class="produto-linha">
-                                <span class="prod-info">${prod.nome}: <strong>${com.quantidade} un</strong></span>
-                                <div class="botoes-qtd">
-                                    <button class="btn-control sub" onclick="lancarItem(${cliente.id}, ${prod.id}, -1)">-</button>
-                                    <button class="btn-control add" onclick="lancarItem(${cliente.id}, ${prod.id}, 1)">+</button>
-                                </div>
-                            </div>`;
-                    }
-                });
-
-                if(linhasProdutosHtml === "") {
-                    linhasProdutosHtml = `<p style="color:var(--texto-secundario); font-size:13px; text-align:center; padding:15px 0;">Nenhum produto consumido.</p>`;
-                }
-
-                listaBalcao.innerHTML += `
-                    <div class="cliente-card">
-                        <div class="card-header">
-                            <span class="nome">${cliente.nome}</span>
-                            <button class="btn-excluir" onclick="limparMesaVazia(${cliente.id})">✕</button>
-                        </div>
-                        <div style="flex-grow:1;">
-                            ${linhasProdutosHtml}
-                            <button class="btn-add-item" onclick="abrirModalLancar(${cliente.id}, '${cliente.nome}')">➕ Lançar Item</button>
-                        </div>
-                        <div>
-                            <div class="resumo-card">
-                                <span>Parcial:</span>
-                                <span style="color:var(--cor-primaria); font-weight:bold;">R$ ${totalCard.toFixed(2).replace('.', ',')}</span>
-                            </div>
-                            <button class="btn-fechar-comanda" onclick="abrirModalFechamentoComandaPrompt(${cliente.id})">💵 FECHAR CONTA</button>
-                        </div>
-                    </div>`;
-            });
+        if (confirm("Deseja limpar todo o Dashboard e reiniciar o caixa para o próximo jogo?")) {
+            clientes = []; historico = []; salvarDados();
         }
-
-        const listaFiados = document.getElementById('listaFiados');
-        listaFiados.innerHTML = "";
-        listagemClientes.forEach(dev => {
-            listaFiados.innerHTML += `
-                <div class="item-geral-card">
-                    <div>
-                        <strong style="font-size:1.1em; color:#fff;">${dev.nome}</strong><br>
-                        <button class="btn-abater" onclick="abrirModalModalAbater(${dev.id}, ${dev.saldo_fiado})">🤝 Receber Parcial / Total</button>
-                    </div>
-                    <span class="divida-valor" style="color: ${Number(dev.saldo_fiado) > 0 ? 'var(--cor-erro)' : 'var(--cor-sucesso)'}">R$ ${Number(dev.saldo_fiado).toFixed(2).replace('.', ',')}</span>
-                </div>`;
-        });
-
-        const listaGerenciar = document.getElementById('listaProdutosGerenciar');
-        listaGerenciar.innerHTML = "";
-        listagemProdutos.forEach(p => {
-            listaGerenciar.innerHTML += `
-                <div class="item-geral-card">
-                    <span>${p.nome} - <strong style="color:var(--cor-primaria);">R$ ${p.preco.toFixed(2).replace('.', ',')}</strong></span>
-                    <button class="btn-control sub" onclick="deletarProduto(${p.id})" style="width:32px; height:32px; font-size:14px;">✕</button>
-                </div>`;
-        });
-
-        _supabase.from('historico_vendas').select('*').then(({ data }) => {
-            let totalCaixa = 0, contagemProdutos = {};
-            (data || []).forEach(item => {
-                if(item.tipo_operacao !== 'Acúmulo Fiado') totalCaixa += Number(item.valor_movimentated);
-                if(item.detalhes_consumo && !item.detalhes_consumo.includes("Abatimento")) {
-                    let limpa = item.detalhes_consumo.split(' (')[0];
-                    limpa.split(' / ').forEach(p => {
-                        let sub = p.split('x ');
-                        let qtd = Number(sub[0]);
-                        let nome = sub.slice(1).join('x ');
-                        if(nome) contagemProdutos[nome] = (contagemProdutos[nome] || 0) + qtd;
-                    });
-                }
-            });
-            document.getElementById('faturamentoCaixa').innerText = `R$ ${totalCaixa.toFixed(2).replace('.', ',')}`;
-            document.getElementById('totalFiadoRua').innerText = `R$ ${listagemClientes.reduce((acc, c) => acc + Number(c.saldo_fiado), 0).toFixed(2).replace('.', ',')}`;
-            let estoqueHtml = "";
-            for(let prop in contagemProdutos) estoqueHtml += `• ${prop}: <strong>${contagemProdutos[prop]} un</strong><br>`;
-            document.getElementById('dashEstoqueLista').innerHTML = estoqueHtml || "Sem saídas registradas.";
-        });
     }
 
-    function abrirModalModalAbater(id, saldo) { abrirModalAbaterFiado(id, saldo); }
+    function renderizar() {
+        const listaHtml = document.getElementById('listaClientes');
+        listaHtml.innerHTML = "";
+        let totalDevedoresGeral = 0, brahmaAtivas = 0, budAtivas = 0, heinekenAtivas = 0;
 
-    carregarBanco();
+        clientes.forEach((cliente, index) => {
+            const totalCliente = (cliente.brahma * PRECO_BRAHMA) + (cliente.bud * PRECO_BUD) + (cliente.heineken * PRECO_HEINEKEN);
+            totalDevedoresGeral += totalCliente; 
+            brahmaAtivas += cliente.brahma; 
+            budAtivas += cliente.bud;
+            heinekenAtivas += cliente.heineken;
+
+            let textoDetalhes = [];
+            if(cliente.brahma > 0) textoDetalhes.push(`${cliente.brahma} Brahma`);
+            if(cliente.bud > 0) textoDetalhes.push(`${cliente.bud} Bud`);
+            if(cliente.heineken > 0) textoDetalhes.push(`${cliente.heineken} Hk`);
+            let stringConsumo = textoDetalhes.length > 0 ? textoDetalhes.join(' / ') : 'Nenhuma';
+
+            listaHtml.innerHTML += `
+                <div class="cliente-card">
+                    <div class="card-header">
+                        <span class="nome">${cliente.nome}</span>
+                        <button class="btn-excluir" onclick="removerCliente(${index})">✕</button>
+                    </div>
+                    <div class="produto-linha">
+                        <span class="prod-info">Brahma: <strong>${cliente.brahma} un</strong></span>
+                        <div class="botoes-qtd">
+                            <button class="btn-control sub" onclick="lancarItem(${index}, 'brahma', -1)">-</button>
+                            <button class="btn-control add" onclick="lancarItem(${index}, 'brahma', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="produto-linha">
+                        <span class="prod-info">Budweiser: <strong>${cliente.bud} un</strong></span>
+                        <div class="botoes-qtd">
+                            <button class="btn-control sub" onclick="lancarItem(${index}, 'bud', -1)">-</button>
+                            <button class="btn-control add" onclick="lancarItem(${index}, 'bud', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="produto-linha">
+                        <span class="prod-info">Heineken: <strong>${cliente.heineken} un</strong></span>
+                        <div class="botoes-qtd">
+                            <button class="btn-control sub" onclick="lancarItem(${index}, 'heineken', -1)">-</button>
+                            <button class="btn-control add" onclick="lancarItem(${index}, 'heineken', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="resumo-card">
+                        <span>Total Parcial:</span>
+                        <span style="color:var(--cor-primaria); font-weight:bold;">R$ ${totalCliente.toFixed(2).replace('.', ',')}</span>
+                    </div>
+                    <button class="btn-pagar" onclick="finalizarPagamento(${index})">💰 CONFIRMAR RECEBIMENTO</button>
+                </div>`;
+        });
+
+        let brahmaPagas = 0, budPagas = 0, heinekenPagas = 0, faturamentoPago = 0;
+        const historicoHtml = document.getElementById('historicoVendas');
+        historicoHtml.innerHTML = "";
+
+        historico.forEach(item => {
+            brahmaPagas += item.brahma; 
+            budPagas += item.bud; 
+            heinekenPagas += item.heineken || 0;
+            faturamentoPago += item.total;
+            
+            let detalhesH = [];
+            if(item.brahma > 0) detalhesH.push(`${item.brahma} Br`);
+            if(item.bud > 0) detalhesH.push(`${item.bud} Bd`);
+            if(item.heineken > 0) detalhesH.push(`${item.heineken} Hk`);
+
+            historicoHtml.innerHTML += `
+                <tr>
+                    <td><strong>${item.nome}</strong></td>
+                    <td>${detalhesH.join(' / ') || '0'}</td>
+                    <td>R$ ${item.total.toFixed(2).replace('.', ',')}</td>
+                    <td class="status-pago">${item.status}</td>
+                </tr>`;
+        });
+
+        document.getElementById('faturamentoTotal').innerText = `R$ ${(faturamentoPago + totalDevedoresGeral).toFixed(2).replace('.', ',')}`;
+        document.getElementById('dashCervejas').innerHTML = `Brahma: ${brahmaPagas + brahmaAtivas} <br> Budweiser: ${budPagas + budAtivas} <br> Heineken: ${heinekenPagas + heinekenAtivas}`;
+        document.getElementById('dashDevedores').innerText = `R$ ${totalDevedoresGeral.toFixed(2).replace('.', ',')}`;
+    }
+
+    renderizar();
 </script>
 </body>
 </html>
