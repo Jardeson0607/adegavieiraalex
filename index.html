@@ -39,7 +39,7 @@
 
         .abas { display: flex; background: var(--bg-input); padding: 6px; border-radius: 12px; margin-bottom: 25px; gap: 6px; overflow-x: auto; scrollbar-width: none; }
         .abas::-webkit-scrollbar { display: none; }
-        .aba-btn { flex: 1; padding: 14px 10px; background: transparent; color: var(--texto-secundario); border: none; border-radius: 9px; font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap; transition: all 0.2s ease; text-align: center; }
+        .aba-btn { flex: 1; padding: 14px 10px; background: transparent; color: var(--texto-secundario); border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap; transition: all 0.2s ease; text-align: center; }
         .aba-btn.ativa { background: var(--bg-card); color: var(--cor-primaria); border: 1px solid var(--borda); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         
         .conteudo-aba { display: none; }
@@ -55,7 +55,7 @@
         button:active { transform: scale(0.98); }
         .btn-sucesso { background-color: var(--cor-primaria); color: #121214; padding: 14px 24px; font-size: 16px; }
         
-        /* Grid do Balcão Limpo */
+        /* Grid do Balcão */
         .grid-balcao { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
         
         .cliente-card { background: var(--bg-input); border: 1px solid var(--borda); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
@@ -74,15 +74,12 @@
         .btn-add-item { width: 100%; background: #2d303b; color: var(--cor-primaria); padding: 10px; font-size: 13px; font-weight: 600; margin-top: 10px; border: 1px dashed rgba(255,179,0,0.3); border-radius: 8px; }
         .resumo-card { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--borda); display: flex; justify-content: space-between; font-size: 1.1em; font-weight: 600; }
         
-        .botoes-fechamento { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
-        .btn-fechar { padding: 14px; font-size: 14px; color: white; border-radius: 8px; font-weight: 700; }
-        .btn-fechar.pago { background: linear-gradient(135deg, #00c853, #007e33); }
-        .btn-fechar.fiado { background: linear-gradient(135deg, #aa00ff, #4a148c); }
+        .btn-fechar-comanda { width: 100%; padding: 14px; font-size: 14px; color: white; border-radius: 8px; font-weight: 700; margin-top: 14px; background: linear-gradient(135deg, #ffb300, #ff8f00); color: #121214; }
 
         .lista-geral { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
         .item-geral-card { display: flex; justify-content: space-between; align-items: center; background: var(--bg-input); padding: 18px; border-radius: 12px; border: 1px solid var(--borda); }
         .divida-valor { color: var(--cor-erro); font-weight: 700; font-size: 1.2em; }
-        .btn-abater { background: rgba(0,230,118,0.1); color: var(--cor-sucesso); border: 1px solid rgba(0,230,118,0.2); padding: 8px 14px; font-size: 13px; border-radius: 6px; font-weight: 600; margin-top: 6px; }
+        .btn-abater { background: rgba(0,230,118,0.1); color: var(--cor-sucesso); border: 1px solid rgba(0,230,118,0.2); padding: 8px 12px; font-size: 13px; border-radius: 6px; font-weight: 600; margin-top: 6px; }
 
         /* Dashboard */
         .dash-card { background: linear-gradient(135deg, #161e19, #0a110d); border: 1px solid rgba(0,230,118,0.2); border-radius: 14px; padding: 25px; margin-bottom: 25px; text-align: center; }
@@ -90,7 +87,7 @@
         .mini-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--borda); }
         .btn-zerar { display: block; width: 100%; background-color: rgba(255,82,82,0.05); color: var(--cor-erro); margin-top: 35px; padding: 16px; font-size: 14px; border: 1px solid rgba(255,82,82,0.15); }
 
-        /* ESTILIZAÇÃO PREMIUM DAS TELINHAS (MODAL) */
+        /* MODALS ESTILIZADOS */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 8, 0.85); backdrop-filter: blur(5px); z-index: 999; align-items: center; justify-content: center; padding: 15px; }
         .modal-overlay.ativo { display: flex; }
         .modal-box { background: var(--bg-card); border: 1px solid var(--borda); padding: 24px; border-radius: 20px; width: 100%; max-width: 440px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); animation: subir 0.3s ease-out; }
@@ -103,10 +100,9 @@
         .modal-titulo { font-size: 1.3em; font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid var(--borda); padding-bottom: 10px; color: #fff; }
         .modal-opcoes-grid { display: grid; grid-template-columns: 1fr; gap: 8px; max-height: 260px; overflow-y: auto; margin-bottom: 20px; padding-right: 4px; }
         .btn-opcao-prod { width: 100%; background: var(--bg-input); border: 1px solid var(--borda); padding: 14px; text-align: left; color: #fff; font-size: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-opcao-prod:hover { border-color: var(--cor-primaria); background: #262933; }
         
         .modal-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-modal { padding: 12px; font-size: 14px; border-radius: 8px; font-weight: 700; }
+        .btn-modal { padding: 14px; font-size: 14px; border-radius: 8px; font-weight: 700; }
         .btn-modal.cancelar { background: #2d303b; color: var(--texto-secundario); }
         .btn-modal.confirmar { background: var(--cor-sucesso); color: #fff; }
     </style>
@@ -144,7 +140,7 @@
                 <button class="btn-sucesso" onclick="cadastrarCliente()" style="background-color: var(--cor-sucesso); color:#fff;">Salvar</button>
             </div>
         </div>
-        <h4 style="margin: 25px 0 12px 0; color:var(--texto-secundario); font-size: 16px;">Lista de Clientes e Saldos</h4>
+        <h4 style="margin: 25px 0 12px 0; color:var(--texto-secundario); font-size: 16px;">Lista Geral de Clientes (Estilo Caderneta)</h4>
         <div class="lista-geral" id="listaFiados">Nenhum cliente cadastrado.</div>
     </div>
 
@@ -163,12 +159,12 @@
     <!-- 4. DASHBOARD -->
     <div id="aba-dashboard" class="conteudo-aba">
         <div class="dash-card">
-            <h2 style="margin:0; font-size:14px; color:var(--texto-secundario); text-transform:uppercase;">Faturamento em Caixa (Dinheiro/Pix)</h2>
+            <h2 style="margin:0; font-size:14px; color:var(--texto-secundario); text-transform:uppercase;">Faturamento em Caixa (Dinheiro/Pix/Cartão)</h2>
             <div id="faturamentoCaixa" style="font-size: 40px; font-weight: bold; color: var(--cor-sucesso); margin-top: 5px;">R$ 0,00</div>
         </div>
         <div class="dash-grid">
             <div class="mini-card" style="border-color: rgba(255,82,82,0.2)">
-                <h3 style="margin:0; font-size:12px; color:var(--texto-secundario); text-transform:uppercase;">Valor Total Pendurado (Fiado)</h3>
+                <h3 style="margin:0; font-size:12px; color:var(--texto-secundario); text-transform:uppercase;">Valor Pendurado na Rua (Fiado Total)</h3>
                 <p id="totalFiadoRua" style="color:var(--cor-erro); font-size:24px; font-weight:700; margin:5px 0 0 0;">R$ 0,00</p>
             </div>
             <div class="mini-card">
@@ -180,7 +176,7 @@
     </div>
 </div>
 
-<!-- ================= TELINHAS FLUTUANTES (MODAL) PREMIUM ================= -->
+<!-- ================= MODALS INTERNOS DO APP ================= -->
 
 <!-- 1. MODAL LANÇAR PRODUTO NO BALCÃO -->
 <div class="modal-overlay" id="modalLancar">
@@ -191,33 +187,74 @@
     </div>
 </div>
 
-<!-- 2. MODAL ABATIMENTO PARCIAL / FIADO -->
-<div class="modal-overlay" id="modalAbater">
+<!-- 2. MODAL FECHAMENTO INTELIGENTE DE COMANDA (PAGAMENTO PARCIAL / INTEGRAL / MEIOS DE PAGAMENTO) -->
+<div class="modal-overlay" id="modalFechamentoComanda">
     <div class="modal-box">
-        <div class="modal-titulo">🤝 Receber / Abater Valor</div>
-        <div style="margin-bottom: 15px;">
-            <p style="margin:0 0 5px 0; font-size:13px; color:var(--texto-secundario);">VALOR DEVEDOR ATUAL</p>
-            <div id="modalAbaterSaldoAtual" style="font-size:22px; font-weight:700; color:var(--cor-erro);">R$ 0,00</div>
+        <div class="modal-titulo">🧾 Finalizar Atendimento</div>
+        
+        <div style="margin-bottom: 14px;">
+            <p style="margin:0; font-size:12px; color:var(--texto-secundario);">VALOR TOTAL DO CONSUMO</p>
+            <div id="modalFechamentoTotal" style="font-size:24px; font-weight:700; color:var(--cor-primaria);">R$ 0,00</div>
         </div>
+
+        <div style="margin-bottom: 14px;">
+            <label style="font-size:13px; color:var(--texto-secundario); display:block; margin-bottom:4px;">FORMA DE PAGAMENTO</label>
+            <select id="modalFechamentoMeio">
+                <option value="Pix">Pix</option>
+                <option value="Dinheiro">Dinheiro</option>
+                <option value="Cartão">Cartão</option>
+            </select>
+        </div>
+
         <div style="margin-bottom: 20px;">
-            <label style="font-size:13px; color:var(--texto-secundario); display:block; margin-bottom:6px;">VALOR PAGO PELO CLIENTE</label>
-            <input type="number" id="modalAbaterValorInput" placeholder="Ex: 50.00" step="0.01">
+            <label style="font-size:13px; color:var(--texto-secundario); display:block; margin-bottom:4px;">VALOR PAGO AGORA (Deixe 0 se for fiado total)</label>
+            <input type="number" id="modalFechamentoValorPagoInput" placeholder="Ex: 50.00" step="0.01">
         </div>
+
         <div class="modal-botoes">
-            <button class="btn-modal cancelar" onclick="fecharModal('modalAbater')">Cancelar</button>
-            <button class="btn-modal confirmar" onclick="confirmarAbatimentoParcial()">Confirmar</button>
+            <button class="btn-modal cancelar" onclick="fecharModal('modalFechamentoComanda')">Cancelar</button>
+            <button class="btn-modal confirmar" onclick="processarFechamentoComandaBanco()">Confirmar Caixa</button>
         </div>
     </div>
 </div>
 
-<!-- 3. MODAL DE CONFIRMAÇÕES GERAIS (FECHAMENTOS / EXCLUSÕES) -->
+<!-- 3. MODAL ABATIMENTO PARCIAL / INTEGRAL DA CADERNETA -->
+<div class="modal-overlay" id="modalAbater">
+    <div class="modal-box">
+        <div class="modal-titulo">🤝 Receber Conta da Caderneta</div>
+        <div style="margin-bottom: 15px;">
+            <p style="margin:0 0 5px 0; font-size:13px; color:var(--texto-secundario);">SALDO DEVEDOR ATUAL</p>
+            <div id="modalAbaterSaldoAtual" style="font-size:22px; font-weight:700; color:var(--cor-erro);">R$ 0,00</div>
+        </div>
+        
+        <div style="margin-bottom: 14px;">
+            <label style="font-size:13px; color:var(--texto-secundario); display:block; margin-bottom:4px;">FORMA DE RECEBIMENTO</label>
+            <select id="modalAbaterMeio">
+                <option value="Pix">Pix</option>
+                <option value="Dinheiro">Dinheiro</option>
+                <option value="Cartão">Cartão</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="font-size:13px; color:var(--texto-secundario); display:block; margin-bottom:6px;">VALOR ENTREGUE PELO CLIENTE</label>
+            <input type="number" id="modalAbaterValorInput" placeholder="Ex: 30.00" step="0.01">
+        </div>
+        <div class="modal-botoes">
+            <button class="btn-modal cancelar" onclick="fecharModal('modalAbater')">Cancelar</button>
+            <button class="btn-modal confirmar" onclick="confirmarAbatimentoParcialFiado()">Confirmar Recebimento</button>
+        </div>
+    </div>
+</div>
+
+<!-- 4. MODAL ALERTA DE EXCLUSÃO -->
 <div class="modal-overlay" id="modalAlerta">
     <div class="modal-box">
         <div class="modal-titulo" id="alertaTitulo">Confirmação</div>
         <p id="alertaTexto" style="color:var(--texto-secundario); font-size:15px; margin:0 0 20px 0; line-height:1.4;"></p>
         <div class="modal-botoes">
             <button class="btn-modal cancelar" onclick="fecharModal('modalAlerta')">Não, Voltar</button>
-            <button class="btn-modal confirmar" id="btnConfirmarAlerta">Sim, Confirmar</button>
+            <button class="btn-modal confirmar" id="btnConfirmarAlerta" style="background-color: var(--cor-erro);">Sim, Confirmar</button>
         </div>
     </div>
 </div>
@@ -231,9 +268,10 @@
     let listagemClientes = [];
     let listagemComandas = [];
     
-    // Variáveis de controle para ações dos modais
     let acaoConfirmacaoGlobal = null;
     let clienteIdSelecionadoGlobal = null;
+    let totalConsumoComandaGlobal = 0;
+    let resumoConsumoComandaGlobal = "";
     let saldoDevedorGlobal = 0;
 
     async function carregarBanco() {
@@ -276,7 +314,7 @@
         const nome = input.value.trim();
         if(!nome) return;
         const { error } = await _supabase.from('clientes').insert([{ nome }]);
-        if(error) { exibirModalAlerta("Erro", "Não foi possível cadastrar. Verifique se o nome já existe.", null); return; }
+        if(error) { exibirModalAlerta("Aviso", "Este cliente já está cadastrado ou o banco rejeitou o nome.", null); return; }
         input.value = "";
         carregarBanco();
     }
@@ -300,7 +338,7 @@
         container.innerHTML = "";
 
         if(listagemProdutos.length === 0) {
-            container.innerHTML = "<p style='color:var(--texto-secundario); font-size:14px;'>Cadastre produtos primeiro.</p>";
+            container.innerHTML = "<p style='color:var(--texto-secundario); font-size:14px;'>Cadestre produtos primeiro na aba ao lado.</p>";
         }
 
         listagemProdutos.forEach(prod => {
@@ -319,9 +357,7 @@
     }
 
     async function lancarItem(clienteId, produtoId, valor) {
-        // Remove a linha nula inicial automática que só serve para segurar o cartão aberto
         await _supabase.from('comandas_ativas').delete().eq('cliente_id', clienteId).is('produto_id', null);
-
         let registro = listagemComandas.find(c => c.cliente_id == clienteId && c.produto_id == produtoId);
         
         if (!registro) {
@@ -338,12 +374,8 @@
         carregarBanco();
     }
 
-    function enviarComprovanteZap(texto) {
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
-    }
-
-    function fecharContaPrompt(clienteId, tipoPagamento) {
-        const cliente = listagemClientes.find(c => c.id == clienteId);
+    function abrirModalFechamentoComandaPrompt(clienteId) {
+        clienteIdSelecionadoGlobal = clienteId;
         const comandasDoCliente = listagemComandas.filter(c => c.cliente_id == clienteId && c.produto_id != null);
         
         let total = 0, resumoText = [];
@@ -360,32 +392,44 @@
             return;
         }
 
-        exibirModalAlerta(
-            "Fechar Conta 🍻", 
-            `Deseja encerrar o consumo de ${cliente.nome} no valor de R$ ${total.toFixed(2).replace('.', ',')} lançando como ${tipoPagamento}?`,
-            async () => {
-                let novoSaldo = Number(cliente.saldo_fiado);
-                if(tipoPagamento === 'Fiado') novoSaldo += total;
+        totalConsumoComandaGlobal = total;
+        resumoConsumoComandaGlobal = resumoText.join(' / ');
 
-                await _supabase.from('clientes').update({ saldo_fiado: novoSaldo }).eq('id', clienteId);
-                await _supabase.from('historico_vendas').insert([{
-                    cliente_nome: cliente.nome,
-                    tipo_operacao: tipoPagamento === 'Fiado' ? 'Acúmulo Fiado' : 'Venda Balcão',
-                    detalhes_consumo: resumoText.join(' / '),
-                    valor_movimentated: total,
-                    saldo_restante_fiado: novoSaldo
-                }]);
-
-                await _supabase.from('comandas_ativas').delete().eq('cliente_id', clienteId);
-                
-                let comprovante = `*ADEGA VIEIRA* 🍻\n---------------------------\n*CLIENTE:* ${cliente.nome}\n*CONSUMO:* ${resumoText.join(' / ')}\n*TOTAL:* R$ ${total.toFixed(2).replace('.', ',')}\n*STATUS:* ${tipoPagamento === 'Fiado' ? '❌ Lançado no Fiado' : '✅ Pago com Sucesso'}\n---------------------------\n_Obrigado pela preferência!_`;
-                enviarComprovanteZap(comprovante);
-                carregarBanco();
-            }
-        );
+        document.getElementById('modalFechamentoTotal').innerText = `R$ ${totalConsumoComandaGlobal.toFixed(2).replace('.', ',')}`;
+        document.getElementById('modalFechamentoValorPagoInput').value = totalConsumoComandaGlobal.toFixed(2);
+        
+        abrirModal('modalFechamentoComanda');
     }
 
-    function abrirModalAbater(clienteId, saldoAtual) {
+    async function processarFechamentoComandaBanco() {
+        let inputVal = document.getElementById('modalFechamentoValorPagoInput').value;
+        if(inputVal === "" || isNaN(inputVal) || Number(inputVal) < 0) return;
+
+        let valorPagoAgora = Number(inputVal);
+        let meioPagamento = document.getElementById('modalFechamentoMeio').value;
+        fecharModal('modalFechamentoComanda');
+
+        const cliente = listagemClientes.find(c => c.id == clienteIdSelecionadoGlobal);
+        let valorFaltantePendurar = totalConsumoComandaGlobal - valorPagoAgora;
+        
+        // Atualiza a caderneta permanente com a diferença
+        let novoSaldoCaderneta = Number(cliente.saldo_fiado) + valorFaltantePendurar;
+        await _supabase.from('clientes').update({ saldo_fiado: novoSaldoCaderneta }).eq('id', clienteIdSelecionadoGlobal);
+
+        // Salva a auditoria
+        await _supabase.from('historico_vendas').insert([{
+            cliente_nome: cliente.nome,
+            tipo_operacao: valorFaltantePendurar > 0 ? 'Fechamento Misto/Fiado' : 'Venda Balcão Integral',
+            detalhes_consumo: resumoConsumoComandaGlobal + ` (Pago: R$ ${valorPagoAgora.toFixed(2)} via ${meioPagamento} | Pendurado: R$ ${valorFaltantePendurar.toFixed(2)})`,
+            valor_movimentated: valorPagoAgora,
+            saldo_restante_fiado: novoSaldoCaderneta
+        }]);
+
+        await _supabase.from('comandas_ativas').delete().eq('cliente_id', clienteIdSelecionadoGlobal);
+        carregarBanco();
+    }
+
+    function abrirModalAbaterFiado(clienteId, saldoAtual) {
         clienteIdSelecionadoGlobal = clienteId;
         saldoDevedorGlobal = Number(saldoAtual);
         document.getElementById('modalAbaterSaldoAtual').innerText = `R$ ${saldoDevedorGlobal.toFixed(2).replace('.', ',')}`;
@@ -393,11 +437,12 @@
         abrirModal('modalAbater');
     }
 
-    async function confirmarAbatimentoParcial() {
+    async function confirmarAbatimentoParcialFiado() {
         let inputVal = document.getElementById('modalAbaterValorInput').value;
         if(!inputVal || isNaN(inputVal) || Number(inputVal) <= 0) return;
         
         let valorPago = Number(inputVal);
+        let meioPagamento = document.getElementById('modalAbaterMeio').value;
         fecharModal('modalAbater');
 
         let novoSaldo = saldoDevedorGlobal - valorPago;
@@ -408,13 +453,11 @@
         await _supabase.from('historico_vendas').insert([{
             cliente_nome: nomeCli,
             tipo_operacao: tipoOp,
-            detalhes_consumo: "Abatimento de Dívida",
+            detalhes_consumo: `Abatimento Parcial de Dívida via ${meioPagamento}`,
             valor_movimentated: valorPago,
             saldo_restante_fiado: novoSaldo
         }]);
 
-        let comprovante = `*ADEGA VIEIRA* 🍻\n*RECIBO DE PAGAMENTO*\n---------------------------\n*CLIENTE:* ${nomeCli}\n*VALOR ENTREGUE:* R$ ${valorPago.toFixed(2).replace('.', ',')}\n*SALDO RESTANTE:* R$ ${novoSaldo.toFixed(2).replace('.', ',')}\n*STATUS:* ${novoSaldo <= 0 ? '✅ Totalmente Pago!' : '⚠️ Abatido Parcialmente'}\n---------------------------\n_Obrigado!_`;
-        enviarComprovanteZap(comprovante);
         carregarBanco();
     }
 
@@ -429,21 +472,18 @@
     }
 
     function deletarProduto(id) {
-        exibirModalAlerta("Excluir Item", "Deseja remover este produto definitivamente do cardápio?", async () => {
+        exibirModalAlerta("Excluir Item", "Deseja remover este produto do cardápio?", async () => {
             await _supabase.from('produtos').delete().eq('id', id);
             carregarBanco();
         });
     }
 
     function limparMesaVazia(clienteId) {
-        exibirModalAlerta("Remover", "Deseja fechar e retirar esta comanda do balcão ativo?", async () => {
-            await _supabase.from('comandas_ativas').delete().eq('cliente_id', clienteId);
-            carregarBanco();
-        });
+        _supabase.from('comandas_ativas').delete().eq('cliente_id', clienteId).then(() => carregarBanco());
     }
 
     function zerarTudo() {
-        exibirModalAlerta("PERIGO 🚨", "Isso apagará permanentemente TODO o histórico de caixa e zerará as cadernetas. Confirmar?", async () => {
+        exibirModalAlerta("Zerar Tudo 🚨", "Atenção: Isso limpará de forma definitiva o caixa e os fiados. Continuar?", async () => {
             await _supabase.from('comandas_ativas').delete().neq('id', 0);
             await _supabase.from('historico_vendas').delete().neq('id', 0);
             await _supabase.from('clientes').update({ saldo_fiado: 0 }).neq('id', 0);
@@ -454,13 +494,13 @@
     function renderizarTudo() {
         const select = document.getElementById('selectClienteAtivo');
         select.innerHTML = '<option value="">Selecione o cliente para abrir a conta...</option>';
-        listagemClientes.forEach(c => { select.innerHTML += `<option value="${c.id}">${c.nome}</option>`; });
+        listagemClientes.forEach(c => { select.innerHTML += `<option value="${c.id}">${c.nome}</option>'; });
 
         const listaBalcao = document.getElementById('listaClientes');
         let clientesComComanda = [...new Set(listagemComandas.map(c => c.cliente_id))];
         
         if(clientesComComanda.length === 0) {
-            listaBalcao.innerHTML = "<div style='grid-column: 1/-1; color:var(--texto-secundario); text-align:center; padding: 40px 0;'>Nenhum cliente em atendimento no balcão.</div>";
+            listaBalcao.innerHTML = "<div style='grid-column: 1/-1; color:var(--texto-secundario); text-align:center; padding: 40px 0;'>Nenhum cliente ativo no balcão de atendimento.</div>";
         } else {
             listaBalcao.innerHTML = "";
             clientesComComanda.forEach(cId => {
@@ -470,7 +510,6 @@
                 let coms = listagemComandas.filter(com => com.cliente_id == cId && com.produto_id != null);
                 let totalCard = 0, linhasProdutosHtml = "";
 
-                // Só exibe as linhas dos produtos que REALMENTE foram consumidos (> 0 un)
                 coms.forEach(com => {
                     let prod = listagemProdutos.find(p => p.id == com.produto_id);
                     if(prod && com.quantidade > 0) {
@@ -505,10 +544,7 @@
                                 <span>Parcial:</span>
                                 <span style="color:var(--cor-primaria); font-weight:bold;">R$ ${totalCard.toFixed(2).replace('.', ',')}</span>
                             </div>
-                            <div class="botoes-fechamento">
-                                <button class="btn-fechar pago" onclick="fecharContaPrompt(${cliente.id}, 'Pix/Dinheiro')">💵 PAGO</button>
-                                <button class="btn-fechar fiado" onclick="fecharContaPrompt(${cliente.id}, 'Fiado')">📓 FIADO</button>
-                            </div>
+                            <button class="btn-fechar-comanda" onclick="abrirModalFechamentoComandaPrompt(${cliente.id})">💵 FECHAR CONTA</button>
                         </div>
                     </div>`;
             });
@@ -521,7 +557,7 @@
                 <div class="item-geral-card">
                     <div>
                         <strong style="font-size:1.1em; color:#fff;">${dev.nome}</strong><br>
-                        <button class="btn-abater" onclick="abrirModalModalAbater(${dev.id}, ${dev.saldo_fiado})">🤝 Receber R$</button>
+                        <button class="btn-abater" onclick="abrirModalModalAbater(${dev.id}, ${dev.saldo_fiado})">🤝 Receber Parcial / Total</button>
                     </div>
                     <span class="divida-valor" style="color: ${Number(dev.saldo_fiado) > 0 ? 'var(--cor-erro)' : 'var(--cor-sucesso)'}">R$ ${Number(dev.saldo_fiado).toFixed(2).replace('.', ',')}</span>
                 </div>`;
@@ -541,8 +577,10 @@
             let totalCaixa = 0, contagemProdutos = {};
             (data || []).forEach(item => {
                 if(item.tipo_operacao !== 'Acúmulo Fiado') totalCaixa += Number(item.valor_movimentated);
-                if(item.detalhes_consumo && item.detalhes_consumo !== "Abatimento de Dívida") {
-                    item.detalhes_consumo.split(' / ').forEach(p => {
+                if(item.detalhes_consumo && !item.detalhes_consumo.includes("Abatimento")) {
+                    // Trata string composta para o inventário do Dashboard
+                    let limpa = item.detalhes_consumo.split(' (')[0];
+                    limpa.split(' / ').forEach(p => {
                         let sub = p.split('x ');
                         let qtd = Number(sub[0]);
                         let nome = sub.slice(1).join('x ');
@@ -558,8 +596,7 @@
         });
     }
 
-    // Função ponte para consertar o escopo do botão
-    function abrirModalModalAbater(id, saldo) { abrirModalAbater(id, saldo); }
+    function abrirModalModalAbater(id, saldo) { abrirModalAbaterFiado(id, saldo); }
 
     carregarBanco();
 </script>
