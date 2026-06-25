@@ -5,257 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Adega Vieira</title>
     
-    <!-- Link para o arquivo Manifest separado -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#ffb300">
-    
-    <!-- Configurações Apple/iOS -->
+    <meta name="theme-color" content="#121214">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Adega Vieira">
     <link rel="apple-touch-icon" href="logo.png">
+
+    <!-- SDK do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
-            --bg-principal: #121214;
-            --bg-card: #1a1a1e;
-            --bg-input: #26262b;
+            --bg-principal: #0d0e12;
+            --bg-card: #16171d;
+            --bg-input: #21232c;
             --cor-primaria: #ffb300;
-            --cor-erro: #e53935;
-            --cor-sucesso: #43a047;
+            --cor-erro: #ff5252;
+            --cor-sucesso: #00e676;
             --cor-azul: #00b0ff;
-            --cor-verde-hk: #2e7d32; /* Verde Heineken */
             --texto-principal: #ffffff;
-            --texto-secundario: #a4a4a8;
+            --texto-secundario: #9699a6;
+            --borda: #292c35;
         }
 
-        * {
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg-principal);
-            margin: 0;
-            padding: 8px;
-            color: var(--texto-principal);
-        }
-
-        .container {
-            width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
-            background: var(--bg-card);
-            padding: 15px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-            border: 1px solid #2d2d34;
-        }
-
-        .topo-app {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            margin: 10px 0 20px 0;
-        }
-        .logo-foto {
-            width: 75px;
-            height: 75px;
-            border-radius: 50%;
-            border: 2px solid var(--cor-primaria);
-            object-fit: cover;
-        }
-        h1 {
-            color: var(--cor-primaria);
-            margin: 0;
-            font-size: 24px;
-            letter-spacing: 0.5px;
-        }
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-principal); margin: 0; padding: 10px; color: var(--texto-principal); }
+        .container { width: 100%; max-width: 480px; margin: 0 auto; background: var(--bg-card); padding: 18px; border-radius: 20px; border: 1px solid var(--borda); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        .abas {
-            display: flex;
-            background: var(--bg-input);
-            padding: 4px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            gap: 4px;
-        }
-        .aba-btn {
-            flex: 1;
-            padding: 12px;
-            background: transparent;
-            color: var(--texto-secundario);
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .aba-btn.ativa {
-            background: var(--cor-primaria);
-            color: #121214;
-        }
+        .topo-app { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--borda); }
+        .logo-foto { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--cor-primaria); object-fit: cover; }
+        h1 { color: #fff; margin: 0; font-size: 22px; font-weight: 700; }
 
+        .abas { display: flex; background: var(--bg-input); padding: 4px; border-radius: 12px; margin-bottom: 20px; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+        .abas::-webkit-scrollbar { display: none; }
+        .aba-btn { flex: 1; padding: 12px 8px; background: transparent; color: var(--texto-secundario); border: none; border-radius: 9px; font-weight: 600; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.2s ease; }
+        .aba-btn.ativa { background: var(--bg-card); color: var(--cor-primaria); border: 1px solid var(--borda); }
+        
         .conteudo-aba { display: none; }
         .conteudo-aba.ativa { display: block; }
 
-        .menu-precos {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 6px;
-            margin-bottom: 15px;
-        }
-        .preco-tag {
-            text-align: center;
-            font-weight: bold;
-            font-size: 0.8em;
-            background: rgba(255, 179, 0, 0.1);
-            border: 1px solid var(--cor-primaria);
-            color: var(--cor-primaria);
-            padding: 8px 4px;
-            border-radius: 8px;
-        }
-        .preco-tag.bud {
-            background: rgba(229, 57, 53, 0.1);
-            border: 1px solid var(--cor-erro);
-            color: var(--cor-erro);
-        }
-        .preco-tag.heineken {
-            background: rgba(74, 175, 80, 0.1);
-            border: 1px solid #4caf50;
-            color: #4caf50;
-        }
-
-        .form-grupo {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            background: var(--bg-input);
-            border: 1px solid #3d3d45;
-            border-radius: 8px;
-            font-size: 16px;
-            color: white;
-            outline: none;
-        }
+        .form-grupo { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-bottom: 20px; }
+        input[type="text"], input[type="number"] { width: 100%; padding: 14px; background: var(--bg-input); border: 1px solid var(--borda); border-radius: 10px; font-size: 16px; color: white; outline: none; transition: border-color 0.2s; }
+        input[type="text"]:focus, input[type="number"]:focus { border-color: var(--cor-primaria); }
         
-        button {
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            touch-action: manipulation;
-        }
-        .btn-sucesso { 
-            background-color: var(--cor-sucesso); 
-            color: white;
-            padding: 12px 16px;
-            font-size: 16px;
-        }
-        .btn-pagar { 
-            background: linear-gradient(135deg, #43a047, #2e7d32);
-            color: white;
-            font-size: 14px; 
-            padding: 12px;
-            width: 100%;
-            margin-top: 12px;
-            border-radius: 8px;
-        }
-
-        .cliente-card {
-            background: #222227;
-            border: 1px solid #2d2d34;
-            margin-bottom: 15px;
-            border-radius: 12px;
-            padding: 14px;
-        }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #2d2d34;
-            padding-bottom: 8px;
-            margin-bottom: 10px;
-        }
-        .nome { font-weight: bold; font-size: 1.2em; color: #fff; }
-        .btn-excluir { background: transparent; color: var(--cor-erro); font-size: 18px; padding: 4px 8px; }
-
-        .produto-linha {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 0;
-        }
+        button { border: none; border-radius: 10px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
+        button:active { opacity: 0.7; }
+        .btn-sucesso { background-color: var(--cor-primaria); color: #121214; padding: 14px 20px; font-size: 16px; }
+        
+        /* Layout dos Cartões */
+        .cliente-card { background: var(--bg-input); border: 1px solid var(--borda); margin-bottom: 14px; border-radius: 14px; padding: 16px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--borda); padding-bottom: 10px; margin-bottom: 12px; }
+        .nome { font-weight: 700; font-size: 1.2em; color: #fff; }
+        .btn-excluir { background: transparent; color: var(--cor-erro); font-size: 20px; }
+        
+        .produto-linha { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
         .prod-info { font-size: 0.95em; color: var(--texto-secundario); }
-        .prod-info strong { color: #fff; }
-        .botoes-qtd { display: flex; gap: 6px; }
-        .btn-control { width: 38px; height: 38px; font-size: 18px; color: white; }
-        .btn-control.sub { background-color: #3d3d45; color: var(--cor-erro); }
-        .btn-control.add { background-color: var(--cor-azul); }
+        .prod-info strong { color: #fff; font-size: 1.1em; }
+        .botoes-qtd { display: flex; gap: 8px; }
+        .btn-control { width: 38px; height: 38px; font-size: 20px; color: white; border-radius: 8px; }
+        .btn-control.sub { background-color: rgba(255,82,82,0.1); color: var(--cor-erro); border: 1px solid rgba(255,82,82,0.2); }
+        .btn-control.add { background-color: rgba(0,176,255,0.1); color: var(--cor-azul); border: 1px solid rgba(0,176,255,0.2); }
+        
+        .resumo-card { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--borda); display: flex; justify-content: space-between; font-size: 1.05em; font-weight: 600; }
+        
+        .botoes-fechamento { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+        .btn-fechar { padding: 12px; font-size: 13px; color: white; border-radius: 8px; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .btn-fechar.pago { background: linear-gradient(135deg, #00c853, #007e33); }
+        .btn-fechar.fiado { background: linear-gradient(135deg, #aa00ff, #4a148c); }
 
-        .resumo-card {
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px dashed #3d3d45;
-            display: flex;
-            justify-content: space-between;
-            font-size: 1em;
-        }
+        /* Estilos Caderneta */
+        .fiado-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg-input); padding: 14px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--borda); }
+        .divida-valor { color: var(--cor-erro); font-weight: 700; font-size: 1.15em; }
+        .btn-abater { background: rgba(0,230,118,0.1); color: var(--cor-sucesso); border: 1px solid rgba(0,230,118,0.2); padding: 8px 12px; font-size: 13px; border-radius: 6px; font-weight: 600; margin-top: 6px; }
 
-        .dash-card {
-            background: linear-gradient(135deg, #1e251f, #141a15);
-            border: 1px solid var(--cor-sucesso);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        .dash-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .mini-card {
-            background: var(--bg-input);
-            padding: 14px;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px solid #2d2d34;
-        }
-        .mini-card h3 { margin: 0; font-size: 12px; color: var(--texto-secundario); text-transform: uppercase; }
-        .mini-card p { margin: 6px 0 0 0; font-size: 13px; font-weight: bold; color: #fff; line-height: 1.4; }
-
-        .tabela-container {
-            overflow-x: auto;
-            border-radius: 8px;
-            border: 1px solid #2d2d34;
-            background: var(--bg-input);
-        }
-        .tabela-historico { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .tabela-historico th, .tabela-historico td { padding: 12px 10px; border-bottom: 1px solid #2d2d34; text-align: left; }
-        .tabela-historico th { background: #2d2d34; color: var(--texto-secundario); }
-        .status-pago { color: var(--cor-sucesso); font-weight: bold; }
-
-        .btn-zerar {
-            display: block;
-            width: 100%;
-            background-color: #2d2d34;
-            color: #ff5252;
-            margin-top: 25px;
-            padding: 14px;
-            font-size: 14px;
-            border: 1px solid rgba(255, 82, 82, 0.2);
-        }
+        /* Dashboard */
+        .dash-card { background: linear-gradient(135deg, #161e19, #0a110d); border: 1px solid rgba(0,230,118,0.2); border-radius: 14px; padding: 20px; margin-bottom: 15px; text-align: center; }
+        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .mini-card { background: var(--bg-input); padding: 14px; border-radius: 12px; text-align: center; border: 1px solid var(--borda); }
+        
+        .btn-zerar { display: block; width: 100%; background-color: rgba(255,82,82,0.05); color: var(--cor-erro); margin-top: 25px; padding: 14px; font-size: 14px; border: 1px solid rgba(255,82,82,0.15); }
     </style>
 </head>
 <body>
@@ -268,240 +96,329 @@
     
     <div class="abas">
         <button class="aba-btn ativa" onclick="mudarAba('balcao')">🛒 Balcão (Jogo)</button>
-        <button class="aba-btn" onclick="mudarAba('dashboard')">📊 Dashboard</button>
+        <button class="aba-btn" onclick="mudarAba('fiado')">📓 Caderneta Fiado</button>
+        <button class="aba-btn" onclick="mudarAba('produtos')">⚙️ Produtos / Preços</button>
+        <button class="aba-btn" onclick="mudarAba('dashboard')">📊 Balanço Geral</button>
     </div>
 
-    <!-- ABA 1: BALCÃO -->
+    <!-- 1. BALCÃO -->
     <div id="aba-balcao" class="conteudo-aba ativa">
-        <div class="menu-precos">
-            <div class="preco-tag">Brahma:<br>R$ 3,50</div>
-            <div class="preco-tag bud">Bud:<br>R$ 4,50</div>
-            <div class="preco-tag heineken">Heineken:<br>R$ 8,00</div>
-        </div>
-
         <div class="form-grupo">
             <input type="text" id="nomeCliente" placeholder="Nome de quem chegou..." autocomplete="off">
-            <button class="btn-sucesso" onclick="adicionarCliente()">Adicionar</button>
+            <button class="btn-sucesso" onclick="adicionarCliente()">+</button>
         </div>
-
-        <div class="lista-clientes" id="listaClientes"></div>
+        <div id="listaClientes">Carregando comandos ativos...</div>
     </div>
 
-    <!-- ABA 2: DASHBOARD -->
+    <!-- 2. CADERNETA DE FIADO -->
+    <div id="aba-fiado" class="conteudo-aba">
+        <div id="listaFiados">Nenhum débito em aberto.</div>
+    </div>
+
+    <!-- 3. CONFIGURAÇÃO DE PRODUTOS -->
+    <div id="aba-produtos" class="conteudo-aba">
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; background: var(--bg-input); padding: 14px; border-radius: 12px; border:1px solid var(--borda);">
+            <h4 style="margin:0 0 5px 0; color:var(--cor-primaria);">Cadastrar Novo Item</h4>
+            <input type="text" id="prodNome" placeholder="Nome do Produto (Ex: Skol Latão)">
+            <input type="number" id="prodPreco" placeholder="Preço de Venda (Ex: 6.00)" step="0.01">
+            <button class="btn-sucesso" onclick="cadastrarProduto()" style="padding:12px; font-size:14px; background: var(--cor-sucesso); color: #fff;">Salvar no Cardápio</button>
+        </div>
+        <h4 style="margin: 0 0 10px 0; color:var(--texto-secundario);">Produtos Disponíveis</h4>
+        <div id="listaProdutosGerenciar"></div>
+    </div>
+
+    <!-- 4. DASHBOARD -->
     <div id="aba-dashboard" class="conteudo-aba">
         <div class="dash-card">
-            <h2 style="margin:0 0 6px 0; color: var(--texto-secundario); font-size: 14px; text-transform: uppercase;">Faturamento Total (Dia)</h2>
-            <div id="faturamentoTotal" style="font-size: 32px; font-weight: bold; color: var(--cor-sucesso);">R$ 0,00</div>
+            <h2 style="margin:0; font-size:13px; color:var(--texto-secundario); text-transform:uppercase; letter-spacing:0.5px;">Faturamento em Caixa (Dinheiro/Pix)</h2>
+            <div id="faturamentoCaixa" style="font-size: 32px; font-weight: bold; color: var(--cor-sucesso); margin-top: 5px;">R$ 0,00</div>
         </div>
-
         <div class="dash-grid">
+            <div class="mini-card" style="border-color: rgba(255,82,82,0.2)">
+                <h3 style="margin:0; font-size:11px; color:var(--texto-secundario); text-transform:uppercase;">Valor Total na Rua</h3>
+                <p id="totalFiadoRua" style="color:var(--cor-erro); font-size:20px; font-weight:700; margin:5px 0 0 0;">R$ 0,00</p>
+            </div>
             <div class="mini-card">
-                <h3>Estoque Vendido</h3>
-                <p id="dashCervejas" style="color: var(--cor-primaria); text-align: left; padding-left: 5px;">Brahma: 0 <br> Bud: 0 <br> Heineken: 0</p>
-            </div>
-            <div class="mini-card" style="border-color: rgba(225, 55, 55, 0.3); display: flex; flex-direction: column; justify-content: center;">
-                <h3>Ainda a Receber</h3>
-                <p id="dashDevedores" style="color: var(--cor-erro); font-size: 18px;">R$ 0,00</p>
+                <h3 style="margin:0; font-size:11px; color:var(--texto-secundario); text-transform:uppercase;">Volume de Saídas</h3>
+                <p id="dashEstoqueLista" style="font-size:12px; margin:5px 0 0 0; text-align:left; color:var(--cor-primaria); font-weight:600;"></p>
             </div>
         </div>
-
-        <h2 style="font-size: 15px; margin: 20px 0 10px 0; color: var(--texto-secundario);">Histórico de Contas Fechadas</h2>
-        <div class="tabela-container">
-            <table class="tabela-historico">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Consumo</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="historicoVendas"></tbody>
-            </table>
-        </div>
-
-        <button class="btn-zerar" onclick="zerarTudo()">Zerar Caixa / Próximo Jogo</button>
+        <button class="btn-zerar" onclick="zerarTudo()">Zerar Todo o Sistema para Próxima Data</button>
     </div>
 </div>
 
 <script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
-        .then(() => console.log("Service Worker ativo!"))
-        .catch(err => console.log("Erro no SW:", err));
-    }
+    // CREDENCIAIS INTEGRADAS DO SEU SUPABASE
+    const SUPABASE_URL = "https://ellgsqigozmqrwbswukl.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_NCIyzDtlbOihMKc3R2b5Hw_9KkKKg77";
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const PRECO_BRAHMA = 3.50;
-    const PRECO_BUD = 4.50;
-    const PRECO_HEINEKEN = 8.00;
-    
-    let clientes = JSON.parse(localStorage.getItem('adega_clientes_v4')) || [];
-    let historico = JSON.parse(localStorage.getItem('adega_historico_v4')) || [];
+    let listagemProdutos = [];
+    let listagemClientes = [];
+    let listagemComandas = [];
 
-    function salvarDados() {
-        localStorage.setItem('adega_clientes_v4', JSON.stringify(clientes));
-        localStorage.setItem('adega_historico_v4', JSON.stringify(historico));
-        renderizar();
+    async function carregarBanco() {
+        let { data: prods } = await _supabase.from('produtos').select('*').order('nome');
+        let { data: clis } = await _supabase.from('clientes').select('*').order('nome');
+        let { data: coms } = await _supabase.from('comandas_ativas').select('*');
+        
+        listagemProdutos = prods || [];
+        listagemClientes = clis || [];
+        listagemComandas = coms || [];
+        
+        renderizarTudo();
     }
 
     function mudarAba(aba) {
         document.querySelectorAll('.aba-btn').forEach(btn => btn.classList.remove('ativa'));
         document.querySelectorAll('.conteudo-aba').forEach(c => c.classList.remove('ativa'));
-
-        if(aba === 'balcao') {
-            document.querySelectorAll('.aba-btn')[0].classList.add('ativa');
-            document.getElementById('aba-balcao').classList.add('ativa');
-        } else {
-            document.querySelectorAll('.aba-btn')[1].classList.add('ativa');
-            document.getElementById('aba-dashboard').classList.add('ativa');
-        }
+        event.target.classList.add('ativa');
+        document.getElementById(`aba-${aba}`).classList.add('ativa');
+        carregarBanco();
     }
 
-    function adicionarCliente() {
+    async function adicionarCliente() {
         const input = document.getElementById('nomeCliente');
         const nome = input.value.trim();
-        if (nome === "") { alert("Digite o nome da pessoa!"); return; }
-        clientes.push({ nome: nome, brahma: 0, bud: 0, heineken: 0 });
+        if(!nome) return;
+        
+        let clienteObjeto = listagemClientes.find(c => c.nome.toLowerCase() === nome.toLowerCase());
+        if(!clienteObjeto) {
+            const { data, error } = await _supabase.from('clientes').insert([{ nome }]).select();
+            if(error) return;
+        }
+
         input.value = "";
-        salvarDados();
+        carregarBanco();
     }
 
-    function lancarItem(index, marca, valor) {
-        const cliente = clientes[index];
-        let nomeMarca = '';
-        if(marca === 'brahma') nomeMarca = 'Brahma';
-        if(marca === 'bud') nomeMarca = 'Budweiser';
-        if(marca === 'heineken') nomeMarca = 'Heineken';
+    async function lancarItem(clienteId, produtoId, valor) {
+        let registro = listagemComandas.find(c => c.cliente_id === clienteId && c.produto_id === produtoId);
         
-        if(valor === -1 && cliente[marca] === 0) return;
+        if (!registro) {
+            if (valor === -1) return;
+            await _supabase.from('comandas_ativas').insert([{ cliente_id: clienteId, produto_id: produtoId, quantidade: 1 }]);
+        } else {
+            let novaQtd = registro.quantidade + valor;
+            if (novaQtd <= 0) {
+                await _supabase.from('comandas_ativas').delete().eq('id', registro.id);
+            } else {
+                await _supabase.from('comandas_ativas').update({ quantidade: novaQtd }).eq('id', registro.id);
+            }
+        }
+        carregarBanco();
+    }
 
-        if(confirm(`Confirmar ${valor > 0 ? '+1' : '-1'} ${nomeMarca} para ${cliente.nome}?`)) {
-            cliente[marca] += valor;
-            salvarDados();
+    function enviarComprovanteZap(texto) {
+        const link = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
+        window.open(link, '_blank');
+    }
+
+    async function fecharConta(clienteId, tipoPagamento) {
+        const cliente = listagemClientes.find(c => c.id === clienteId);
+        const comandasDoCliente = listagemComandas.filter(c => c.cliente_id === clienteId);
+        if(comandasDoCliente.length === 0) return;
+
+        let total = 0, resumoText = [];
+        comandasDoCliente.forEach(com => {
+            let p = listagemProdutos.find(prod => prod.id === com.produto_id);
+            if(p) {
+                total += p.preco * com.quantidade;
+                resumoText.push(`${com.quantidade}x ${p.nome}`);
+            }
+        });
+
+        if(confirm(`Fechar conta de ${cliente.nome} no valor de R$ ${total.toFixed(2)} como ${tipoPagamento}?`)) {
+            let novoSaldo = Number(cliente.saldo_fiado);
+            if(tipoPagamento === 'Fiado') novoSaldo += total;
+
+            await _supabase.from('clientes').update({ saldo_fiado: novoSaldo }).eq('id', clienteId);
+            await _supabase.from('historico_vendas').insert([{
+                cliente_nome: cliente.nome,
+                tipo_operacao: tipoPagamento === 'Fiado' ? 'Acúmulo Fiado' : 'Venda Balcão',
+                detalhes_consumo: resumoText.join(' / '),
+                valor_movimentated: total,
+                saldo_restante_fiado: novoSaldo
+            }]);
+
+            await _supabase.from('comandas_ativas').delete().eq('cliente_id', clienteId);
+            
+            let comprovante = `*ADEGA VIEIRA* 🍻\n---------------------------\n*CLIENTE:* ${cliente.nome}\n*CONSUMO:* ${resumoText.join(' / ')}\n*TOTAL:* R$ ${total.toFixed(2).replace('.', ',')}\n*STATUS:* ${tipoPagamento === 'Fiado' ? '❌ Pendurado no Fiado' : '✅ Pago (Dinheiro/Pix)'}\n---------------------------\n_Obrigado pela preferência!_`;
+            if(confirm("Deseja enviar o comprovante via WhatsApp?")) enviarComprovanteZap(comprovante);
+
+            carregarBanco();
         }
     }
 
-    function finalizarPagamento(index) {
-        const cliente = clientes[index];
-        if (cliente.brahma === 0 && cliente.bud === 0 && cliente.heineken === 0) { alert("Nenhuma bebida consumida!"); return; }
+    async function abaterFiado(clienteId, saldoAtual) {
+        let valorPagoInput = prompt(`Qual valor o cliente está pagando?\nSaldo total devedor: R$ ${Number(saldoAtual).toFixed(2).replace('.', ',')}`);
+        if(!valorPagoInput || isNaN(valorPagoInput) || Number(valorPagoInput) <= 0) return;
 
-        const totalDevido = (cliente.brahma * PRECO_BRAHMA) + (cliente.bud * PRECO_BUD) + (cliente.heineken * PRECO_HEINEKEN);
+        let valorPago = Number(valorPagoInput);
+        let novoSaldo = Number(saldoAtual) - valorPago;
+        let tipoOp = novoSaldo <= 0 ? 'Quitação Total' : 'Abatimento Parcial';
+
+        await _supabase.from('clientes').update({ saldo_fiado: novoSaldo }).eq('id', clienteId);
+        await _supabase.from('historico_vendas').insert([{
+            cliente_nome: listagemClientes.find(c => c.id === clienteId).nome,
+            tipo_operacao: tipoOp,
+            detalhes_consumo: "Abatimento de Dívida",
+            valor_movimentated: valorPago,
+            saldo_restante_fiado: novoSaldo
+        }]);
+
+        let comprovante = `*ADEGA VIEIRA* 🍻\n*COMPROVANTE DE PAGAMENTO*\n---------------------------\n*CLIENTE:* ${listagemClientes.find(c => c.id === clienteId).nome}\n*VALOR ENTREGUE:* R$ ${valorPago.toFixed(2).replace('.', ',')}\n*SALDO DEVEDOR RESTANTE:* R$ ${novoSaldo.toFixed(2).replace('.', ',')}\n*STATUS:* ${novoSaldo <= 0 ? '✅ Conta Totalmente Quitada!' : '⚠️ Conta Atualizada'}\n---------------------------\n_Controle de Caixa Automatizado._`;
+        if(confirm("Deseja enviar o recibo de pagamento via WhatsApp?")) enviarComprovanteZap(comprovante);
+
+        carregarBanco();
+    }
+
+    async function cadastrarProduto() {
+        const nome = document.getElementById('prodNome').value.trim();
+        const preco = document.getElementById('prodPreco').value;
+        if(!nome || !preco) return;
+
+        await _supabase.from('produtos').insert([{ nome, preco: Number(preco) }]);
+        document.getElementById('prodNome').value = "";
+        document.getElementById('prodPreco').value = "";
+        carregarBanco();
+    }
+
+    async function deletarProduto(id) {
+        if(confirm("Deseja remover este produto do cardápio?")) {
+            await _supabase.from('produtos').delete().eq('id', id);
+            carregarBanco();
+        }
+    }
+
+    async function excluirComandaTotal(id) {
+        if(confirm("Limpar consumo atual deste cliente?")) {
+            await _supabase.from('comandas_ativas').delete().eq('cliente_id', id);
+            carregarBanco();
+        }
+    }
+
+    async function zerarTudo() {
+        if(confirm("Deseja LIMPAR DEFINITIVAMENTE todas as movimentações e estoques para reabrir o caixa do zero?")) {
+            await _supabase.from('comandas_ativas').delete().neq('id', 0);
+            await _supabase.from('historico_vendas').delete().neq('id', 0);
+            await _supabase.from('clientes').update({ saldo_fiado: 0 }).neq('id', 0);
+            carregarBanco();
+        }
+    }
+
+    function renderizarTudo() {
+        const listaBalcao = document.getElementById('listaClientes');
+        let clientesComComanda = [...new Set(listagemComandas.map(c => c.cliente_id))];
         
-        let resumoConsumo = [];
-        if(cliente.brahma > 0) resumoConsumo.push(`${cliente.brahma} Brahma`);
-        if(cliente.bud > 0) resumoConsumo.push(`${cliente.bud} Bud`);
-        if(cliente.heineken > 0) resumoConsumo.push(`${cliente.heineken} Hk`);
+        if(clientesComComanda.length === 0) {
+            listaBalcao.innerHTML = "<p style='color:var(--texto-secundario); text-align:center; padding: 20px 0;'>Nenhuma mesa ou comanda aberta no momento.</p>";
+        } else {
+            listaBalcao.innerHTML = "";
+            clientesComComanda.forEach(cId => {
+                let cliente = listagemClientes.find(c => c.id === cId);
+                if(!cliente) return;
+                
+                let coms = listagemComandas.filter(com => com.cliente_id === cId);
+                let totalCard = 0, linhasProdutosHtml = "";
 
-        if (confirm(`Confirmar que ${cliente.nome} PAGOU R$ ${totalDevido.toFixed(2).replace('.', ',')}?\nConsumo: ${resumoConsumo.join(' / ')}`)) {
-            historico.push({ 
-                nome: cliente.nome, 
-                brahma: cliente.brahma, 
-                bud: cliente.bud, 
-                heineken: cliente.heineken,
-                total: totalDevido, 
-                status: 'Pago' 
+                listagemProdutos.forEach(prod => {
+                    let comUnica = coms.find(c => c.produto_id === prod.id);
+                    let qtd = comUnica ? comUnica.quantidade : 0;
+                    totalCard += qtd * prod.preco;
+
+                    linhasProdutosHtml += `
+                        <div class="produto-linha">
+                            <span class="prod-info">${prod.nome} (R$ ${prod.preco.toFixed(2).replace('.', ',')}): <strong>${qtd} un</strong></span>
+                            <div class="botoes-qtd">
+                                <button class="btn-control sub" onclick="lancarItem(${cliente.id}, ${prod.id}, -1)">-</button>
+                                <button class="btn-control add" onclick="lancarItem(${cliente.id}, ${prod.id}, 1)">+</button>
+                            </div>
+                        </div>`;
+                });
+
+                listaBalcao.innerHTML += `
+                    <div class="cliente-card">
+                        <div class="card-header">
+                            <span class="nome">${cliente.nome}</span>
+                            <button class="btn-excluir" onclick="excluirComandaTotal(${cliente.id})">✕</button>
+                        </div>
+                        ${linhasProdutosHtml}
+                        <div class="resumo-card">
+                            <span>Total do Jogo:</span>
+                            <span style="color:var(--cor-primaria); font-weight:bold;">R$ ${totalCard.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                        <div class="botoes-fechamento">
+                            <button class="btn-fechar pago" onclick="fecharConta(${cliente.id}, 'Pix/Dinheiro')">💵 PAGO AGORA</button>
+                            <button class="btn-fechar fiado" onclick="fecharConta(${cliente.id}, 'Fiado')">📓 PENDURAR</button>
+                        </div>
+                    </div>`;
             });
-            clientes.splice(index, 1);
-            salvarDados();
         }
-    }
 
-    function removerCliente(index) {
-        if (confirm(`Excluir ${clientes[index].nome} da lista?`)) {
-            clientes.splice(index, 1);
-            salvarDados();
+        const listaFiados = document.getElementById('listaFiados');
+        let devedores = listagemClientes.filter(c => Number(c.saldo_fiado) > 0);
+        if(devedores.length === 0) {
+            listaFiados.innerHTML = "<p style='color:var(--texto-secundario); text-align:center; padding: 20px 0;'>Caixa limpo! Nenhuma conta pendente na rua.</p>";
+        } else {
+            listaFiados.innerHTML = "";
+            devedores.forEach(dev => {
+                listaFiados.innerHTML += `
+                    <div class="fiado-item">
+                        <div>
+                            <strong style="font-size:1.1em; color:#fff;">${dev.nome}</strong><br>
+                            <button class="btn-abater" onclick="abaterFiado(${dev.id}, ${dev.saldo_fiado})">🤝 Receber Parcial/Total</button>
+                        </div>
+                        <span class="divida-valor">R$ ${Number(dev.saldo_fiado).toFixed(2).replace('.', ',')}</span>
+                    </div>`;
+            });
         }
-    }
 
-    function zerarTudo() {
-        if (confirm("Deseja limpar todo o Dashboard e reiniciar o caixa para o próximo jogo?")) {
-            clientes = []; historico = []; salvarDados();
+        const listaGerenciar = document.getElementById('listaProdutosGerenciar');
+        listaGerenciar.innerHTML = "";
+        if(listagemProdutos.length === 0) {
+            listaGerenciar.innerHTML = "<p style='color:var(--texto-secundario); font-size:13px;'>Nenhum item cadastrado no cardápio ainda.</p>";
         }
-    }
-
-    function renderizar() {
-        const listaHtml = document.getElementById('listaClientes');
-        listaHtml.innerHTML = "";
-        let totalDevedoresGeral = 0, brahmaAtivas = 0, budAtivas = 0, heinekenAtivas = 0;
-
-        clientes.forEach((cliente, index) => {
-            const totalCliente = (cliente.brahma * PRECO_BRAHMA) + (cliente.bud * PRECO_BUD) + (cliente.heineken * PRECO_HEINEKEN);
-            totalDevedoresGeral += totalCliente; 
-            brahmaAtivas += cliente.brahma; 
-            budAtivas += cliente.bud;
-            heinekenAtivas += cliente.heineken;
-
-            let textoDetalhes = [];
-            if(cliente.brahma > 0) textoDetalhes.push(`${cliente.brahma} Brahma`);
-            if(cliente.bud > 0) textoDetalhes.push(`${cliente.bud} Bud`);
-            if(cliente.heineken > 0) textoDetalhes.push(`${cliente.heineken} Hk`);
-            let stringConsumo = textoDetalhes.length > 0 ? textoDetalhes.join(' / ') : 'Nenhuma';
-
-            listaHtml.innerHTML += `
-                <div class="cliente-card">
-                    <div class="card-header">
-                        <span class="nome">${cliente.nome}</span>
-                        <button class="btn-excluir" onclick="removerCliente(${index})">✕</button>
-                    </div>
-                    <div class="produto-linha">
-                        <span class="prod-info">Brahma: <strong>${cliente.brahma} un</strong></span>
-                        <div class="botoes-qtd">
-                            <button class="btn-control sub" onclick="lancarItem(${index}, 'brahma', -1)">-</button>
-                            <button class="btn-control add" onclick="lancarItem(${index}, 'brahma', 1)">+</button>
-                        </div>
-                    </div>
-                    <div class="produto-linha">
-                        <span class="prod-info">Budweiser: <strong>${cliente.bud} un</strong></span>
-                        <div class="botoes-qtd">
-                            <button class="btn-control sub" onclick="lancarItem(${index}, 'bud', -1)">-</button>
-                            <button class="btn-control add" onclick="lancarItem(${index}, 'bud', 1)">+</button>
-                        </div>
-                    </div>
-                    <div class="produto-linha">
-                        <span class="prod-info">Heineken: <strong>${cliente.heineken} un</strong></span>
-                        <div class="botoes-qtd">
-                            <button class="btn-control sub" onclick="lancarItem(${index}, 'heineken', -1)">-</button>
-                            <button class="btn-control add" onclick="lancarItem(${index}, 'heineken', 1)">+</button>
-                        </div>
-                    </div>
-                    <div class="resumo-card">
-                        <span>Total Parcial:</span>
-                        <span style="color:var(--cor-primaria); font-weight:bold;">R$ ${totalCliente.toFixed(2).replace('.', ',')}</span>
-                    </div>
-                    <button class="btn-pagar" onclick="finalizarPagamento(${index})">💰 CONFIRMAR RECEBIMENTO</button>
+        listagemProdutos.forEach(p => {
+            listaGerenciar.innerHTML += `
+                <div class="fiado-item" style="padding:10px 14px;">
+                    <span>${p.nome} - <strong style="color:var(--cor-primaria);">R$ ${p.preco.toFixed(2).replace('.', ',')}</strong></span>
+                    <button class="btn-control sub" onclick="deletarProduto(${p.id})" style="width:32px; height:32px; font-size:14px;">✕</button>
                 </div>`;
         });
 
-        let brahmaPagas = 0, budPagas = 0, heinekenPagas = 0, faturamentoPago = 0;
-        const historicoHtml = document.getElementById('historicoVendas');
-        historicoHtml.innerHTML = "";
-
-        historico.forEach(item => {
-            brahmaPagas += item.brahma; 
-            budPagas += item.bud; 
-            heinekenPagas += item.heineken || 0;
-            faturamentoPago += item.total;
+        _supabase.from('historico_vendas').select('*').then(({ data }) => {
+            let totalCaixa = 0;
+            let contagemProdutos = {};
             
-            let detalhesH = [];
-            if(item.brahma > 0) detalhesH.push(`${item.brahma} Br`);
-            if(item.bud > 0) detalhesH.push(`${item.bud} Bd`);
-            if(item.heineken > 0) detalhesH.push(`${item.heineken} Hk`);
+            (data || []).forEach(item => {
+                if(item.tipo_operacao !== 'Acúmulo Fiado') {
+                    totalCaixa += Number(item.valor_movimentated);
+                }
+                if(item.detalhes_consumo && item.detalhes_consumo !== "Abatimento de Dívida") {
+                    let partes = item.detalhes_consumo.split(' / ');
+                    partes.forEach(p => {
+                        let sub = p.split('x ');
+                        let qtd = Number(sub[0]);
+                        let nome = sub.slice(1).join('x ');
+                        if(nome) contagemProdutos[nome] = (contagemProdutos[nome] || 0) + qtd;
+                    });
+                }
+            });
 
-            historicoHtml.innerHTML += `
-                <tr>
-                    <td><strong>${item.nome}</strong></td>
-                    <td>${detalhesH.join(' / ') || '0'}</td>
-                    <td>R$ ${item.total.toFixed(2).replace('.', ',')}</td>
-                    <td class="status-pago">${item.status}</td>
-                </tr>`;
+            document.getElementById('faturamentoCaixa').innerText = `R$ ${totalCaixa.toFixed(2).replace('.', ',')}`;
+            let totalRua = listagemClientes.reduce((acc, c) => acc + Number(c.saldo_fiado), 0);
+            document.getElementById('totalFiadoRua').innerText = `R$ ${totalRua.toFixed(2).replace('.', ',')}`;
+
+            let estoqueHtml = "";
+            for(let prop in contagemProdutos) {
+                estoqueHtml += `• ${prop}: <strong>${contagemProdutos[prop]} un</strong>br>`;
+            }
+            document.getElementById('dashEstoqueLista').innerHTML = estoqueHtml || "Sem saídas registradas.";
         });
-
-        document.getElementById('faturamentoTotal').innerText = `R$ ${(faturamentoPago + totalDevedoresGeral).toFixed(2).replace('.', ',')}`;
-        document.getElementById('dashCervejas').innerHTML = `Brahma: ${brahmaPagas + brahmaAtivas} <br> Budweiser: ${budPagas + budAtivas} <br> Heineken: ${heinekenPagas + heinekenAtivas}`;
-        document.getElementById('dashDevedores').innerText = `R$ ${totalDevedoresGeral.toFixed(2).replace('.', ',')}`;
     }
 
-    renderizar();
+    carregarBanco();
 </script>
 </body>
 </html>
