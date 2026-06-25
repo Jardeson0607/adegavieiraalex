@@ -74,7 +74,7 @@
         .btn-add-item { width: 100%; background: #2d303b; color: var(--cor-primaria); padding: 10px; font-size: 13px; font-weight: 600; margin-top: 10px; border: 1px dashed rgba(255,179,0,0.3); border-radius: 8px; }
         .resumo-card { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--borda); display: flex; justify-content: space-between; font-size: 1.1em; font-weight: 600; }
         
-        .btn-fechar-comanda { width: 100%; padding: 14px; font-size: 14px; color: white; border-radius: 8px; font-weight: 700; margin-top: 14px; background: linear-gradient(135deg, #ffb300, #ff8f00); color: #121214; }
+        .btn-fechar-comanda { width: 100%; padding: 14px; font-size: 14px; border-radius: 8px; font-weight: 700; margin-top: 14px; background: linear-gradient(135deg, #ffb300, #ff8f00); color: #121214; }
 
         .lista-geral { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
         .item-geral-card { display: flex; justify-content: space-between; align-items: center; background: var(--bg-input); padding: 18px; border-radius: 12px; border: 1px solid var(--borda); }
@@ -100,6 +100,7 @@
         .modal-titulo { font-size: 1.3em; font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid var(--borda); padding-bottom: 10px; color: #fff; }
         .modal-opcoes-grid { display: grid; grid-template-columns: 1fr; gap: 8px; max-height: 260px; overflow-y: auto; margin-bottom: 20px; padding-right: 4px; }
         .btn-opcao-prod { width: 100%; background: var(--bg-input); border: 1px solid var(--borda); padding: 14px; text-align: left; color: #fff; font-size: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-opcao-prod:hover { border-color: var(--cor-primaria); background: #262933; }
         
         .modal-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .btn-modal { padding: 14px; font-size: 14px; border-radius: 8px; font-weight: 700; }
@@ -164,7 +165,7 @@
         </div>
         <div class="dash-grid">
             <div class="mini-card" style="border-color: rgba(255,82,82,0.2)">
-                <h3 style="margin:0; font-size:12px; color:var(--texto-secundario); text-transform:uppercase;">Valor Pendurado na Rua (Fiado Total)</h3>
+                <h3 style="margin:0; font-size:12px; color:var(--texto-secundario); text-transform:uppercase;">Valor Total Pendurado (Fiado Total)</h3>
                 <p id="totalFiadoRua" style="color:var(--cor-erro); font-size:24px; font-weight:700; margin:5px 0 0 0;">R$ 0,00</p>
             </div>
             <div class="mini-card">
@@ -187,7 +188,7 @@
     </div>
 </div>
 
-<!-- 2. MODAL FECHAMENTO INTELIGENTE DE COMANDA (PAGAMENTO PARCIAL / INTEGRAL / MEIOS DE PAGAMENTO) -->
+<!-- 2. MODAL FECHAMENTO INTELIGENTE DE COMANDA -->
 <div class="modal-overlay" id="modalFechamentoComanda">
     <div class="modal-box">
         <div class="modal-titulo">🧾 Finalizar Atendimento</div>
@@ -218,7 +219,7 @@
     </div>
 </div>
 
-<!-- 3. MODAL ABATIMENTO PARCIAL / INTEGRAL DA CADERNETA -->
+<!-- 3. MODAL ABATIMENTO DA CADERNETA -->
 <div class="modal-overlay" id="modalAbater">
     <div class="modal-box">
         <div class="modal-titulo">🤝 Receber Conta da Caderneta</div>
@@ -247,14 +248,14 @@
     </div>
 </div>
 
-<!-- 4. MODAL ALERTA DE EXCLUSÃO -->
+<!-- 4. MODAL ALERTA DE CONFIRMAÇÕES -->
 <div class="modal-overlay" id="modalAlerta">
     <div class="modal-box">
         <div class="modal-titulo" id="alertaTitulo">Confirmação</div>
         <p id="alertaTexto" style="color:var(--texto-secundario); font-size:15px; margin:0 0 20px 0; line-height:1.4;"></p>
         <div class="modal-botoes">
             <button class="btn-modal cancelar" onclick="fecharModal('modalAlerta')">Não, Voltar</button>
-            <button class="btn-modal confirmar" id="btnConfirmarAlerta" style="background-color: var(--cor-erro);">Sim, Confirmar</button>
+            <button class="btn-modal confirmar" id="btnConfirmarAlerta" style="background-color: var(--cor-sucesso);">Sim, Confirmar</button>
         </div>
     </div>
 </div>
@@ -338,7 +339,7 @@
         container.innerHTML = "";
 
         if(listagemProdutos.length === 0) {
-            container.innerHTML = "<p style='color:var(--texto-secundario); font-size:14px;'>Cadestre produtos primeiro na aba ao lado.</p>";
+            container.innerHTML = "<p style='color:var(--texto-secundario); font-size:14px;'>Cadastre produtos primeiro na aba ao lado.</p>";
         }
 
         listagemProdutos.forEach(prod => {
@@ -362,6 +363,7 @@
         
         if (!registro) {
             if (valor === -1) return;
+            // Corrigido: Removido o termo 'grandmother' inválido que causava o congelamento do app
             await _supabase.from('comandas_ativas').insert([{ cliente_id: clienteId, produto_id: produtoId, quantidade: 1 }]);
         } else {
             let novaQtd = registro.quantidade + valor;
@@ -412,11 +414,9 @@
         const cliente = listagemClientes.find(c => c.id == clienteIdSelecionadoGlobal);
         let valorFaltantePendurar = totalConsumoComandaGlobal - valorPagoAgora;
         
-        // Atualiza a caderneta permanente com a diferença
         let novoSaldoCaderneta = Number(cliente.saldo_fiado) + valorFaltantePendurar;
         await _supabase.from('clientes').update({ saldo_fiado: novoSaldoCaderneta }).eq('id', clienteIdSelecionadoGlobal);
 
-        // Salva a auditoria
         await _supabase.from('historico_vendas').insert([{
             cliente_nome: cliente.nome,
             tipo_operacao: valorFaltantePendurar > 0 ? 'Fechamento Misto/Fiado' : 'Venda Balcão Integral',
@@ -483,7 +483,7 @@
     }
 
     function zerarTudo() {
-        exibirModalAlerta("Zerar Tudo 🚨", "Atenção: Isso limpará de forma definitiva o caixa e os fiados. Continuar?", async () => {
+        exibirModalAlerta("Zerar Tudo 🚨", "Atenção: Isso limpará de forma definitiva o caixa e os fiados das cadernetas. Continuar?", async () => {
             await _supabase.from('comandas_ativas').delete().neq('id', 0);
             await _supabase.from('historico_vendas').delete().neq('id', 0);
             await _supabase.from('clientes').update({ saldo_fiado: 0 }).neq('id', 0);
@@ -494,7 +494,7 @@
     function renderizarTudo() {
         const select = document.getElementById('selectClienteAtivo');
         select.innerHTML = '<option value="">Selecione o cliente para abrir a conta...</option>';
-        listagemClientes.forEach(c => { select.innerHTML += `<option value="${c.id}">${c.nome}</option>'; });
+        listagemClientes.forEach(c => { select.innerHTML += `<option value="${c.id}">${c.nome}</option>`; });
 
         const listaBalcao = document.getElementById('listaClientes');
         let clientesComComanda = [...new Set(listagemComandas.map(c => c.cliente_id))];
@@ -578,7 +578,6 @@
             (data || []).forEach(item => {
                 if(item.tipo_operacao !== 'Acúmulo Fiado') totalCaixa += Number(item.valor_movimentated);
                 if(item.detalhes_consumo && !item.detalhes_consumo.includes("Abatimento")) {
-                    // Trata string composta para o inventário do Dashboard
                     let limpa = item.detalhes_consumo.split(' (')[0];
                     limpa.split(' / ').forEach(p => {
                         let sub = p.split('x ');
