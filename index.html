@@ -364,22 +364,22 @@
 
 <script>
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
+        navigator.serviceWorker.register('se.js')
         .then(() => console.log("Service Worker ativo!"))
         .catch(err => console.log("Erro no SW:", err));
     }
 
     // ======= CONFIGURAÇÃO DO BANCO (SUPABASE) =======
     // Troque pelos dados do SEU projeto Supabase (Settings > API).
-    const SUPABASE_URL = "https://bwmjkacaclynjqwjrfqe.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_LPkzXmErvM0mroUVxH5EFQ_7IdmNpk9";
+    const SUPABASE_URL = "COLOQUE_AQUI_SUA_SUPABASE_URL";
+    const SUPABASE_ANON_KEY = "COLOQUE_AQUI_SUA_SUPABASE_ANON_KEY";
     // ==================================================
 
-    let supabase = null;
+    let db = null;
     let conectado = false;
     try {
         if (!SUPABASE_URL.startsWith("COLOQUE_AQUI") && !SUPABASE_ANON_KEY.startsWith("COLOQUE_AQUI")) {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             conectado = true;
         }
     } catch (e) { console.error(e); }
@@ -405,7 +405,7 @@
         setStatus('Conectado ✓', 'ok');
 
         // Mantém tudo sincronizado em tempo real entre aparelhos diferentes
-        supabase.channel('adega-realtime')
+        db.channel('adega-realtime')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'produtos' }, carregarDados)
             .on('postgres_changes', { event: '*', schema: 'public', table: 'comandas' }, carregarDados)
             .on('postgres_changes', { event: '*', schema: 'public', table: 'comanda_itens' }, carregarDados)
@@ -413,7 +413,7 @@
     }
 
     async function carregarDados() {
-        const { data: prods, error: e1 } = await supabase.from('produtos').select('*').order('nome');
+        const { data: prods, error: e1 } = await db.from('produtos').select('*').order('nome');
         if (e1) { setStatus('Erro ao carregar produtos: ' + e1.message, 'erro'); return; }
         produtos = prods || [];
 
@@ -458,7 +458,7 @@
         if (!nome) { alert('Digite o nome do produto!'); return; }
         if (isNaN(preco) || preco < 0) { alert('Digite um preço válido!'); return; }
 
-        const { error } = await supabase.from('produtos').insert({ nome, preco, ativo: true });
+        const { error } = await db.from('produtos').insert({ nome, preco, ativo: true });
         if (error) { alert('Erro ao salvar produto: ' + error.message); return; }
         nomeEl.value = ''; precoEl.value = '';
         await carregarDados();
@@ -474,7 +474,7 @@
         const novoPreco = parseFloat(novoPrecoStr.replace(',', '.'));
         if (!novoNome.trim() || isNaN(novoPreco) || novoPreco < 0) { alert('Dados inválidos!'); return; }
 
-        const { error } = await supabase.from('produtos')
+        const { error } = await db.from('produtos')
             .update({ nome: novoNome.trim(), preco: novoPreco })
             .eq('id', id);
         if (error) { alert('Erro ao editar: ' + error.message); return; }
@@ -484,7 +484,7 @@
     async function removerProduto(id) {
         if (!confirm('Remover este produto da lista de vendas? (o histórico é mantido)')) return;
         // Soft delete: mantém o produto no histórico, só some do cadastro ativo
-        const { error } = await supabase.from('produtos').update({ ativo: false }).eq('id', id);
+        const { error } = await db.from('produtos').update({ ativo: false }).eq('id', id);
         if (error) { alert('Erro ao remover: ' + error.message); return; }
         await carregarDados();
     }
@@ -496,7 +496,7 @@
         const nome = input.value.trim();
         if (nome === "") { alert("Digite o nome da pessoa!"); return; }
 
-        const { error } = await supabase.from('comandas').insert({ nome, status: 'aberta', total: 0 });
+        const { error } = await db.from('comandas').insert({ nome, status: 'aberta', total: 0 });
         if (error) { alert('Erro ao adicionar cliente: ' + error.message); return; }
         input.value = "";
         await carregarDados();
@@ -520,11 +520,11 @@
         const itemExistente = comanda.comanda_itens.find(i => i.produto_id === produto.id);
         let error;
         if (itemExistente) {
-            ({ error } = await supabase.from('comanda_itens')
+            ({ error } = await db.from('comanda_itens')
                 .update({ quantidade: novaQtd })
                 .eq('id', itemExistente.id));
         } else {
-            ({ error } = await supabase.from('comanda_itens').insert({
+            ({ error } = await db.from('comanda_itens').insert({
                 comanda_id: comandaId,
                 produto_id: produto.id,
                 produto_nome: produto.nome,
@@ -552,7 +552,7 @@
 
         if (!confirm(`Confirmar que ${comanda.nome} PAGOU R$ ${total.toFixed(2).replace('.', ',')}?\nConsumo: ${resumo}`)) return;
 
-        const { error } = await supabase.from('comandas')
+        const { error } = await db.from('comandas')
             .update({ status: 'paga', total, fechado_em: new Date().toISOString() })
             .eq('id', comandaId);
         if (error) { alert('Erro ao finalizar: ' + error.message); return; }
@@ -562,7 +562,7 @@
     async function removerCliente(comandaId) {
         const comanda = comandas.find(c => c.id === comandaId);
         if (!confirm(`Excluir ${comanda.nome} da lista? (isso apaga o consumo em aberto dele)`)) return;
-        const { error } = await supabase.from('comandas').delete().eq('id', comandaId);
+        const { error } = await db.from('comandas').delete().eq('id', comandaId);
         if (error) { alert('Erro ao excluir: ' + error.message); return; }
         await carregarDados();
     }
