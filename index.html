@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Adega Vieira</title>
-    
-    <!-- Link para o arquivo Manifest separado -->
+
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffb300">
-    
-    <!-- Configurações Apple/iOS -->
+
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Adega Vieira">
     <link rel="apple-touch-icon" href="logo.png">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
@@ -24,7 +24,6 @@
             --cor-erro: #e53935;
             --cor-sucesso: #43a047;
             --cor-azul: #00b0ff;
-            --cor-verde-hk: #2e7d32; /* Verde Heineken */
             --texto-principal: #ffffff;
             --texto-secundario: #a4a4a8;
         }
@@ -72,8 +71,19 @@
             margin: 0;
             font-size: 24px;
             letter-spacing: 0.5px;
+            text-align: center;
         }
-        
+
+        .status-conexao {
+            text-align: center;
+            font-size: 11px;
+            color: var(--texto-secundario);
+            margin-top: -8px;
+            margin-bottom: 14px;
+        }
+        .status-conexao.erro { color: var(--cor-erro); font-weight: bold; }
+        .status-conexao.ok { color: var(--cor-sucesso); }
+
         .abas {
             display: flex;
             background: var(--bg-input);
@@ -84,13 +94,13 @@
         }
         .aba-btn {
             flex: 1;
-            padding: 12px;
+            padding: 10px 4px;
             background: transparent;
             color: var(--texto-secundario);
             border: none;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 12.5px;
             cursor: pointer;
         }
         .aba-btn.ativa {
@@ -102,8 +112,8 @@
         .conteudo-aba.ativa { display: block; }
 
         .menu-precos {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            display: flex;
+            flex-wrap: wrap;
             gap: 6px;
             margin-bottom: 15px;
         }
@@ -114,18 +124,15 @@
             background: rgba(255, 179, 0, 0.1);
             border: 1px solid var(--cor-primaria);
             color: var(--cor-primaria);
-            padding: 8px 4px;
+            padding: 8px 10px;
             border-radius: 8px;
+            flex: 1 1 auto;
         }
-        .preco-tag.bud {
-            background: rgba(229, 57, 53, 0.1);
-            border: 1px solid var(--cor-erro);
-            color: var(--cor-erro);
-        }
-        .preco-tag.heineken {
-            background: rgba(74, 175, 80, 0.1);
-            border: 1px solid #4caf50;
-            color: #4caf50;
+        .sem-produtos {
+            font-size: 13px;
+            color: var(--texto-secundario);
+            text-align: center;
+            padding: 10px;
         }
 
         .form-grupo {
@@ -134,7 +141,13 @@
             gap: 8px;
             margin-bottom: 15px;
         }
-        input[type="text"] {
+        .form-grupo-produto {
+            display: grid;
+            grid-template-columns: 1fr 90px auto;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        input[type="text"], input[type="number"] {
             width: 100%;
             padding: 12px;
             background: var(--bg-input);
@@ -144,7 +157,7 @@
             color: white;
             outline: none;
         }
-        
+
         button {
             border: none;
             border-radius: 8px;
@@ -155,23 +168,24 @@
             justify-content: center;
             touch-action: manipulation;
         }
-        .btn-sucesso { 
-            background-color: var(--cor-sucesso); 
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-sucesso {
+            background-color: var(--cor-sucesso);
             color: white;
             padding: 12px 16px;
             font-size: 16px;
         }
-        .btn-pagar { 
+        .btn-pagar {
             background: linear-gradient(135deg, #43a047, #2e7d32);
             color: white;
-            font-size: 14px; 
+            font-size: 14px;
             padding: 12px;
             width: 100%;
             margin-top: 12px;
             border-radius: 8px;
         }
 
-        .cliente-card {
+        .cliente-card, .produto-card {
             background: #222227;
             border: 1px solid #2d2d34;
             margin-bottom: 15px;
@@ -197,8 +211,9 @@
         }
         .prod-info { font-size: 0.95em; color: var(--texto-secundario); }
         .prod-info strong { color: #fff; }
-        .botoes-qtd { display: flex; gap: 6px; }
-        .btn-control { width: 38px; height: 38px; font-size: 18px; color: white; }
+        .botoes-qtd { display: flex; gap: 6px; align-items: center; }
+        .qtd-num { min-width: 18px; text-align: center; font-weight: bold; color: #fff; }
+        .btn-control { width: 34px; height: 34px; font-size: 18px; color: white; }
         .btn-control.sub { background-color: #3d3d45; color: var(--cor-erro); }
         .btn-control.add { background-color: var(--cor-azul); }
 
@@ -210,6 +225,13 @@
             justify-content: space-between;
             font-size: 1em;
         }
+
+        .produto-card { display: flex; justify-content: space-between; align-items: center; }
+        .produto-card .info { font-size: 15px; }
+        .produto-card .info .p-nome { font-weight: bold; color: #fff; }
+        .produto-card .info .p-preco { color: var(--cor-primaria); font-weight: bold; }
+        .produto-card .acoes { display: flex; gap: 6px; }
+        .btn-mini { padding: 8px 10px; font-size: 13px; background: var(--bg-input); color: #fff; }
 
         .dash-card {
             background: linear-gradient(135deg, #1e251f, #141a15);
@@ -235,6 +257,20 @@
         .mini-card h3 { margin: 0; font-size: 12px; color: var(--texto-secundario); text-transform: uppercase; }
         .mini-card p { margin: 6px 0 0 0; font-size: 13px; font-weight: bold; color: #fff; line-height: 1.4; }
 
+        .filtro-data {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+        .filtro-data button {
+            flex: 1;
+            padding: 8px;
+            font-size: 12.5px;
+            background: var(--bg-input);
+            color: var(--texto-secundario);
+        }
+        .filtro-data button.ativa { background: var(--cor-primaria); color: #121214; }
+
         .tabela-container {
             overflow-x: auto;
             border-radius: 8px;
@@ -246,16 +282,7 @@
         .tabela-historico th { background: #2d2d34; color: var(--texto-secundario); }
         .status-pago { color: var(--cor-sucesso); font-weight: bold; }
 
-        .btn-zerar {
-            display: block;
-            width: 100%;
-            background-color: #2d2d34;
-            color: #ff5252;
-            margin-top: 25px;
-            padding: 14px;
-            font-size: 14px;
-            border: 1px solid rgba(255, 82, 82, 0.2);
-        }
+        .vazio { text-align: center; color: var(--texto-secundario); font-size: 13px; padding: 20px 0; }
     </style>
 </head>
 <body>
@@ -265,19 +292,17 @@
         <img class="logo-foto" src="logo.png" alt="Logo">
         <h1>Adega Vieira</h1>
     </div>
-    
+    <div id="statusConexao" class="status-conexao">Conectando...</div>
+
     <div class="abas">
-        <button class="aba-btn ativa" onclick="mudarAba('balcao')">🛒 Balcão (Jogo)</button>
+        <button class="aba-btn ativa" onclick="mudarAba('balcao')">🛒 Caixa</button>
+        <button class="aba-btn" onclick="mudarAba('produtos')">📦 Produtos</button>
         <button class="aba-btn" onclick="mudarAba('dashboard')">📊 Dashboard</button>
     </div>
 
-    <!-- ABA 1: BALCÃO -->
+    <!-- ABA 1: CAIXA / BALCÃO -->
     <div id="aba-balcao" class="conteudo-aba ativa">
-        <div class="menu-precos">
-            <div class="preco-tag">Brahma:<br>R$ 3,50</div>
-            <div class="preco-tag bud">Bud:<br>R$ 4,50</div>
-            <div class="preco-tag heineken">Heineken:<br>R$ 8,00</div>
-        </div>
+        <div class="menu-precos" id="menuPrecos"></div>
 
         <div class="form-grupo">
             <input type="text" id="nomeCliente" placeholder="Nome de quem chegou..." autocomplete="off">
@@ -287,17 +312,32 @@
         <div class="lista-clientes" id="listaClientes"></div>
     </div>
 
-    <!-- ABA 2: DASHBOARD -->
+    <!-- ABA 2: PRODUTOS -->
+    <div id="aba-produtos" class="conteudo-aba">
+        <div class="form-grupo-produto">
+            <input type="text" id="nomeProduto" placeholder="Nome do produto" autocomplete="off">
+            <input type="number" id="precoProduto" placeholder="R$" step="0.01" min="0">
+            <button class="btn-sucesso" onclick="adicionarProduto()">+</button>
+        </div>
+        <div id="listaProdutos"></div>
+    </div>
+
+    <!-- ABA 3: DASHBOARD -->
     <div id="aba-dashboard" class="conteudo-aba">
+        <div class="filtro-data">
+            <button class="ativa" id="filtroHoje" onclick="mudarFiltroData('hoje')">Hoje</button>
+            <button id="filtroTudo" onclick="mudarFiltroData('tudo')">Tudo</button>
+        </div>
+
         <div class="dash-card">
-            <h2 style="margin:0 0 6px 0; color: var(--texto-secundario); font-size: 14px; text-transform: uppercase;">Faturamento Total (Dia)</h2>
+            <h2 style="margin:0 0 6px 0; color: var(--texto-secundario); font-size: 14px; text-transform: uppercase;">Faturamento</h2>
             <div id="faturamentoTotal" style="font-size: 32px; font-weight: bold; color: var(--cor-sucesso);">R$ 0,00</div>
         </div>
 
         <div class="dash-grid">
             <div class="mini-card">
-                <h3>Estoque Vendido</h3>
-                <p id="dashCervejas" style="color: var(--cor-primaria); text-align: left; padding-left: 5px;">Brahma: 0 <br> Bud: 0 <br> Heineken: 0</p>
+                <h3>Vendido por produto</h3>
+                <p id="dashProdutos" style="color: var(--cor-primaria); text-align: left; padding-left: 5px;">-</p>
             </div>
             <div class="mini-card" style="border-color: rgba(225, 55, 55, 0.3); display: flex; flex-direction: column; justify-content: center;">
                 <h3>Ainda a Receber</h3>
@@ -319,8 +359,6 @@
                 <tbody id="historicoVendas"></tbody>
             </table>
         </div>
-
-        <button class="btn-zerar" onclick="zerarTudo()">Zerar Caixa / Próximo Jogo</button>
     </div>
 </div>
 
@@ -331,177 +369,333 @@
         .catch(err => console.log("Erro no SW:", err));
     }
 
-    const PRECO_BRAHMA = 3.50;
-    const PRECO_BUD = 4.50;
-    const PRECO_HEINEKEN = 8.00;
-    
-    let clientes = JSON.parse(localStorage.getItem('adega_clientes_v4')) || [];
-    let historico = JSON.parse(localStorage.getItem('adega_historico_v4')) || [];
+    // ======= CONFIGURAÇÃO DO BANCO (SUPABASE) =======
+    // Troque pelos dados do SEU projeto Supabase (Settings > API).
+    const SUPABASE_URL = "COLOQUE_AQUI_SUA_SUPABASE_URL";
+    const SUPABASE_ANON_KEY = "COLOQUE_AQUI_SUA_SUPABASE_ANON_KEY";
+    // ==================================================
 
-    function salvarDados() {
-        localStorage.setItem('adega_clientes_v4', JSON.stringify(clientes));
-        localStorage.setItem('adega_historico_v4', JSON.stringify(historico));
+    let supabase = null;
+    let conectado = false;
+    try {
+        if (!SUPABASE_URL.startsWith("COLOQUE_AQUI") && !SUPABASE_ANON_KEY.startsWith("COLOQUE_AQUI")) {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            conectado = true;
+        }
+    } catch (e) { console.error(e); }
+
+    let produtos = [];      // {id, nome, preco, ativo}
+    let comandas = [];      // {id, nome, status, total, criado_em, fechado_em, comanda_itens: [{produto_id, produto_nome, preco_unit, quantidade}]}
+    let filtroData = 'hoje';
+
+    const elStatus = document.getElementById('statusConexao');
+
+    function setStatus(texto, classe) {
+        elStatus.textContent = texto;
+        elStatus.className = 'status-conexao ' + (classe || '');
+    }
+
+    async function init() {
+        if (!conectado) {
+            setStatus('⚠️ Banco de dados não configurado. Veja as instruções no README.', 'erro');
+            return;
+        }
+        setStatus('Sincronizando...', '');
+        await carregarDados();
+        setStatus('Conectado ✓', 'ok');
+
+        // Mantém tudo sincronizado em tempo real entre aparelhos diferentes
+        supabase.channel('adega-realtime')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'produtos' }, carregarDados)
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'comandas' }, carregarDados)
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'comanda_itens' }, carregarDados)
+            .subscribe();
+    }
+
+    async function carregarDados() {
+        const { data: prods, error: e1 } = await supabase.from('produtos').select('*').order('nome');
+        if (e1) { setStatus('Erro ao carregar produtos: ' + e1.message, 'erro'); return; }
+        produtos = prods || [];
+
+        const { data: coms, error: e2 } = await supabase
+            .from('comandas')
+            .select('*, comanda_itens(*)')
+            .order('criado_em', { ascending: true });
+        if (e2) { setStatus('Erro ao carregar comandas: ' + e2.message, 'erro'); return; }
+        comandas = coms || [];
+
         renderizar();
+    }
+
+    function precisaConexao() {
+        if (!conectado) { alert('Configure o banco de dados primeiro (veja o README).'); return true; }
+        return false;
     }
 
     function mudarAba(aba) {
         document.querySelectorAll('.aba-btn').forEach(btn => btn.classList.remove('ativa'));
         document.querySelectorAll('.conteudo-aba').forEach(c => c.classList.remove('ativa'));
-
-        if(aba === 'balcao') {
-            document.querySelectorAll('.aba-btn')[0].classList.add('ativa');
-            document.getElementById('aba-balcao').classList.add('ativa');
-        } else {
-            document.querySelectorAll('.aba-btn')[1].classList.add('ativa');
-            document.getElementById('aba-dashboard').classList.add('ativa');
-        }
+        const abas = ['balcao', 'produtos', 'dashboard'];
+        const idx = abas.indexOf(aba);
+        document.querySelectorAll('.aba-btn')[idx].classList.add('ativa');
+        document.getElementById('aba-' + aba).classList.add('ativa');
     }
 
-    function adicionarCliente() {
+    function mudarFiltroData(f) {
+        filtroData = f;
+        document.getElementById('filtroHoje').classList.toggle('ativa', f === 'hoje');
+        document.getElementById('filtroTudo').classList.toggle('ativa', f === 'tudo');
+        renderizar();
+    }
+
+    // ---------- PRODUTOS ----------
+    async function adicionarProduto() {
+        if (precisaConexao()) return;
+        const nomeEl = document.getElementById('nomeProduto');
+        const precoEl = document.getElementById('precoProduto');
+        const nome = nomeEl.value.trim();
+        const preco = parseFloat(precoEl.value);
+        if (!nome) { alert('Digite o nome do produto!'); return; }
+        if (isNaN(preco) || preco < 0) { alert('Digite um preço válido!'); return; }
+
+        const { error } = await supabase.from('produtos').insert({ nome, preco, ativo: true });
+        if (error) { alert('Erro ao salvar produto: ' + error.message); return; }
+        nomeEl.value = ''; precoEl.value = '';
+        await carregarDados();
+    }
+
+    async function editarProduto(id) {
+        const produto = produtos.find(p => p.id === id);
+        if (!produto) return;
+        const novoNome = prompt('Nome do produto:', produto.nome);
+        if (novoNome === null) return;
+        const novoPrecoStr = prompt('Preço (R$):', produto.preco);
+        if (novoPrecoStr === null) return;
+        const novoPreco = parseFloat(novoPrecoStr.replace(',', '.'));
+        if (!novoNome.trim() || isNaN(novoPreco) || novoPreco < 0) { alert('Dados inválidos!'); return; }
+
+        const { error } = await supabase.from('produtos')
+            .update({ nome: novoNome.trim(), preco: novoPreco })
+            .eq('id', id);
+        if (error) { alert('Erro ao editar: ' + error.message); return; }
+        await carregarDados();
+    }
+
+    async function removerProduto(id) {
+        if (!confirm('Remover este produto da lista de vendas? (o histórico é mantido)')) return;
+        // Soft delete: mantém o produto no histórico, só some do cadastro ativo
+        const { error } = await supabase.from('produtos').update({ ativo: false }).eq('id', id);
+        if (error) { alert('Erro ao remover: ' + error.message); return; }
+        await carregarDados();
+    }
+
+    // ---------- CAIXA / COMANDAS ----------
+    async function adicionarCliente() {
+        if (precisaConexao()) return;
         const input = document.getElementById('nomeCliente');
         const nome = input.value.trim();
         if (nome === "") { alert("Digite o nome da pessoa!"); return; }
-        clientes.push({ nome: nome, brahma: 0, bud: 0, heineken: 0 });
+
+        const { error } = await supabase.from('comandas').insert({ nome, status: 'aberta', total: 0 });
+        if (error) { alert('Erro ao adicionar cliente: ' + error.message); return; }
         input.value = "";
-        salvarDados();
+        await carregarDados();
     }
 
-    function lancarItem(index, marca, valor) {
-        const cliente = clientes[index];
-        let nomeMarca = '';
-        if(marca === 'brahma') nomeMarca = 'Brahma';
-        if(marca === 'bud') nomeMarca = 'Budweiser';
-        if(marca === 'heineken') nomeMarca = 'Heineken';
-        
-        if(valor === -1 && cliente[marca] === 0) return;
-
-        if(confirm(`Confirmar ${valor > 0 ? '+1' : '-1'} ${nomeMarca} para ${cliente.nome}?`)) {
-            cliente[marca] += valor;
-            salvarDados();
-        }
+    function qtdAtual(comanda, produtoId) {
+        const item = comanda.comanda_itens.find(i => i.produto_id === produtoId);
+        return item ? item.quantidade : 0;
     }
 
-    function finalizarPagamento(index) {
-        const cliente = clientes[index];
-        if (cliente.brahma === 0 && cliente.bud === 0 && cliente.heineken === 0) { alert("Nenhuma bebida consumida!"); return; }
+    async function lancarItem(comandaId, produtoId, delta) {
+        const comanda = comandas.find(c => c.id === comandaId);
+        const produto = produtos.find(p => p.id === produtoId);
+        if (!comanda || !produto) return;
+        const atual = qtdAtual(comanda, produto.id);
+        const novaQtd = atual + delta;
+        if (novaQtd < 0) return;
 
-        const totalDevido = (cliente.brahma * PRECO_BRAHMA) + (cliente.bud * PRECO_BUD) + (cliente.heineken * PRECO_HEINEKEN);
-        
-        let resumoConsumo = [];
-        if(cliente.brahma > 0) resumoConsumo.push(`${cliente.brahma} Brahma`);
-        if(cliente.bud > 0) resumoConsumo.push(`${cliente.bud} Bud`);
-        if(cliente.heineken > 0) resumoConsumo.push(`${cliente.heineken} Hk`);
+        if (!confirm(`Confirmar ${delta > 0 ? '+1' : '-1'} ${produto.nome} para ${comanda.nome}?`)) return;
 
-        if (confirm(`Confirmar que ${cliente.nome} PAGOU R$ ${totalDevido.toFixed(2).replace('.', ',')}?\nConsumo: ${resumoConsumo.join(' / ')}`)) {
-            historico.push({ 
-                nome: cliente.nome, 
-                brahma: cliente.brahma, 
-                bud: cliente.bud, 
-                heineken: cliente.heineken,
-                total: totalDevido, 
-                status: 'Pago' 
-            });
-            clientes.splice(index, 1);
-            salvarDados();
+        const itemExistente = comanda.comanda_itens.find(i => i.produto_id === produto.id);
+        let error;
+        if (itemExistente) {
+            ({ error } = await supabase.from('comanda_itens')
+                .update({ quantidade: novaQtd })
+                .eq('id', itemExistente.id));
+        } else {
+            ({ error } = await supabase.from('comanda_itens').insert({
+                comanda_id: comandaId,
+                produto_id: produto.id,
+                produto_nome: produto.nome,
+                preco_unit: produto.preco,
+                quantidade: novaQtd
+            }));
         }
+        if (error) { alert('Erro ao lançar item: ' + error.message); return; }
+        await carregarDados();
     }
 
-    function removerCliente(index) {
-        if (confirm(`Excluir ${clientes[index].nome} da lista?`)) {
-            clientes.splice(index, 1);
-            salvarDados();
-        }
+    function totalComanda(comanda) {
+        return comanda.comanda_itens.reduce((soma, i) => soma + (i.quantidade * i.preco_unit), 0);
     }
 
-    function zerarTudo() {
-        if (confirm("Deseja limpar todo o Dashboard e reiniciar o caixa para o próximo jogo?")) {
-            clientes = []; historico = []; salvarDados();
-        }
+    async function finalizarPagamento(comandaId) {
+        const comanda = comandas.find(c => c.id === comandaId);
+        const total = totalComanda(comanda);
+        if (total === 0) { alert('Nenhum item consumido!'); return; }
+
+        const resumo = comanda.comanda_itens
+            .filter(i => i.quantidade > 0)
+            .map(i => `${i.quantidade} ${i.produto_nome}`)
+            .join(' / ');
+
+        if (!confirm(`Confirmar que ${comanda.nome} PAGOU R$ ${total.toFixed(2).replace('.', ',')}?\nConsumo: ${resumo}`)) return;
+
+        const { error } = await supabase.from('comandas')
+            .update({ status: 'paga', total, fechado_em: new Date().toISOString() })
+            .eq('id', comandaId);
+        if (error) { alert('Erro ao finalizar: ' + error.message); return; }
+        await carregarDados();
+    }
+
+    async function removerCliente(comandaId) {
+        const comanda = comandas.find(c => c.id === comandaId);
+        if (!confirm(`Excluir ${comanda.nome} da lista? (isso apaga o consumo em aberto dele)`)) return;
+        const { error } = await supabase.from('comandas').delete().eq('id', comandaId);
+        if (error) { alert('Erro ao excluir: ' + error.message); return; }
+        await carregarDados();
+    }
+
+    // ---------- RENDERIZAÇÃO ----------
+    function ehHoje(dataIso) {
+        if (!dataIso) return false;
+        const d = new Date(dataIso);
+        const hoje = new Date();
+        return d.getFullYear() === hoje.getFullYear() && d.getMonth() === hoje.getMonth() && d.getDate() === hoje.getDate();
     }
 
     function renderizar() {
-        const listaHtml = document.getElementById('listaClientes');
-        listaHtml.innerHTML = "";
-        let totalDevedoresGeral = 0, brahmaAtivas = 0, budAtivas = 0, heinekenAtivas = 0;
-
-        clientes.forEach((cliente, index) => {
-            const totalCliente = (cliente.brahma * PRECO_BRAHMA) + (cliente.bud * PRECO_BUD) + (cliente.heineken * PRECO_HEINEKEN);
-            totalDevedoresGeral += totalCliente; 
-            brahmaAtivas += cliente.brahma; 
-            budAtivas += cliente.bud;
-            heinekenAtivas += cliente.heineken;
-
-            let textoDetalhes = [];
-            if(cliente.brahma > 0) textoDetalhes.push(`${cliente.brahma} Brahma`);
-            if(cliente.bud > 0) textoDetalhes.push(`${cliente.bud} Bud`);
-            if(cliente.heineken > 0) textoDetalhes.push(`${cliente.heineken} Hk`);
-            let stringConsumo = textoDetalhes.length > 0 ? textoDetalhes.join(' / ') : 'Nenhuma';
-
-            listaHtml.innerHTML += `
-                <div class="cliente-card">
-                    <div class="card-header">
-                        <span class="nome">${cliente.nome}</span>
-                        <button class="btn-excluir" onclick="removerCliente(${index})">✕</button>
-                    </div>
-                    <div class="produto-linha">
-                        <span class="prod-info">Brahma: <strong>${cliente.brahma} un</strong></span>
-                        <div class="botoes-qtd">
-                            <button class="btn-control sub" onclick="lancarItem(${index}, 'brahma', -1)">-</button>
-                            <button class="btn-control add" onclick="lancarItem(${index}, 'brahma', 1)">+</button>
-                        </div>
-                    </div>
-                    <div class="produto-linha">
-                        <span class="prod-info">Budweiser: <strong>${cliente.bud} un</strong></span>
-                        <div class="botoes-qtd">
-                            <button class="btn-control sub" onclick="lancarItem(${index}, 'bud', -1)">-</button>
-                            <button class="btn-control add" onclick="lancarItem(${index}, 'bud', 1)">+</button>
-                        </div>
-                    </div>
-                    <div class="produto-linha">
-                        <span class="prod-info">Heineken: <strong>${cliente.heineken} un</strong></span>
-                        <div class="botoes-qtd">
-                            <button class="btn-control sub" onclick="lancarItem(${index}, 'heineken', -1)">-</button>
-                            <button class="btn-control add" onclick="lancarItem(${index}, 'heineken', 1)">+</button>
-                        </div>
-                    </div>
-                    <div class="resumo-card">
-                        <span>Total Parcial:</span>
-                        <span style="color:var(--cor-primaria); font-weight:bold;">R$ ${totalCliente.toFixed(2).replace('.', ',')}</span>
-                    </div>
-                    <button class="btn-pagar" onclick="finalizarPagamento(${index})">💰 CONFIRMAR RECEBIMENTO</button>
-                </div>`;
-        });
-
-        let brahmaPagas = 0, budPagas = 0, heinekenPagas = 0, faturamentoPago = 0;
-        const historicoHtml = document.getElementById('historicoVendas');
-        historicoHtml.innerHTML = "";
-
-        historico.forEach(item => {
-            brahmaPagas += item.brahma; 
-            budPagas += item.bud; 
-            heinekenPagas += item.heineken || 0;
-            faturamentoPago += item.total;
-            
-            let detalhesH = [];
-            if(item.brahma > 0) detalhesH.push(`${item.brahma} Br`);
-            if(item.bud > 0) detalhesH.push(`${item.bud} Bd`);
-            if(item.heineken > 0) detalhesH.push(`${item.heineken} Hk`);
-
-            historicoHtml.innerHTML += `
-                <tr>
-                    <td><strong>${item.nome}</strong></td>
-                    <td>${detalhesH.join(' / ') || '0'}</td>
-                    <td>R$ ${item.total.toFixed(2).replace('.', ',')}</td>
-                    <td class="status-pago">${item.status}</td>
-                </tr>`;
-        });
-
-        document.getElementById('faturamentoTotal').innerText = `R$ ${(faturamentoPago + totalDevedoresGeral).toFixed(2).replace('.', ',')}`;
-        document.getElementById('dashCervejas').innerHTML = `Brahma: ${brahmaPagas + brahmaAtivas} <br> Budweiser: ${budPagas + budAtivas} <br> Heineken: ${heinekenPagas + heinekenAtivas}`;
-        document.getElementById('dashDevedores').innerText = `R$ ${totalDevedoresGeral.toFixed(2).replace('.', ',')}`;
+        renderizarProdutos();
+        renderizarBalcao();
+        renderizarDashboard();
     }
 
-    renderizar();
+    function renderizarProdutos() {
+        const el = document.getElementById('listaProdutos');
+        const ativos = produtos.filter(p => p.ativo);
+        if (ativos.length === 0) {
+            el.innerHTML = '<div class="vazio">Nenhum produto cadastrado ainda.</div>';
+            return;
+        }
+        el.innerHTML = ativos.map(p => `
+            <div class="produto-card">
+                <div class="info">
+                    <div class="p-nome">${p.nome}</div>
+                    <div class="p-preco">R$ ${p.preco.toFixed(2).replace('.', ',')}</div>
+                </div>
+                <div class="acoes">
+                    <button class="btn-mini" onclick="editarProduto('${p.id}')">✎ Editar</button>
+                    <button class="btn-mini" style="color: var(--cor-erro);" onclick="removerProduto('${p.id}')">✕ Remover</button>
+                </div>
+            </div>`).join('');
+    }
+
+    function renderizarBalcao() {
+        const menuPrecos = document.getElementById('menuPrecos');
+        const ativos = produtos.filter(p => p.ativo);
+        if (ativos.length === 0) {
+            menuPrecos.innerHTML = '<div class="sem-produtos">Cadastre produtos na aba "Produtos" para começar a vender.</div>';
+        } else {
+            menuPrecos.innerHTML = ativos.map(p =>
+                `<div class="preco-tag">${p.nome}:<br>R$ ${p.preco.toFixed(2).replace('.', ',')}</div>`
+            ).join('');
+        }
+
+        const listaHtml = document.getElementById('listaClientes');
+        const abertas = comandas.filter(c => c.status === 'aberta');
+        if (abertas.length === 0) {
+            listaHtml.innerHTML = '<div class="vazio">Ninguém na comanda no momento.</div>';
+            return;
+        }
+
+        listaHtml.innerHTML = abertas.map(comanda => {
+            const linhas = ativos.map(p => {
+                const qtd = qtdAtual(comanda, p.id);
+                return `
+                    <div class="produto-linha">
+                        <span class="prod-info">${p.nome}: <strong>${qtd} un</strong></span>
+                        <div class="botoes-qtd">
+                            <button class="btn-control sub" onclick="lancarItem('${comanda.id}', '${p.id}', -1)">-</button>
+                            <button class="btn-control add" onclick="lancarItem('${comanda.id}', '${p.id}', 1)">+</button>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            const total = totalComanda(comanda);
+
+            return `
+                <div class="cliente-card">
+                    <div class="card-header">
+                        <span class="nome">${comanda.nome}</span>
+                        <button class="btn-excluir" onclick="removerCliente('${comanda.id}')">✕</button>
+                    </div>
+                    ${linhas || '<div class="sem-produtos">Nenhum produto cadastrado.</div>'}
+                    <div class="resumo-card">
+                        <span>Total Parcial:</span>
+                        <span style="color:var(--cor-primaria); font-weight:bold;">R$ ${total.toFixed(2).replace('.', ',')}</span>
+                    </div>
+                    <button class="btn-pagar" onclick="finalizarPagamento('${comanda.id}')">💰 CONFIRMAR RECEBIMENTO</button>
+                </div>`;
+        }).join('');
+    }
+
+    function renderizarDashboard() {
+        const abertas = comandas.filter(c => c.status === 'aberta');
+        let pagas = comandas.filter(c => c.status === 'paga');
+        if (filtroData === 'hoje') pagas = pagas.filter(c => ehHoje(c.fechado_em));
+
+        const totalDevedores = abertas.reduce((soma, c) => soma + totalComanda(c), 0);
+        const faturamentoPago = pagas.reduce((soma, c) => soma + Number(c.total), 0);
+
+        // soma por produto (dos itens já pagos no período filtrado)
+        const vendidoPorProduto = {};
+        pagas.forEach(c => {
+            (c.comanda_itens || []).forEach(i => {
+                vendidoPorProduto[i.produto_nome] = (vendidoPorProduto[i.produto_nome] || 0) + i.quantidade;
+            });
+        });
+
+        document.getElementById('faturamentoTotal').innerText = `R$ ${(faturamentoPago + totalDevedores).toFixed(2).replace('.', ',')}`;
+        document.getElementById('dashDevedores').innerText = `R$ ${totalDevedores.toFixed(2).replace('.', ',')}`;
+
+        const dashProdutosEl = document.getElementById('dashProdutos');
+        const entradas = Object.entries(vendidoPorProduto);
+        dashProdutosEl.innerHTML = entradas.length > 0
+            ? entradas.map(([nome, qtd]) => `${nome}: ${qtd}`).join('<br>')
+            : 'Nenhuma venda ainda';
+
+        const historicoHtml = document.getElementById('historicoVendas');
+        if (pagas.length === 0) {
+            historicoHtml.innerHTML = '<tr><td colspan="4" class="vazio">Sem contas fechadas neste período.</td></tr>';
+        } else {
+            historicoHtml.innerHTML = pagas.slice().reverse().map(c => {
+                const detalhes = (c.comanda_itens || [])
+                    .filter(i => i.quantidade > 0)
+                    .map(i => `${i.quantidade} ${i.produto_nome}`)
+                    .join(' / ') || '0';
+                return `
+                    <tr>
+                        <td><strong>${c.nome}</strong></td>
+                        <td>${detalhes}</td>
+                        <td>R$ ${Number(c.total).toFixed(2).replace('.', ',')}</td>
+                        <td class="status-pago">Pago</td>
+                    </tr>`;
+            }).join('');
+        }
+    }
+
+    init();
 </script>
 </body>
 </html>
