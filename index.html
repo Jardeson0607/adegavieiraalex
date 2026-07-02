@@ -209,6 +209,23 @@
             align-items: center;
             padding: 6px 0;
         }
+        .add-item-row {
+            display: flex;
+            gap: 6px;
+            padding: 10px 0 4px 0;
+            border-top: 1px solid #2d2d34;
+            margin-top: 4px;
+        }
+        .add-item-row select {
+            flex: 1;
+            padding: 10px;
+            background: var(--bg-input);
+            border: 1px solid #3d3d45;
+            border-radius: 8px;
+            font-size: 14px;
+            color: white;
+            outline: none;
+        }
         .prod-info { font-size: 0.95em; color: var(--texto-secundario); }
         .prod-info strong { color: #fff; }
         .botoes-qtd { display: flex; gap: 6px; align-items: center; }
@@ -540,6 +557,12 @@
         return comanda.comanda_itens.reduce((soma, i) => soma + (i.quantidade * i.preco_unit), 0);
     }
 
+    function adicionarNaComanda(comandaId) {
+        const select = document.getElementById('sel-' + comandaId);
+        if (!select || !select.value) return;
+        lancarItem(comandaId, select.value, 1);
+    }
+
     async function finalizarPagamento(comandaId) {
         const comanda = comandas.find(c => c.id === comandaId);
         const total = totalComanda(comanda);
@@ -607,9 +630,7 @@
         if (ativos.length === 0) {
             menuPrecos.innerHTML = '<div class="sem-produtos">Cadastre produtos na aba "Produtos" para começar a vender.</div>';
         } else {
-            menuPrecos.innerHTML = ativos.map(p =>
-                `<div class="preco-tag">${p.nome}:<br>R$ ${p.preco.toFixed(2).replace('.', ',')}</div>`
-            ).join('');
+            menuPrecos.innerHTML = `<div class="sem-produtos">${ativos.length} produtos cadastrados. Veja os preços na aba Produtos.</div>`;
         }
 
         const listaHtml = document.getElementById('listaClientes');
@@ -620,7 +641,9 @@
         }
 
         listaHtml.innerHTML = abertas.map(comanda => {
-            const linhas = ativos.map(p => {
+            const itensConsumidos = ativos.filter(p => qtdAtual(comanda, p.id) > 0);
+
+            const linhas = itensConsumidos.map(p => {
                 const qtd = qtdAtual(comanda, p.id);
                 return `
                     <div class="produto-linha">
@@ -632,6 +655,16 @@
                     </div>`;
             }).join('');
 
+            const opcoesSelect = ativos.map(p =>
+                `<option value="${p.id}">${p.nome} — R$ ${p.preco.toFixed(2).replace('.', ',')}</option>`
+            ).join('');
+
+            const seletorAdicionar = ativos.length > 0 ? `
+                    <div class="add-item-row">
+                        <select id="sel-${comanda.id}">${opcoesSelect}</select>
+                        <button class="btn-control add" onclick="adicionarNaComanda('${comanda.id}')">+</button>
+                    </div>` : '<div class="sem-produtos">Nenhum produto cadastrado.</div>';
+
             const total = totalComanda(comanda);
 
             return `
@@ -640,7 +673,8 @@
                         <span class="nome">${comanda.nome}</span>
                         <button class="btn-excluir" onclick="removerCliente('${comanda.id}')">✕</button>
                     </div>
-                    ${linhas || '<div class="sem-produtos">Nenhum produto cadastrado.</div>'}
+                    ${linhas || '<div class="sem-produtos">Nada lançado ainda.</div>'}
+                    ${seletorAdicionar}
                     <div class="resumo-card">
                         <span>Total Parcial:</span>
                         <span style="color:var(--cor-primaria); font-weight:bold;">R$ ${total.toFixed(2).replace('.', ',')}</span>
