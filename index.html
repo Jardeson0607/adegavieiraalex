@@ -417,7 +417,7 @@
         if (e1) { setStatus('Erro ao carregar produtos: ' + e1.message, 'erro'); return; }
         produtos = prods || [];
 
-        const { data: coms, error: e2 } = await supabase
+        const { data: coms, error: e2 } = await db
             .from('comandas')
             .select('*, comanda_itens(*)')
             .order('criado_em', { ascending: true });
